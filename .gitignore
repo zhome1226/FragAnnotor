@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Large local benchmark downloads. The benchmark script records paths and hashes
+# in results/config.yaml; raw CASMI packages should be downloaded locally.
+data/proc/
+data/casmi_2022/
+data/pfas/
+
