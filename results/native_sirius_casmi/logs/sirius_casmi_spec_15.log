@@ -1,0 +1,76 @@
+Jun 29, 2026 11:43:30 AM org.apache.commons.beanutils.FluentPropertyBeanIntrospector introspect
+INFO: Error when creating PropertyDescriptor for public final void org.apache.commons.configuration2.AbstractConfiguration.setProperty(java.lang.String,java.lang.Object)! Ignoring this property.
+INFO    11:43:31 - Sirius Workspace Successfull initialized at: /home/zhome/.sirius-4.9
+INFO    11:43:31 - You run SIRIUS 4.9.15
+INFO    11:43:31 - Sirius was compiled with the following ILP solvers: GLPK-v1.7.0 (included), Gurobi-v9.1.1, CPLEX-v12.7.1, COIN-OR-v1.17.3
+INFO    11:43:31 - Treebuilder priorities loaded from 'sirius.properties' are: [GUROBI, CPLEX, CLP, GLPK]
+INFO    11:43:31 - CPU check done. 96 cores that handle 192 threads were found.
+INFO    11:43:31 - Bug reporter initialized.
+INFO    11:43:31 - Web API initialized.
+INFO    11:43:31 - Running with following arguments: [-i, /home/zhome/ec_structure/github_export/FragAnnotor/results/native_sirius_casmi/single_inputs/casmi_spec_15.mgf, -o, /home/zhome/ec_structure/github_export/FragAnnotor/results/native_sirius_casmi/sirius_project_single/casmi_spec_15, --recompute, --cores, 4, formula, -c, 10, -E, CHNOPSClBrIF, --compound-timeout, 45]
+INFO    11:43:31 - Job manager successful initialized with 96 CPU thread(s) and 3 IO thread(s).
+FINE    11:43:31 - <0>[InputExpanderJJob] Running post processing
+FINE    11:43:31 - <0>[InputExpanderJJob] Running cleanup
+INFO    11:43:31 - <1>[InputExpanderJJob] Expanding Input Files: '/home/zhome/ec_structure/github_export/FragAnnotor/results/native_sirius_casmi/single_inputs/casmi_spec_15.mgf'...
+INFO    11:43:31 - <1>[InputExpanderJJob] ...Input Files successfully expanded!
+FINE    11:43:31 - <1>[InputExpanderJJob] Running post processing
+FINE    11:43:31 - <1>[InputExpanderJJob] Running cleanup
+INFO    11:43:31 - Shutting down JobManager
+INFO    11:43:31 - Awaiting termination of JobManager
+INFO    11:43:31 - JobManager is shut down
+WARNING 11:43:36 - Could not load GrbSolver! Sirius was compiled with the following ILP solvers: GLPK-v1.7.0 (included), Gurobi-v9.1.1, CPLEX-v12.7.1, COIN-OR-v1.17.3: gurobi/GRBException
+WARNING 11:43:36 - Could not load CPLEXSolver! Sirius was compiled with the following ILP solvers: GLPK-v1.7.0 (included), Gurobi-v9.1.1, CPLEX-v12.7.1, COIN-OR-v1.17.3: ilog/concert/IloNumVar
+INFO    11:43:37 - Workflow has been finished!
+INFO    11:43:37 - Executing Postprocessing...
+INFO    11:43:37 - Writing summary files...
+INFO    11:43:37 - Project-Space summaries successfully written!
+INFO    11:43:37 - CLI shut down hook: SIRIUS is cleaning up threads and shuts down...
+
+
+Please cite the following publications when using our tool:
+
+When using the SIRIUS Software please cite the following paper:
+
+Kai Dührkop, Markus Fleischauer, Marcus Ludwig, Alexander A. Aksenov, Alexey V. Melnik, Marvin Meusel, Pieter C. Dorrestein, Juho Rousu and Sebastian Böcker
+SIRIUS4: a rapid tool for turning tandem mass spectra into metabolite structure information
+Nat Methods, 16, 2019.  https://doi.org/10.1038/s41592-019-0344-8
+
+
+Depending on the tools you have used please also cite:
+
+Kai Dührkop, Louis-Félix Nothias, Markus Fleischauer, Raphael Reher, Marcus Ludwig, Martin A. Hoffmann, Daniel Petras, William H. Gerwick, Juho Rousu, Pieter C. Dorrestein and Sebastian Böcker
+Systematic classification of unknown metabolites using high-resolution fragmentation mass spectra
+Nature Biotechnology, 2020.  https://doi.org/10.1038/s41587-020-0740-8
+(Cite if you are using: CANOPUS)
+
+Yannick Djoumbou Feunang, Roman Eisner, Craig Knox, Leonid Chepelev, Janna Hastings, Gareth Owen, Eoin Fahy, Christoph Steinbeck, Shankar Subramanian, Evan Bolton, Russell Greiner, David S. Wishart
+ClassyFire: automated chemical classification with a comprehensive, computable taxonomy
+J Cheminf, 8, 2016.  https://doi.org/10.1186/s13321-016-0174-y
+(Cite if you are using: CANOPUS)
+
+Kai Dührkop, Huibin Shen, Marvin Meusel, Juho Rousu and Sebastian Böcker
+Searching molecular structure databases with tandem mass spectra using CSI:FingerID
+Proc Natl Acad Sci U S A, 112, 2015.  https://doi.org/10.1073/pnas.1509788112
+(Cite if you are using: CSI:FingerID)
+
+Martin A. Hoffmann and Louis-Félix Nothias and Marcus Ludwig and Markus Fleischauer and Emily C. Gentry and Michael Witting and Pieter C. Dorrestein and Kai Dührkop and Sebastian Böcker
+High-confidence structural annotation of metabolites absent from spectral libraries
+Nature Biotechnology, 2021.  https://doi.org/10.1038/s41587-021-01045-9
+(Cite if you are using: CSI:FingerID, COSMIC)
+
+Sebastian Böcker and Kai Dührkop
+Fragmentation trees reloaded
+J Cheminform, 8, 2016.  https://doi.org/10.1186/s13321-016-0116-8
+(Cite if you are using: Fragmentation Trees)
+
+Sebastian Böcker, Matthias Letzel, Zsuzsanna Lipták and Anton Pervukhin
+SIRIUS: Decomposing isotope patterns for metabolite identification
+Bioinformatics, 25, 2009.  https://doi.org/10.1093/bioinformatics/btn603
+(Cite if you are using: Isotope Pattern analysis)
+
+Marcus Ludwig, Louis-Félix Nothias, Kai Dührkop, Irina Koester, Markus Fleischauer, Martin A. Hoffmann, Daniel Petras, Fernando Vargas, Mustafa Morsy, Lihini Aluwihare, Pieter C. Dorrestein, Sebastian Böcker
+ZODIAC: database-independent molecular formula annotation using Gibbs sampling reveals unknown small molecules
+bioRxiv, 2019.  https://doi.org/10.1101/842740
+(Cite if you are using: ZODIAC)
+
+

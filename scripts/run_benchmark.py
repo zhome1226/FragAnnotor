@@ -50,7 +50,12 @@ except Exception:  # pragma: no cover - reported in environment audit
 
 
 SEED = 20260628
-TP_REPO = ROOT.parent / "ec-transformation-product-model-v1"
+TP_REPO_CANDIDATES = [
+    ROOT.parent / "ec-transformation-product-model-v1",
+    Path("/home/zhome/ec_tp_work/ec-transformation-product-model-v1"),
+    Path("/home/zhome/ec_structure/github_export/ec-transformation-product-model-v1"),
+]
+TP_REPO = next((candidate for candidate in TP_REPO_CANDIDATES if candidate.exists()), TP_REPO_CANDIDATES[0])
 PFAS_NO_SIRIUS_LOCKED = TP_REPO / "outputs" / "pfas_no_sirius_fusion_locked_report_v1"
 PFAS_FULL_LOCKED = TP_REPO / "outputs" / "pfas_full_five_component_locked_report_v1"
 PFAS_COMPLETE_V3 = TP_REPO / "outputs" / "pfas_complete_score_matrix_v3"
@@ -58,8 +63,10 @@ PFAS_FINAL_SELECTION = TP_REPO / "outputs" / "pfas_final_model_selection_and_cla
 PFAS_ROBUSTNESS = TP_REPO / "outputs" / "pfas_no_sirius_locked_robustness_v1"
 PFAS_DECOY = TP_REPO / "outputs" / "pfas_decoy_threshold_calibration_v1"
 PFAS_EXTERNAL_GAP = TP_REPO / "outputs" / "pfas_external_validation_data_gap_and_acquisition_v1"
+NATIVE_SIRIUS_CASMI_CANDIDATES = ROOT / "results" / "native_sirius_casmi" / "casmi2022_sirius_formula_candidates.csv"
+NATIVE_SIRIUS_CASMI_AUDIT = ROOT / "results" / "native_sirius_casmi" / "casmi2022_sirius_formula_audit.json"
 
-DEFAULT_PFAS_MATRIX = PFAS_FULL_LOCKED / "locked_test_candidate_feature_matrix.csv"
+DEFAULT_PFAS_MATRIX = (PFAS_FULL_LOCKED / "locked_test_candidate_feature_matrix.csv") if (PFAS_FULL_LOCKED / "locked_test_candidate_feature_matrix.csv").exists() else (PFAS_NO_SIRIUS_LOCKED / "locked_test_candidate_feature_matrix.csv")
 DEFAULT_PFAS_SCORE_MATRIX = PFAS_COMPLETE_V3 / "pfas_validation_score_matrix.csv"
 DEFAULT_CASMI_DIRS = [
     ROOT / "data" / "casmi_2022",
@@ -86,6 +93,7 @@ PREDICTION_COLUMNS = [
     "score_source",
     "native_or_fallback",
     "tool_version",
+    "command",
     "error_message",
 ]
 
@@ -187,6 +195,36 @@ def formula_from_smiles(smiles: str | None) -> str:
     if mol is None:
         return ""
     return rdMolDescriptors.CalcMolFormula(mol)
+
+def load_native_sirius_casmi_scores(path: Path = NATIVE_SIRIUS_CASMI_CANDIDATES) -> dict[str, dict[str, Any]]:
+    if not path.exists():
+        return {}
+    try:
+        df = pd.read_csv(path)
+    except Exception:
+        return {}
+    if df.empty or "spectrum_id" not in df.columns:
+        return {}
+    out: dict[str, dict[str, Any]] = {}
+    for spectrum_id, group in df.groupby(df["spectrum_id"].astype(str), sort=False):
+        available = group[group.get("sirius_native_status", "").astype(str).eq("available")].copy()
+        formula_scores = {}
+        if not available.empty:
+            for _, row in available.iterrows():
+                formula = safe_str(row.get("candidate_formula"))
+                if not formula:
+                    continue
+                score = safe_float(row.get("sirius_native_formula_score"), default=np.nan)
+                raw = safe_float(row.get("sirius_native_formula_score_raw"), default=np.nan)
+                rank = safe_float(row.get("sirius_native_formula_rank"), default=np.nan)
+                old = formula_scores.get(formula)
+                if old is None or (not pd.isna(score) and score > old.get("score", -np.inf)):
+                    formula_scores[formula] = {"score": score, "raw_score": raw, "rank": rank}
+        status = "available" if formula_scores else safe_str(group.get("sirius_native_status", pd.Series(["unavailable"])).iloc[0])
+        command = safe_str(group.get("sirius_command", pd.Series([""])).iloc[0])
+        out[str(spectrum_id)] = {"formula_scores": formula_scores, "status": status, "command": command}
+    return out
+
 
 
 def inchikey_from_smiles(smiles: str | None, fallback: str = "") -> str:
@@ -305,6 +343,7 @@ def lightweight_spectrum_score(smiles: str, peaks: list[tuple[float, float]], pr
 
 
 def load_casmi_records(casmi_dir: Path | None, candidate_limit: int) -> tuple[list[QueryRecord], dict[str, Any]]:
+    native_sirius_scores = load_native_sirius_casmi_scores()
     search_dirs = [casmi_dir] if casmi_dir else DEFAULT_CASMI_DIRS
     for directory in [p for p in search_dirs if p is not None]:
         spec_path = directory / "spec_df.pkl"
@@ -367,6 +406,18 @@ def load_casmi_records(casmi_dir: Path | None, candidate_limit: int) -> tuple[li
                         "score_source": "massformer_casmi2022_lightweight_fallback_scores",
                     }
                 )
+                sirius_meta = native_sirius_scores.get(str(row["spec_id"]), {})
+                native_formula_score = sirius_meta.get("formula_scores", {}).get(formula_from_smiles(smiles), {})
+                if native_formula_score:
+                    candidates[-1]["sirius_native_formula_score"] = native_formula_score.get("score", np.nan)
+                    candidates[-1]["sirius_native_formula_rank"] = native_formula_score.get("rank", np.nan)
+                    candidates[-1]["sirius_native_formula_score_raw"] = native_formula_score.get("raw_score", np.nan)
+                else:
+                    candidates[-1]["sirius_native_formula_score"] = np.nan
+                    candidates[-1]["sirius_native_formula_rank"] = np.nan
+                    candidates[-1]["sirius_native_formula_score_raw"] = np.nan
+                candidates[-1]["sirius_native_status"] = sirius_meta.get("status", "native_sirius_not_run")
+                candidates[-1]["sirius_native_command"] = sirius_meta.get("command", "")
             records.append(
                 QueryRecord(
                     dataset="CASMI2022",
@@ -399,7 +450,9 @@ def load_casmi_records(casmi_dir: Path | None, candidate_limit: int) -> tuple[li
             "spec_df_sha256": sha256_file(spec_path),
             "cand_df_sha256": sha256_file(cand_path),
             "all_smiles_sha256": sha256_file(smiles_path),
-            "native_score_status": "no_native_baseline_outputs_found_in_processed_package",
+            "native_score_status": "native_sirius_formula_scores_available" if native_sirius_scores else "no_native_baseline_outputs_found_in_processed_package",
+            "native_sirius_formula_score_path": str(NATIVE_SIRIUS_CASMI_CANDIDATES) if native_sirius_scores else "",
+            "native_sirius_spectra_with_scores": len(native_sirius_scores),
             "fallback_status": "deterministic_lightweight_scores_available_for_preliminary_only",
         }
     return [], {
@@ -535,10 +588,10 @@ def load_pfas_records(feature_matrix_path: Path, score_matrix_path: Path | None)
 
 def environment_audit() -> dict[str, Any]:
     executables = {
-        "cfmid": shutil.which("cfmid"),
-        "cfm_predict": shutil.which("cfm-predict"),
-        "cfm_id": shutil.which("cfm-id"),
-        "sirius": shutil.which("sirius"),
+        "cfmid": shutil.which("cfmid") or ("/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id" if Path("/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id").exists() else None),
+        "cfm_predict": shutil.which("cfm-predict") or ("/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-predict" if Path("/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-predict").exists() else None),
+        "cfm_id": shutil.which("cfm-id") or ("/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id" if Path("/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id").exists() else None),
+        "sirius": shutil.which("sirius") or ("/home/zhome/opt/sirius-4.9.15-headless/bin/sirius" if Path("/home/zhome/opt/sirius-4.9.15-headless/bin/sirius").exists() else None),
         "java": shutil.which("java"),
         "git": shutil.which("git"),
         "python": sys.executable,
@@ -564,7 +617,7 @@ def environment_audit() -> dict[str, Any]:
         "executables": executables,
         "versions": {
             "java": run_cmd(["java", "-version"]) if executables["java"] else None,
-            "sirius": run_cmd(["sirius", "--version"]) if executables["sirius"] else None,
+            "sirius": run_cmd([executables["sirius"], "--version"]) if executables["sirius"] else None,
             "cfmid": run_cmd([executables["cfmid"], "--version"]) if executables["cfmid"] else None,
             "cfm_predict": run_cmd([executables["cfm_predict"], "--help"]) if executables["cfm_predict"] else None,
         },
@@ -579,29 +632,47 @@ def environment_audit() -> dict[str, Any]:
     return audit
 
 
+def compact_probe_version(probe: Any, fallback: str = "") -> str:
+    if isinstance(probe, dict):
+        stdout = safe_str(probe.get("stdout"))
+        stderr = safe_str(probe.get("stderr"))
+        for line in (stdout + "\n" + stderr).splitlines():
+            line = line.strip()
+            if line:
+                return line[:120]
+        return fallback
+    text = safe_str(probe)
+    for line in text.splitlines():
+        line = line.strip()
+        if line:
+            return line[:120]
+    return fallback
+
+
 def native_baseline_audit(env: dict[str, Any]) -> list[dict[str, Any]]:
     executables = env["executables"]
     packages = env["packages"]
+    cfmid_executable = executables.get("cfmid") or executables.get("cfm_predict") or executables.get("cfm_id") or ""
     rows = [
         {
             "model": "CFM-ID",
-            "native_available": bool(executables.get("cfmid") or executables.get("cfm_predict") or executables.get("cfm_id")),
-            "executable_or_package": executables.get("cfmid") or executables.get("cfm_predict") or executables.get("cfm_id") or "",
-            "version": safe_str(env["versions"].get("cfmid") or env["versions"].get("cfm_predict")),
-            "blocker": "" if (executables.get("cfmid") or executables.get("cfm_predict") or executables.get("cfm_id")) else "CFM-ID executable not found in PATH; no native CASMI CFM-ID inference was run.",
+            "native_available": False,
+            "executable_or_package": cfmid_executable,
+            "version": "executable_present_but_smoke_failed" if cfmid_executable else "unavailable",
+            "blocker": "CFM-ID executable exists, but smoke tests against available pretrained model/configs abort with Invalid Feature Configuration; no valid native CASMI CFM-ID benchmark scores are reported." if cfmid_executable else "CFM-ID executable not found in PATH; no native CASMI CFM-ID inference was run.",
         },
         {
             "model": "SIRIUS",
             "native_available": bool(executables.get("sirius")),
             "executable_or_package": executables.get("sirius") or "",
-            "version": safe_str(env["versions"].get("sirius")),
-            "blocker": "" if executables.get("sirius") else "SIRIUS executable not found in PATH; no native CASMI SIRIUS inference was run.",
+            "version": compact_probe_version(env["versions"].get("sirius"), "SIRIUS version unavailable"),
+            "blocker": "" if (executables.get("sirius") and NATIVE_SIRIUS_CASMI_CANDIDATES.exists()) else ("SIRIUS executable found; CASMI formula scores not generated yet." if executables.get("sirius") else "SIRIUS executable not found in PATH; no native CASMI SIRIUS inference was run."),
         },
         {
             "model": "MS2DeepScore",
             "native_available": bool(packages.get("ms2deepscore", {}).get("available")),
             "executable_or_package": "ms2deepscore" if packages.get("ms2deepscore", {}).get("available") else "",
-            "version": packages.get("ms2deepscore", {}).get("version") or "",
+            "version": packages.get("ms2deepscore", {}).get("version") or "unavailable",
             "blocker": "" if packages.get("ms2deepscore", {}).get("available") else "ms2deepscore Python package/model not available; no native MS2DeepScore inference was run.",
         },
     ]
@@ -614,6 +685,11 @@ def model_score(candidate: dict[str, Any], model: str, allow_fallback: bool) -> 
     elif model == "CFM-ID":
         weights = {"cfmid_spectrum_score": 1.0}
     elif model == "SIRIUS":
+        if "sirius_native_formula_score" in candidate:
+            value = candidate.get("sirius_native_formula_score")
+            if not pd.isna(value):
+                return float(value), "native_sirius_formula_score"
+            return np.nan, "native_sirius_formula_missing_for_candidate"
         weights = {"sirius_formula_score": 1.0}
     elif model == "MS2DeepScore":
         raw = candidate.get("ms2deepscore_score", np.nan)
@@ -660,7 +736,9 @@ def model_availability(dataset: str, model: str, native_baselines: bool, allow_f
         if model == "CFM-ID":
             return False, "native_unavailable", "CFM-ID native CASMI execution/export parser is unavailable in this repository run; fallback disabled."
         if model == "SIRIUS":
-            return False, "native_unavailable", "SIRIUS native CASMI execution/export parser is unavailable in this repository run; fallback disabled."
+            if NATIVE_SIRIUS_CASMI_CANDIDATES.exists():
+                return True, "native_sirius", "SIRIUS 4.9.15 native formula scores from results/native_sirius_casmi."
+            return False, "native_unavailable", "SIRIUS native CASMI formula score file missing; run scripts/run_native_sirius_casmi.py first."
         if model == "MS2DeepScore":
             return False, "native_unavailable", "MS2DeepScore native CASMI model/embedding workflow is unavailable in this repository run; fallback disabled."
         return False, "native_unavailable", "FragAnnotor native CASMI component scores are unavailable; fallback disabled."
@@ -691,6 +769,7 @@ def rank_record(record: QueryRecord, model: str, native_baselines: bool, allow_f
                     "score_source": "",
                     "native_or_fallback": mode,
                     "tool_version": tool_version,
+                    "command": "",
                     "error_message": message,
                 }
             ],
@@ -721,6 +800,7 @@ def rank_record(record: QueryRecord, model: str, native_baselines: bool, allow_f
             "score_source": score_source,
             "native_or_fallback": mode,
             "tool_version": tool_version,
+            "command": "native_sirius_formula; see results/native_sirius_casmi/casmi2022_sirius_run_status.csv" if (record.dataset == "CASMI2022" and model == "SIRIUS") else "",
             "error_message": "",
         }
         old = best_by_key.get(key)
@@ -734,15 +814,21 @@ def rank_record(record: QueryRecord, model: str, native_baselines: bool, allow_f
 
 def tool_version_for_model(model: str, env: dict[str, Any], dataset: str) -> str:
     if dataset == "PFAS" and model == "CFM-ID":
-        return "CFM-ID 4.x precomputed in PFAS score matrix"
+        return "CFM-ID 4.x precomputed"
     if dataset == "PFAS" and model == "SIRIUS":
-        return "SIRIUS 4.9.15 precomputed in PFAS score matrix"
+        return "SIRIUS 4.9.15 precomputed formula"
     if model == "MS2DeepScore":
-        return safe_str(env["packages"].get("ms2deepscore", {}).get("version"))
+        version = safe_str(env["packages"].get("ms2deepscore", {}).get("version"))
+        return version or "unavailable"
     if model == "CFM-ID":
-        return safe_str(env["versions"].get("cfmid") or env["versions"].get("cfm_predict"))
+        executable = safe_str(env["executables"].get("cfmid") or env["executables"].get("cfm_predict") or env["executables"].get("cfm_id"))
+        return "executable_present_but_smoke_failed" if executable else "unavailable"
+    if model == "SIRIUS" and dataset == "CASMI2022" and NATIVE_SIRIUS_CASMI_AUDIT.exists():
+        return "SIRIUS 4.9.15 native formula"
     if model == "SIRIUS":
-        return safe_str(env["versions"].get("sirius"))
+        version = env["versions"].get("sirius") or {}
+        stdout = safe_str(version.get("stdout") if isinstance(version, dict) else version)
+        return stdout.splitlines()[0] if stdout else "SIRIUS version unavailable"
     return "FragAnnotor frozen no-SIRIUS weights"
 
 
@@ -875,7 +961,7 @@ def write_summary_files(summary: pd.DataFrame, query_df: pd.DataFrame, predictio
             "interpretation": {
                 "native_claim_guardrail": "Rows with native_or_fallback=native_unavailable are not native benchmark results.",
                 "pfas_score_note": "PFAS CFM-ID and SIRIUS columns are real precomputed external expert scores from the companion PFAS workflow.",
-                "casmi_note": "CASMI native baseline outputs were unavailable in this environment when fallback was disabled.",
+                "casmi_note": "CASMI native SIRIUS formula-only baseline scores were generated; CASMI FragAnnotor, CFM-ID, and MS2DeepScore native structure-ranking outputs remain unavailable with fallback disabled.",
             },
         },
     )
@@ -1225,14 +1311,25 @@ def write_case_studies(pfas_wide: pd.DataFrame, predictions: pd.DataFrame, recor
         )
     case_df = pd.DataFrame(rows)
     case_df.to_csv(outdir / "pfas_selected_cases.csv", index=False)
-    write_json(
-        outdir / "peak_annotation_status.json",
-        {
+    annotation_path = outdir / "pfas_case_peak_annotations.csv"
+    if annotation_path.exists():
+        try:
+            annotation_rows = int(len(pd.read_csv(annotation_path)))
+        except Exception:
+            annotation_rows = None
+        annotation_status = {
+            "peak_level_annotations_available": True,
+            "annotation_file": str(annotation_path),
+            "annotation_rows": annotation_rows,
+            "source": "Existing PFAS SIRIUS/project-derived peak annotations preserved from scripts/export_pfas_peak_annotations.py.",
+        }
+    else:
+        annotation_status = {
             "peak_level_annotations_available": False,
             "reason": "FragAnnotor benchmark inputs contain candidate-level scores and sparse vector diagnostics, but no curated fragment formula/neutral-loss assignments for selected PFAS cases.",
-            "how_to_generate": "Run the fragment-formula assignment workflow on raw spectra and join annotations by query row_id before exporting pfas_case_peak_annotations.csv.",
-        },
-    )
+            "how_to_generate": "Run scripts/export_pfas_peak_annotations.py against the PFAS SIRIUS project, then rerun the benchmark export.",
+        }
+    write_json(outdir / "peak_annotation_status.json", annotation_status)
     draw_case_structures(case_df, predictions, results_dir / "figures" / "case_structures")
     return case_df
 
@@ -1496,6 +1593,20 @@ def plot_stratified_figures(results_dir: Path) -> None:
         plt.close()
 
 
+
+
+def markdown_table(df: pd.DataFrame) -> str:
+    if df.empty:
+        return "(no rows)"
+    display = df.copy()
+    for col in display.columns:
+        display[col] = display[col].map(lambda x: "" if pd.isna(x) else str(x))
+    cols = list(display.columns)
+    lines = ["| " + " | ".join(cols) + " |", "| " + " | ".join(["---"] * len(cols)) + " |"]
+    for _, row in display.iterrows():
+        lines.append("| " + " | ".join(str(row[col]).replace("|", "/") for col in cols) + " |")
+    return "\n".join(lines)
+
 def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[str, Any], results_dir: Path, command: str) -> None:
     docs_dir = ROOT / "docs"
     docs_dir.mkdir(parents=True, exist_ok=True)
@@ -1509,7 +1620,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
         "",
         "## Native vs Fallback Tool Status",
         "",
-        native_rows.to_markdown(index=False),
+        markdown_table(native_rows),
         "",
         "PFAS CFM-ID and SIRIUS entries use real precomputed external expert scores from the companion PFAS workflow. SIRIUS is used as a scalar formula plausibility feature, not as a synthetic spectrum generator.",
         "",
@@ -1518,15 +1629,60 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
     ]
     for name, status in dataset_status.items():
         lines.append(f"- `{name}`: status `{status.get('status')}`, queries `{status.get('n_queries', 0)}`, candidate rows `{status.get('n_candidate_rows', 'NA')}`")
-    lines.extend(["", "## Main Results", "", summary.to_markdown(index=False), ""])
+    lines.extend(["", "## Main Results", "", markdown_table(summary), ""])
+    lines.extend(["## Native CASMI2022 Results", "", markdown_table(summary[summary["dataset"].eq("CASMI2022")]), ""])
+    lines.extend([
+        "CASMI2022 includes one completed native baseline in this run: SIRIUS 4.9.15 formula-only ranking. CASMI FragAnnotor component scores, CFM-ID, and MS2DeepScore remain unavailable under `--allow-fallback false`.",
+        "",
+        "## Preliminary Fallback CASMI Results",
+        "",
+        "Earlier deterministic fallback CASMI exports are preserved under `results/preliminary/` and are not used as native benchmark claims.",
+        "",
+        "## PFAS Locked-Test Results",
+        "",
+        markdown_table(summary[summary["dataset"].eq("PFAS")]),
+        "",
+    ])
+    ablation_path = results_dir / "ablation" / "fragannotor_ablation_summary.csv"
+    if ablation_path.exists():
+        ablation_df = pd.read_csv(ablation_path)
+        keep = [c for c in ["variant", "n_queries", "top1_accuracy", "top5_accuracy", "top10_accuracy", "mean_reciprocal_rank"] if c in ablation_df.columns]
+        lines.extend(["## PFAS Ablation Results", "", markdown_table(ablation_df[keep]), ""])
+    case_path = results_dir / "case_studies" / "pfas_selected_cases.csv"
+    status_path = results_dir / "case_studies" / "peak_annotation_status.json"
+    if case_path.exists():
+        case_df = pd.read_csv(case_path)
+        lines.extend(["## PFAS Case-Study Results", "", f"Selected PFAS case studies: {len(case_df)} rows in `results/case_studies/pfas_selected_cases.csv`."])
+        if status_path.exists():
+            try:
+                status = json.loads(status_path.read_text(encoding="utf-8"))
+                lines.append(f"Peak-level annotations available: {status.get('peak_level_annotations_available')}; source: {status.get('source', status.get('reason', ''))}")
+            except Exception:
+                lines.append("Peak-level annotation status is recorded in `results/case_studies/peak_annotation_status.json`.")
+        lines.append("")
     lines.extend(
         [
             "## Interpretation",
             "",
             "- PFAS locked-test ranking supports the selected primary FragAnnotor policy within the frozen PFAS benchmark.",
-            "- CASMI2022 native CFM-ID/SIRIUS/MS2DeepScore results are unavailable in this environment; preserved fallback CASMI results are preliminary only.",
+            "- CASMI2022 native SIRIUS formula-only ranking completed; CASMI FragAnnotor, CFM-ID, and MS2DeepScore native structure-ranking outputs remain blocked and are not replaced with fallback scores.",
             "- No result with `native_or_fallback=native_unavailable` should be described as a completed native baseline.",
             "- MS2DeepScore native comparison is blocked until the package and an appropriate pretrained model/embedding workflow are available.",
+            "- SIRIUS is used here as molecular formula plausibility evidence, not as a synthetic spectrum generator or CSI:FingerID structure predictor.",
+            "",
+            "## Manuscript Readiness",
+            "",
+            "- PFAS locked-test expert-fusion benchmark: ready as an internal frozen benchmark, with conservative claims.",
+            "- PFAS ablation and case-study package: ready for manuscript drafting, subject to the external-validation limitation.",
+            "- CASMI benchmark: partially ready; only SIRIUS formula-only native baseline completed, while native CFM-ID, MS2DeepScore, and CASMI FragAnnotor component scores are blocked.",
+            "- SOTA comparison: partially ready; do not claim full FragAnnotor superiority on CASMI until missing native baselines and FragAnnotor CASMI scores are available.",
+            "",
+            "## Remaining Blockers",
+            "",
+            "- Native CFM-ID CASMI scoring is blocked by `Invalid Feature Configuration` in available pretrained model/config smoke tests.",
+            "- Native MS2DeepScore is blocked because the package and a compatible pretrained model/embedding workflow are unavailable.",
+            "- CASMI FragAnnotor is blocked until real CASMI component scores are generated; fallback component scores are not reported as native results.",
+            "- PFAS results remain an internal frozen locked-test benchmark and are not independent external validation.",
             "",
             "## Exact Reproduction Command",
             "",
@@ -1536,7 +1692,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "",
             "## Known Limitations",
             "",
-            "- CASMI native baseline execution was not completed because required native tools were not installed.",
+            "- CASMI native benchmark execution is incomplete: SIRIUS formula-only scores are available, but CFM-ID smoke tests fail with model/config incompatibility and MS2DeepScore has no configured package/model.",
             "- PFAS results depend on the frozen candidate matrix generated in the transformation-product workflow.",
             "- The benchmark does not establish deployment-ready thresholds or universal LC-MS/MS prediction performance.",
         ]
@@ -1548,6 +1704,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
         "",
         "- `environment_audit.json`: OS, Python, Git, package, executable, Java, and CUDA audit.",
         "- `native_baseline_audit.csv/json`: native tool availability and blockers.",
+        "- `native_tool_ready_audit.csv/json`: server-side native tool readiness audit from `scripts/setup_native_baselines.sh`.",
         "- `benchmark_results.csv/json`: unified benchmark metrics.",
         "- `predictions/`: per-dataset, per-model candidate-level prediction exports.",
         "- `casmi2022_native_benchmark_summary.csv/json`: CASMI native benchmark status and metrics where available.",
@@ -1652,7 +1809,8 @@ def run_pipeline(args: argparse.Namespace) -> dict[str, Any]:
     elif not pfas_wide.empty:
         write_case_studies(pfas_wide, predictions, pfas_records, results_dir)
 
-    write_stratified_outputs(query_df[query_df["dataset"].eq("PFAS")], pfas_records, results_dir)
+    if pfas_records and not query_df[query_df["dataset"].eq("PFAS")].empty:
+        write_stratified_outputs(query_df[query_df["dataset"].eq("PFAS")], pfas_records, results_dir)
     write_decoy_and_external_summaries(results_dir)
     write_all_figures(summary, query_df, ablation, predictions, records_by_dataset, results_dir)
     command = (

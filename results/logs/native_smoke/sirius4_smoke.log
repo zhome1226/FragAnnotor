@@ -1,0 +1,23 @@
+Jun 29, 2026 11:09:31 AM org.apache.commons.beanutils.FluentPropertyBeanIntrospector introspect
+INFO: Error when creating PropertyDescriptor for public final void org.apache.commons.configuration2.AbstractConfiguration.setProperty(java.lang.String,java.lang.Object)! Ignoring this property.
+INFO    11:09:31 - Sirius Workspace Successfull initialized at: /home/zhome/.sirius-4.9
+INFO    11:09:31 - You run SIRIUS 4.9.15
+INFO    11:09:31 - Sirius was compiled with the following ILP solvers: GLPK-v1.7.0 (included), Gurobi-v9.1.1, CPLEX-v12.7.1, COIN-OR-v1.17.3
+INFO    11:09:31 - Treebuilder priorities loaded from 'sirius.properties' are: [GUROBI, CPLEX, CLP, GLPK]
+INFO    11:09:31 - CPU check done. 96 cores that handle 192 threads were found.
+INFO    11:09:31 - Bug reporter initialized.
+INFO    11:09:31 - Web API initialized.
+INFO    11:09:31 - Running with following arguments: [-i, results/logs/native_smoke/smoke.ms, -o, results/logs/native_smoke/sirius4_project, --recompute, --cores, 3, formulas, -c, 5, -E, CHNOPSClF]
+INFO    11:09:31 - Job manager successful initialized with 96 CPU thread(s) and 3 IO thread(s).
+FINE    11:09:31 - <0>[InputExpanderJJob] Running post processing
+FINE    11:09:31 - <0>[InputExpanderJJob] Running cleanup
+INFO    11:09:31 - <1>[InputExpanderJJob] Expanding Input Files: 'results/logs/native_smoke/smoke.ms'...
+INFO    11:09:31 - <1>[InputExpanderJJob] ...Input Files successfully expanded!
+FINE    11:09:31 - <1>[InputExpanderJJob] Running post processing
+FINE    11:09:31 - <1>[InputExpanderJJob] Running cleanup
+INFO    11:09:31 - Shutting down JobManager
+INFO    11:09:31 - Awaiting termination of JobManager
+INFO    11:09:31 - JobManager is shut down
+Unmatched arguments from index 7: 'formulas', '-c', '5', '-E', 'CHNOPSClF'
+Did you mean: formula or passatutto or ftree-export?
+INFO    11:09:31 - CLI shut down hook: SIRIUS is cleaning up threads and shuts down...

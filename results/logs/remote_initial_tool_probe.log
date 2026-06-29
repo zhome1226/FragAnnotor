@@ -1,0 +1,38 @@
+timestamp=2026-06-29T10:53:18+08:00
+hostname=ad2012
+pwd=/home/zhome/ec_structure/github_export/FragAnnotor
+branch=main
+commit=548bd7aa7cb7455b812426045bd0a88c6169957f
+---tools---
+conda=mamba=micromamba=pip3=/usr/bin/pip3
+python3=/usr/bin/python3
+java=/usr/bin/java
+sirius=cfm-predict=cfmid=cfm-id=git=/usr/bin/git
+wget=/usr/bin/wget
+curl=/usr/bin/curl
+unzip=/usr/bin/unzip
+tar=/usr/bin/tar
+gcc=/usr/bin/gcc
+g++=/usr/bin/g++
+cmake=make=/usr/bin/make
+---miniconda---
+-rwxrwxr-x 1 zhome zhome 523 11月  3  2024 /home/zhome/miniconda3/bin/conda
+conda 24.9.2
+---sirius files---
+drwxrwxr-x 2 zhome zhome      4096  1月  4 09:54 /home/zhome/.sirius
+drwxrwxr-x 2 zhome zhome      4096  6月 24 22:10 /home/zhome/.sirius-4.9
+drwxrwxr-x 4 zhome zhome      4096  6月 24 21:43 /home/zhome/.sirius-6.3
+-rw-rw-r-- 1 zhome zhome 505385574  1月  4 09:34 /home/zhome/sirius-6.3.3-linux-x64.zip
+drwxrwxr-x 3 zhome zhome      4096  1月  5 11:03 /home/zhome/sirius_projects
+/home/zhome/opt/sirius/bin/sirius
+/home/zhome/opt/sirius-4.9.15-headless/bin/sirius
+---python packages system---
+rdkit True
+matchms False
+ms2deepscore False
+numpy True
+pandas True
+scipy True
+sklearn True
+matplotlib True
+yaml True

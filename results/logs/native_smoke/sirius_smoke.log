@@ -1,0 +1,103 @@
+SIRIUS smoke
+SIRIUS is running in headless mode. GUI feature are not available!
+Jun 29, 2026 11:08:53 AM org.apache.commons.beanutils.FluentPropertyBeanIntrospector introspect
+INFO: Error when creating PropertyDescriptor for public final void org.apache.commons.configuration2.AbstractConfiguration.setProperty(java.lang.String,java.lang.Object)! Ignoring this property.
+Jun 29, 2026 11:08:53 AM de.unijena.bioinf.ms.frontend.core.ApplicationCore <clinit>
+INFO: Sirius Workspace Successfully initialized at: /home/zhome/.sirius-6.3
+Jun 29, 2026 11:08:53 AM de.unijena.bioinf.ms.frontend.core.ApplicationCore <clinit>
+INFO: You run SIRIUS 6.3.3 on linux_amd64
+Jun 29, 2026 11:08:53 AM de.unijena.bioinf.ms.frontend.core.ApplicationCore <clinit>
+INFO: You run SIRIUS in 'CLI' mode.
+Jun 29, 2026 11:08:53 AM de.unijena.bioinf.ms.frontend.core.ApplicationCore <clinit>
+INFO: Sirius was compiled with the following ILP solvers: GLPK-v1.7.0 (included), Gurobi-v9.1.1, CPLEX-v12.7.1, COIN-OR-v2.10.12.1
+Jun 29, 2026 11:08:53 AM de.unijena.bioinf.ms.frontend.core.ApplicationCore <clinit>
+INFO: Treebuilder priorities loaded from 'sirius.properties' are: [CLP, GUROBI, CPLEX]
+Jun 29, 2026 11:08:53 AM de.unijena.bioinf.ms.frontend.core.ApplicationCore <clinit>
+INFO: CPU check done. 96 cores that handle 192 threads were found.
+Jun 29, 2026 11:08:53 AM de.unijena.bioinf.ChemistryBase.jobs.SiriusJobs getGlobalJobManager
+INFO: Job manager successful initialized with 144 CPU thread(s) and 4 IO thread(s).
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.rest.ProxyManager decorateWithPoolSettings
+INFO: Starting http Client with MaxPerRoute=3 / maxTotal=5 (CPU-Threads=144).
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.ms.frontend.core.ApplicationCore WEB_API
+INFO: Web API initialized in 00:00:00.329. Started loading active subscription in background...
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.auth.AuthService getToken
+WARNING: No login Found: Not Logged in, No valid refresh token Available
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.ms.frontend.core.ApplicationCore lambda$WEB_API$3
+INFO: Custom databases loaded.
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.jjobs.JJob lambda$logDebug$13
+FINE: <0>[JJob-0] Running post processing
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.jjobs.JJob lambda$logDebug$13
+FINE: <1>[JJob-1] Running post processing
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.jjobs.JJob lambda$logDebug$13
+FINE: <0>[JJob-0] Running cleanup
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.jjobs.JJob lambda$logDebug$13
+FINE: <1>[JJob-1] Running cleanup
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.ms.frontend.Run parseArgs
+INFO: Running with following arguments: [-i, results/logs/native_smoke/smoke.ms, -o, results/logs/native_smoke/sirius_project, --recompute, --cores, 2, formulas, -c, 5, -E, CHNOPSClF]
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.jjobs.JJob lambda$logDebug$13
+FINE: <2>[InputExpanderJJob-2] Running post processing
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.jjobs.JJob lambda$logDebug$13
+FINE: <2>[InputExpanderJJob-2] Running cleanup
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.jjobs.JJob lambda$logInfo$9
+INFO: <3>[InputExpanderJJob-3] Expanding Input Files: 'results/logs/native_smoke/smoke.ms'...
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.jjobs.JJob lambda$logInfo$9
+INFO: <3>[InputExpanderJJob-3] ...Input Files successfully expanded!
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.jjobs.JJob lambda$logDebug$13
+FINE: <3>[InputExpanderJJob-3] Running post processing
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.jjobs.JJob lambda$logDebug$13
+FINE: <3>[InputExpanderJJob-3] Running cleanup
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.ms.frontend.subtools.CLIRootOptions setNumOfCores
+WARNING: Number of Cores must be at least 3. Specified: 2. Using 3 instead.
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.jjobs.JobManager shutdown
+INFO: Shutting down JobManager
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.jjobs.JobManager awaitTermination
+INFO: Awaiting termination of JobManager
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.jjobs.JobManager shutdown
+INFO: JobManager is shut down
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.ms.frontend.subtools.CLIRootOptions setNumOfCores
+INFO: Adjusted JobManager CPU threads to '3' by command line.
+
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.ms.frontend.Run parseResultAndCheckPermission
+SEVERE: Login ERROR: Please Login to use the SIRIUS command line tool!
+
+Login ERROR: Please Login to use the SIRIUS command line tool!
+Usage: sirius login [-hV] [--clear] [--limits] [--request-token-only] [--show]
+                    [--select-license=<sid>] [[-u=<username> -p] |
+                    [--token=<token>] | [--user-env=<username>
+                    --password-env=<password>]]
+<STANDALONE> Allows a user to login for SIRIUS Webservices (e.g. CSI:FingerID
+or CANOPUS) and securely store a personal access token.
+
+
+      --clear, --logout      Logout. Deletes stored refresh and access token
+                               (re-login required to use webservices again).
+  -h, --help                 Show this help message and exit.
+      --limits, --license-info
+                             Show license information and compound limits.
+  -p, --pwd, --password      Console password input.
+      --password-env=<password>
+                             Environment variable with login password.
+      --request-token-only   Requests and prints a new SECRET refresh token but
+                               does not store the token as login.
+                             This can be used to request a token to be used in
+                               third party applications that wish to call
+                               SIRIUS Web Services using your account.
+                             Do never store your username and password in third
+                               party apps.
+                             Do not store the output of this command in any
+                               log. We recommend redirecting the output into a
+                               file.
+      --select-license, --select-subscription=<sid>
+                             Specify active subscription (sid) if multiple
+                               licenses are available at your account.
+                               Available subscriptions can be listed with
+                               '--show'
+      --show                 Show profile information about the profile you are
+                               logged in with.
+      --token=<token>        Refresh token to use as login.
+  -u, --user, --email=<username>
+                             Login username/email
+      --user-env=<username>  Environment variable with login username.
+  -V, --version              Print version information and exit.
+Jun 29, 2026 11:08:54 AM de.unijena.bioinf.ms.frontend.SiriusCLIApplication lambda$configureShutDownHook$1
+INFO: CLI shut down hook: SIRIUS is cleaning up threads and shuts down...

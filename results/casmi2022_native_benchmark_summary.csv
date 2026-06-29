@@ -1,5 +1,5 @@
 dataset,model,status,native_or_fallback,n_queries,top1_accuracy,top5_accuracy,top10_accuracy,mean_reciprocal_rank,mean_top1_tanimoto,molecular_formula_accuracy,median_true_rank,median_candidate_count,notes
 CASMI2022,FragAnnotor,model_unavailable_native_required,native_unavailable,229,,,,,,,,,FragAnnotor native CASMI component scores are unavailable; fallback disabled.
 CASMI2022,CFM-ID,model_unavailable_native_required,native_unavailable,229,,,,,,,,,CFM-ID native CASMI execution/export parser is unavailable in this repository run; fallback disabled.
-CASMI2022,SIRIUS,model_unavailable_native_required,native_unavailable,229,,,,,,,,,SIRIUS native CASMI execution/export parser is unavailable in this repository run; fallback disabled.
+CASMI2022,SIRIUS,completed,native_sirius,229,0.6462882096069869,0.6550218340611353,0.6550218340611353,0.6499330162600465,0.7496250635336656,0.7947598253275109,1.0,2001.0,
 CASMI2022,MS2DeepScore,model_unavailable_native_required,native_unavailable,229,,,,,,,,,MS2DeepScore native CASMI model/embedding workflow is unavailable in this repository run; fallback disabled.

@@ -1,0 +1,10 @@
+{
+  "total_casmi_spectra": 229,
+  "parsed_formula_rows": 2030,
+  "spectra_with_formula_candidates": 207,
+  "failed_spectra": 22,
+  "output_csv": "/home/zhome/ec_structure/github_export/FragAnnotor/results/native_sirius_casmi/casmi2022_sirius_formula_candidates.csv",
+  "sirius_bin": "/home/zhome/opt/sirius-4.9.15-headless/bin/sirius",
+  "mode": "per-spectrum native SIRIUS 4.9.15 formula execution; no fallback scores",
+  "sirius_version_stdout": "SIRIUS 4.9.15\nSIRIUS lib: 4.6.1\nCSI:FingerID lib: 1.6.0\n"
+}

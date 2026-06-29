@@ -2,6 +2,7 @@
 
 - `environment_audit.json`: OS, Python, Git, package, executable, Java, and CUDA audit.
 - `native_baseline_audit.csv/json`: native tool availability and blockers.
+- `native_tool_ready_audit.csv/json`: server-side native tool readiness audit from `scripts/setup_native_baselines.sh`.
 - `benchmark_results.csv/json`: unified benchmark metrics.
 - `predictions/`: per-dataset, per-model candidate-level prediction exports.
 - `casmi2022_native_benchmark_summary.csv/json`: CASMI native benchmark status and metrics where available.

@@ -1,0 +1,140 @@
+tool,available,executable_path,version,install_method,verification_command,verification_stdout,verification_stderr,blocker,timestamp
+Java,True,/usr/bin/java,"openjdk version ""11.0.30"" 2026-01-20",system_path,/usr/bin/java -version,,"openjdk version ""11.0.30"" 2026-01-20
+OpenJDK Runtime Environment (build 11.0.30+7-post-Ubuntu-1ubuntu122.04)
+OpenJDK 64-Bit Server VM (build 11.0.30+7-post-Ubuntu-1ubuntu122.04, mixed mode, sharing)",,2026-06-29T04:56:18.528402+00:00
+SIRIUS,True,/home/zhome/opt/sirius-4.9.15-headless/bin/sirius,SIRIUS 4.9.15,existing_user_space_headless,/home/zhome/opt/sirius-4.9.15-headless/bin/sirius --version,"SIRIUS 4.9.15
+SIRIUS lib: 4.6.1
+CSI:FingerID lib: 1.6.0","Jun 29, 2026 12:56:18 PM org.apache.commons.beanutils.FluentPropertyBeanIntrospector introspect
+INFO: Error when creating PropertyDescriptor for public final void org.apache.commons.configuration2.AbstractConfiguration.setProperty(java.lang.String,java.lang.Object)! Ignoring this property.
+INFO    12:56:19 - Sirius Workspace Successfull initialized at: /home/zhome/.sirius-4.9
+INFO    12:56:19 - You run SIRIUS 4.9.15
+INFO    12:56:19 - Sirius was compiled with the following ILP solvers: GLPK-v1.7.0 (included), Gurobi-v9.1.1, CPLEX-v12.7.1, COIN-OR-v1.17.3
+INFO    12:56:19 - Treebuilder priorities loaded from 'sirius.properties' are: [GUROBI, CPLEX, CLP, GLPK]
+INFO    12:56:19 - CPU check done. 96 cores that handle 192 threads were found.
+INFO    12:56:19 - Bug reporter initialized.
+INFO    12:56:19 - Web API initialized.
+INFO    12:56:19 - Running with following arguments: [--version]
+INFO    12:56:19 - Job manager successful initialized with 96 CPU thread(s) and 3 IO thread(s).
+INFO    12:56:19 - CLI shut down hook: SIRIUS is cleaning up threads and shuts down...",,2026-06-29T04:56:18.528402+00:00
+SIRIUS --help,True,/home/zhome/opt/sirius-4.9.15-headless/bin/sirius,Usage: sirius [[-o=<outputProjectLocation>] [--update-fingerprint-version],existing_user_space_headless,/home/zhome/opt/sirius-4.9.15-headless/bin/sirius --help,"Usage: sirius [[-o=<outputProjectLocation>] [--update-fingerprint-version]
+              [--naming-convention=<projectSpaceFilenameFormatter>]]
+              [[[--ignore-formula] [--allow-ms1-only] -i=<inputPath>[,
+              <inputPath>...] [-i=<inputPath>[,<inputPath>...]]...]
+              [-z=<parentMz> [--adduct=<ionType>] [-f=<formula>] [-1=<ms1File>[,
+              <ms1File>...]] -2=<ms2File>[,<ms2File>...]]...] [-hV] [--noCite]
+              [--noSummaries] [--recompute]
+              [--compound-buffer=<initialInstanceBuffer>]
+              [--cores=<numOfCores>] [--log=<logLevel>] [--maxmz=<maxMz>]
+              [COMMAND]
+  -h, --help                Show this help message and exit.
+  -V, --version             Print version information and exit.
+      --log, --loglevel=<logLevel>
+                            Set logging level of the Jobs SIRIUS will execute.
+                              Valid values: SEVERE, WARNING, INFO, FINER, ALL
+                              Default: WARNING
+      --cores, --processors=<numOfCores>
+                            Number of cpu cores to use. If not specified Sirius
+                              uses all available cores.
+      --compound-buffer, --initial-compound-buffer=<initialInstanceBuffer>
+                            Number of compounds that will be loaded into the
+                              Memory. A larger buffer ensures that there are
+                              enough compounds available to use all cores
+                              efficiently during computation. A smaller buffer
+                              saves Memory. To load all compounds immediately
+                              set it to -1. Default (numeric value 0): 3 x
+                              --cores. Note that for <DATASET_TOOLS> the
+                              compound buffer may have no effect because this
+                              tools may have to load compounds simultaneously
+                              into the memory.
+                              Default: 0
+      --recompute           Recompute results of ALL tools where results are
+                              already present. Per default already present
+                              results will be preserved and the instance will
+                              be skipped for the corresponding Task/Tool
+      --maxmz=<maxMz>       Only considers compounds with a precursor m/z lower
+                              or equal [--maxmz]. All other compounds in the
+                              input will be skipped.
+                              Default: Infinity
+      --noSummaries, --no-summaries
+                            Do not write summary files to the project-space
+      --noCite, --noCitations, --no-citations
+                            Do not write summary files to the project-space
+Specify OUTPUT Project-Space:
+  -o, --output, --project=<outputProjectLocation>
+                            Specify the project-space to write into. If no
+                              [--input] is specified it is also used as input.
+                              For compression use the File ending .zip or .
+                              sirius.
+      --naming-convention=<projectSpaceFilenameFormatter>
+                            Specify a naming scheme for the  compound
+                              directories ins the project-space. Default %
+                              index_%filename_%compoundname
+      --update-fingerprint-version
+                            Updates Fingerprint versions of the input project
+                              to the one used by this SIRIUS version.
+                            WARNING: All Fingerprint related results (CSI:
+                              FingerID, CANOPUS) will be lost!
+Specify multi-compound inputs (.ms, .mgf, .mzML/.mzXml, .sirius):
+  -i, --input=<inputPath>[,<inputPath>...]
+                            Specify the input in multi-compound input formats:
+                              Preprocessed mass s","Jun 29, 2026 12:56:21 PM org.apache.commons.beanutils.FluentPropertyBeanIntrospector introspect
+INFO: Error when creating PropertyDescriptor for public final void org.apache.commons.configuration2.AbstractConfiguration.setProperty(java.lang.String,java.lang.Object)! Ignoring this property.
+INFO    12:56:22 - Sirius Workspace Successfull initialized at: /home/zhome/.sirius-4.9
+INFO    12:56:22 - You run SIRIUS 4.9.15
+INFO    12:56:22 - Sirius was compiled with the following ILP solvers: GLPK-v1.7.0 (included), Gurobi-v9.1.1, CPLEX-v12.7.1, COIN-OR-v1.17.3
+INFO    12:56:22 - Treebuilder priorities loaded from 'sirius.properties' are: [GUROBI, CPLEX, CLP, GLPK]
+INFO    12:56:22 - CPU check done. 96 cores that handle 192 threads were found.
+INFO    12:56:22 - Bug reporter initialized.
+INFO    12:56:22 - Web API initialized.
+INFO    12:56:22 - Running with following arguments: [--help]
+INFO    12:56:22 - Job manager successful initialized with 96 CPU thread(s) and 3 IO thread(s).
+INFO    12:56:22 - CLI shut down hook: SIRIUS is cleaning up threads and shuts down...",,2026-06-29T04:56:18.528402+00:00
+CFM-ID,False,/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id,Usage: cfm-id.exe <spectrum_file> <id> <candidate_file> <num_highest> <ppm_mass_tol> <abs_mass_tol> <prob_thresh_for_prune> <param_filename> <config_filename> <score_type> <apply_postprocessing> <output_filename> <output_msp_or_mgf>,existing_external_environment,/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id --version,"Usage: cfm-id.exe <spectrum_file> <id> <candidate_file> <num_highest> <ppm_mass_tol> <abs_mass_tol> <prob_thresh_for_prune> <param_filename> <config_filename> <score_type> <apply_postprocessing> <output_filename> <output_msp_or_mgf>
+
+
+
+spectrum_file:
+The filename where the input spectra can be found. This can be a .msp file in which the desired spectrum is listed under a corresponding id (next arg). Or it could be a single file with a list of peaks 'mass intensity' delimited by lines, with either 'low','med' and 'high' lines beginning spectra of different energy levels, or 'energy0', 'energy1', etc. e.g.
+energy0
+65.02 40.0
+86.11 60.0
+energy1
+65.02 100.0 ... etc
+
+id:
+An identifier for the target molecule (Used to retrieve input spectrum from msp (if used). Otherwise not used but printed to output, in case of multiple concatenated results)
+
+candidate_file:
+The filename where the input list of candidate structures can be found - line separated 'id smiles_or_inchi' pairs.
+
+num_highest (opt):
+The number of (ranked) candidates to return or -1 for all (if not given, returns all in ranked order)
+
+ppm_mass_tol (opt):
+The mass tolerance in ppm to use when matching peaks within the dot product comparison - will use higher resulting tolerance of ppm and abs (if not given defaults to 10ppm)
+
+abs_mass_tol (opt):
+The mass tolerance in abs Da to use when matching peaks within the dot product comparison - will use higher resulting tolerance of ppm and abs ( if not given defaults to 0.01Da)
+
+prob_thresh_for_prune (opt):
+The probabiltiy threshold at which to prune unlikely fragmnetations (default 0.001)
+
+param_filename (opt):
+The filename where the parameters of a trained cfm model can be found (if not given, assumes param_output.log in current directory)
+
+config_filename (opt):
+The filename where the configuration parameters of the cfm model can be found (if not given, assumes param_config.txt in current directory)
+
+score_type (opt):
+The type of scoring function to use when comparing spectra. Options: Jaccard (default for ESI-MS/MS), DotProduct (default for EI-MS)
+
+apply_postprocessing (opt):
+Whether or not to post-process predicted spectra to take the top 80% of energy (at least 5 peaks), or the highest 30 peaks (whichever comes first) (0 = OFF (default for EI-MS), 1 = ON (default for ESI-MS/MS)).
+
+output_filename (opt):
+The filename of the output file to write to (if not given, prints to stdout)
+
+output_msp_or_mgf (opt):
+The filename for an output msp or mgf file to record predicted candidate spectra (if not given, doesn't save predicted spectra)",,"CFM-ID executable is present, but available pretrained model/config smoke tests abort with Invalid Feature Configuration; no valid native CASMI CFM-ID benchmark scores are reported. Smoke log: /home/zhome/ec_structure/github_export/FragAnnotor/results/logs/native_smoke/cfmid/cfmid_model_smokes.log.",2026-06-29T04:56:18.528402+00:00
+MS2DeepScore,False,,,not_installed,/usr/bin/python3 -c import ms2deepscore,,ms2deepscore package not installed,ms2deepscore Python package and pretrained model are not available; no native MS2DeepScore inference was run.,2026-06-29T04:56:18.528402+00:00
+matchms,False,,,not_installed,/usr/bin/python3 -c import matchms,,matchms package not installed,matchms package not installed; MS2DeepScore preprocessing remains unavailable.,2026-06-29T04:56:18.528402+00:00

@@ -1,0 +1,111 @@
+--- model_dir=/data/zhome/ec_structure_external_ms_models/cfm-id-code/cfm-pretrained-models/npsms/npsms ---
+Warning: Unknown paramater configuration identifier allow_intermediate_peak
+Warning: Unknown paramater configuration identifier allow_cyclization
+Warning: Unknown paramater configuration identifier em_no_progress_count
+Warning: Unknown paramater configuration identifier em_max_iterations
+Warning: Unknown paramater configuration identifier #####config
+Warning: Unknown paramater configuration identifier ga_method
+Warning: Unknown paramater configuration identifier ending_step_size
+Warning: Unknown paramater configuration identifier ga_adam_beta_1
+Warning: Unknown paramater configuration identifier ga_adam_beta_2
+Warning: Unknown paramater configuration identifier ###########################
+Warning: Unknown paramater configuration identifier ga_sampling_method
+Warning: Unknown paramater configuration identifier collected_all_used_idx
+Warning: Unknown paramater configuration identifier ########PostProcessing#####
+Warning: Unknown paramater configuration identifier default_predicted_peak_min
+Warning: Unknown paramater configuration identifier default_predicted_peak_max
+Warning: Unknown paramater configuration identifier default_predicted_min_intensity
+Warning: Unknown paramater configuration identifier default_postprocessing_energy
+Warning: Unknown paramater configuration identifier ########NNConfig###########
+Warning: Unknown paramater configuration identifier nn_layer_dropout_probs
+Warning: Unknown paramater configuration identifier nn_layer_dropout_probs
+Warning: Unknown paramater configuration identifier nn_layer_dropout_probs
+Warning: Unknown paramater configuration identifier nn_layer_freeze
+Warning: Unknown paramater configuration identifier nn_layer_freeze
+Warning: Unknown paramater configuration identifier nn_layer_freeze
+Unrecognised feature: NLRootMatrixFPN10
+terminate called after throwing an instance of 'InvalidConfigException'
+  what():  Invalid Feature Configuration File
+timeout: the monitored command dumped core
+rc=134 out=results/logs/native_smoke/cfmid/npsms_.txt
+--- model_dir=/data/zhome/ec_structure_external_ms_models/cfm-id-code/cfm-pretrained-models/npsms/npsms-scratch ---
+Warning: Unknown paramater configuration identifier allow_intermediate_peak
+Warning: Unknown paramater configuration identifier allow_cyclization
+Warning: Unknown paramater configuration identifier em_no_progress_count
+Warning: Unknown paramater configuration identifier em_max_iterations
+Warning: Unknown paramater configuration identifier #####config
+Warning: Unknown paramater configuration identifier ga_method
+Warning: Unknown paramater configuration identifier ending_step_size
+Warning: Unknown paramater configuration identifier ga_adam_beta_1
+Warning: Unknown paramater configuration identifier ga_adam_beta_2
+Warning: Unknown paramater configuration identifier ###########################
+Warning: Unknown paramater configuration identifier ga_sampling_method
+Warning: Unknown paramater configuration identifier collected_all_used_idx
+Warning: Unknown paramater configuration identifier ########PostProcessing#####
+Warning: Unknown paramater configuration identifier default_predicted_peak_min
+Warning: Unknown paramater configuration identifier default_predicted_peak_max
+Warning: Unknown paramater configuration identifier default_predicted_min_intensity
+Warning: Unknown paramater configuration identifier default_postprocessing_energy
+Warning: Unknown paramater configuration identifier ########NNConfig###########
+Warning: Unknown paramater configuration identifier nn_layer_dropout_probs
+Warning: Unknown paramater configuration identifier nn_layer_dropout_probs
+Warning: Unknown paramater configuration identifier nn_layer_dropout_probs
+Unrecognised feature: NLRootMatrixFPN10
+terminate called after throwing an instance of 'InvalidConfigException'
+  what():  Invalid Feature Configuration File
+timeout: the monitored command dumped core
+rc=134 out=results/logs/native_smoke/cfmid/npsms-scratch_.txt
+--- model_dir=/data/zhome/ec_structure_external_ms_models/cfm-id-code/cfm-pretrained-models/cfmid4/[M-H]- ---
+Warning: Unknown paramater configuration identifier allow_intermediate_peak
+Warning: Unknown paramater configuration identifier allow_cyclization
+Warning: Unknown paramater configuration identifier em_no_progress_count
+Warning: Unknown paramater configuration identifier em_max_iterations
+Warning: Unknown paramater configuration identifier #####config
+Warning: Unknown paramater configuration identifier ga_method
+Warning: Unknown paramater configuration identifier ending_step_size
+Warning: Unknown paramater configuration identifier ga_adam_beta_1
+Warning: Unknown paramater configuration identifier ga_adam_beta_2
+Warning: Unknown paramater configuration identifier ###########################
+Warning: Unknown paramater configuration identifier ga_sampling_method
+Warning: Unknown paramater configuration identifier collected_all_used_idx
+Warning: Unknown paramater configuration identifier ########PostProcessing#####
+Warning: Unknown paramater configuration identifier default_predicted_peak_min
+Warning: Unknown paramater configuration identifier default_predicted_peak_max
+Warning: Unknown paramater configuration identifier default_predicted_min_intensity
+Warning: Unknown paramater configuration identifier default_postprocessing_energy
+Warning: Unknown paramater configuration identifier ########NNConfig###########
+Warning: Unknown paramater configuration identifier nn_layer_dropout_probs
+Warning: Unknown paramater configuration identifier nn_layer_dropout_probs
+Warning: Unknown paramater configuration identifier nn_layer_dropout_probs
+Unrecognised feature: NLRootMatrixFPN10
+terminate called after throwing an instance of 'InvalidConfigException'
+  what():  Invalid Feature Configuration File
+timeout: the monitored command dumped core
+rc=134 out=results/logs/native_smoke/cfmid/_M-H_-_.txt
+--- model_dir=/data/zhome/ec_structure_external_ms_models/cfm-id-code/cfm-pretrained-models/cfmid4/[M+H]+ ---
+Warning: Unknown paramater configuration identifier allow_intermediate_peak
+Warning: Unknown paramater configuration identifier allow_cyclization
+Warning: Unknown paramater configuration identifier em_no_progress_count
+Warning: Unknown paramater configuration identifier em_max_iterations
+Warning: Unknown paramater configuration identifier #####config
+Warning: Unknown paramater configuration identifier ga_method
+Warning: Unknown paramater configuration identifier ending_step_size
+Warning: Unknown paramater configuration identifier ga_adam_beta_1
+Warning: Unknown paramater configuration identifier ga_adam_beta_2
+Warning: Unknown paramater configuration identifier ###########################
+Warning: Unknown paramater configuration identifier ga_sampling_method
+Warning: Unknown paramater configuration identifier collected_all_used_idx
+Warning: Unknown paramater configuration identifier ########PostProcessing#####
+Warning: Unknown paramater configuration identifier default_predicted_peak_min
+Warning: Unknown paramater configuration identifier default_predicted_peak_max
+Warning: Unknown paramater configuration identifier default_predicted_min_intensity
+Warning: Unknown paramater configuration identifier default_postprocessing_energy
+Warning: Unknown paramater configuration identifier ########NNConfig###########
+Warning: Unknown paramater configuration identifier nn_layer_dropout_probs
+Warning: Unknown paramater configuration identifier nn_layer_dropout_probs
+Warning: Unknown paramater configuration identifier nn_layer_dropout_probs
+Unrecognised feature: NLRootMatrixFPN10
+terminate called after throwing an instance of 'InvalidConfigException'
+  what():  Invalid Feature Configuration File
+timeout: the monitored command dumped core
+rc=134 out=results/logs/native_smoke/cfmid/_M_H___.txt

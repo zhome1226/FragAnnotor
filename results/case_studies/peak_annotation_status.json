@@ -1,5 +1,6 @@
 {
-  "how_to_generate": "Run the fragment-formula assignment workflow on raw spectra and join annotations by query row_id before exporting pfas_case_peak_annotations.csv.",
-  "peak_level_annotations_available": false,
-  "reason": "FragAnnotor benchmark inputs contain candidate-level scores and sparse vector diagnostics, but no curated fragment formula/neutral-loss assignments for selected PFAS cases."
+  "annotation_file": "results/case_studies/pfas_case_peak_annotations.csv",
+  "annotation_rows": 39,
+  "peak_level_annotations_available": true,
+  "source": "Existing PFAS SIRIUS/project-derived peak annotations preserved from scripts/export_pfas_peak_annotations.py."
 }

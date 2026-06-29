@@ -1,4 +1,4 @@
 model,native_available,executable_or_package,version,blocker
-CFM-ID,False,,,CFM-ID executable not found in PATH; no native CASMI CFM-ID inference was run.
-SIRIUS,False,,,SIRIUS executable not found in PATH; no native CASMI SIRIUS inference was run.
-MS2DeepScore,False,,,ms2deepscore Python package/model not available; no native MS2DeepScore inference was run.
+CFM-ID,False,/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id,executable_present_but_smoke_failed,"CFM-ID executable exists, but smoke tests against available pretrained model/configs abort with Invalid Feature Configuration; no valid native CASMI CFM-ID benchmark scores are reported."
+SIRIUS,True,/home/zhome/opt/sirius-4.9.15-headless/bin/sirius,SIRIUS 4.9.15,
+MS2DeepScore,False,,unavailable,ms2deepscore Python package/model not available; no native MS2DeepScore inference was run.

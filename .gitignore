@@ -8,3 +8,9 @@ data/proc/
 data/casmi_2022/
 data/pfas/
 
+# Bulky native SIRIUS project intermediates. Summary tables, command logs, and
+# parsed candidates are committed under results/native_sirius_casmi/.
+results/native_sirius_casmi/sirius_project/
+results/native_sirius_casmi/sirius_project_single/
+results/native_sirius_casmi/single_inputs/
+results/logs/native_smoke/sirius4_project_formula/

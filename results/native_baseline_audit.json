@@ -1,23 +1,23 @@
 [
   {
-    "blocker": "CFM-ID executable not found in PATH; no native CASMI CFM-ID inference was run.",
-    "executable_or_package": "",
+    "blocker": "CFM-ID executable exists, but smoke tests against available pretrained model/configs abort with Invalid Feature Configuration; no valid native CASMI CFM-ID benchmark scores are reported.",
+    "executable_or_package": "/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id",
     "model": "CFM-ID",
     "native_available": false,
-    "version": ""
+    "version": "executable_present_but_smoke_failed"
   },
   {
-    "blocker": "SIRIUS executable not found in PATH; no native CASMI SIRIUS inference was run.",
-    "executable_or_package": "",
+    "blocker": "",
+    "executable_or_package": "/home/zhome/opt/sirius-4.9.15-headless/bin/sirius",
     "model": "SIRIUS",
-    "native_available": false,
-    "version": ""
+    "native_available": true,
+    "version": "SIRIUS 4.9.15"
   },
   {
     "blocker": "ms2deepscore Python package/model not available; no native MS2DeepScore inference was run.",
     "executable_or_package": "",
     "model": "MS2DeepScore",
     "native_available": false,
-    "version": ""
+    "version": "unavailable"
   }
 ]

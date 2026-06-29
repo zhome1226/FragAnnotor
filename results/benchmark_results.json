@@ -8,50 +8,52 @@
       "missing_candidate_smiles": 0,
       "n_candidate_rows": 408249,
       "n_queries": 229,
-      "native_score_status": "no_native_baseline_outputs_found_in_processed_package",
+      "native_score_status": "native_sirius_formula_scores_available",
+      "native_sirius_formula_score_path": "/home/zhome/ec_structure/github_export/FragAnnotor/results/native_sirius_casmi/casmi2022_sirius_formula_candidates.csv",
+      "native_sirius_spectra_with_scores": 229,
       "path": "/home/zhome/ec_structure/github_export/FragAnnotor/data/proc/casmi_2022",
       "source_format": "massformer_processed_casmi_2022",
       "spec_df_sha256": "97db035f9cdf3ea060b42393593426315a76b72e5fa1d889073632d2a0ce607f",
       "status": "available"
     },
     "PFAS": {
-      "feature_matrix_sha256": "047649b13590dd1acb224ced2d8b6e6e7d4be4401b0d12aebb60dd431a35431b",
+      "feature_matrix_sha256": "cf96ae1f12bb17232597ebb79f9bc23cce8ff02a085fcd10235588408943e464",
       "locked_test_used_for_tuning": false,
       "n_candidate_rows": 29632,
       "n_queries": 64,
-      "path": "/home/zhome/ec_structure/github_export/ec-transformation-product-model-v1/outputs/pfas_full_five_component_locked_report_v1/locked_test_candidate_feature_matrix.csv",
-      "score_matrix_path": "/home/zhome/ec_structure/github_export/ec-transformation-product-model-v1/outputs/pfas_complete_score_matrix_v3/pfas_validation_score_matrix.csv",
+      "path": "/home/zhome/ec_tp_work/ec-transformation-product-model-v1/outputs/pfas_no_sirius_fusion_locked_report_v1/locked_test_candidate_feature_matrix.csv",
+      "score_matrix_path": "/home/zhome/ec_tp_work/ec-transformation-product-model-v1/outputs/pfas_complete_score_matrix_v3/pfas_validation_score_matrix.csv",
       "score_matrix_sha256": "01e6d3bb715087a2ac43398e5a2027c81b60c941aebf1e145cc30a8c03cb5307",
       "status": "available",
       "unique_query_inchikeys": 28
     }
   },
   "interpretation": {
-    "casmi_note": "CASMI native baseline outputs were unavailable in this environment when fallback was disabled.",
+    "casmi_note": "CASMI native SIRIUS formula-only baseline scores were generated; CASMI FragAnnotor, CFM-ID, and MS2DeepScore native structure-ranking outputs remain unavailable with fallback disabled.",
     "native_claim_guardrail": "Rows with native_or_fallback=native_unavailable are not native benchmark results.",
     "pfas_score_note": "PFAS CFM-ID and SIRIUS columns are real precomputed external expert scores from the companion PFAS workflow."
   },
   "native_baseline_audit": [
     {
-      "blocker": "CFM-ID executable not found in PATH; no native CASMI CFM-ID inference was run.",
-      "executable_or_package": "",
+      "blocker": "CFM-ID executable exists, but smoke tests against available pretrained model/configs abort with Invalid Feature Configuration; no valid native CASMI CFM-ID benchmark scores are reported.",
+      "executable_or_package": "/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id",
       "model": "CFM-ID",
       "native_available": false,
-      "version": ""
+      "version": "executable_present_but_smoke_failed"
     },
     {
-      "blocker": "SIRIUS executable not found in PATH; no native CASMI SIRIUS inference was run.",
-      "executable_or_package": "",
+      "blocker": "",
+      "executable_or_package": "/home/zhome/opt/sirius-4.9.15-headless/bin/sirius",
       "model": "SIRIUS",
-      "native_available": false,
-      "version": ""
+      "native_available": true,
+      "version": "SIRIUS 4.9.15"
     },
     {
       "blocker": "ms2deepscore Python package/model not available; no native MS2DeepScore inference was run.",
       "executable_or_package": "",
       "model": "MS2DeepScore",
       "native_available": false,
-      "version": ""
+      "version": "unavailable"
     }
   ],
   "summary": [
@@ -89,19 +91,19 @@
     },
     {
       "dataset": "CASMI2022",
-      "mean_reciprocal_rank": null,
-      "mean_top1_tanimoto": null,
-      "median_candidate_count": null,
-      "median_true_rank": null,
+      "mean_reciprocal_rank": 0.6499330162600465,
+      "mean_top1_tanimoto": 0.7496250635336656,
+      "median_candidate_count": 2001.0,
+      "median_true_rank": 1.0,
       "model": "SIRIUS",
-      "molecular_formula_accuracy": null,
+      "molecular_formula_accuracy": 0.7947598253275109,
       "n_queries": 229,
-      "native_or_fallback": "native_unavailable",
-      "notes": "SIRIUS native CASMI execution/export parser is unavailable in this repository run; fallback disabled.",
-      "status": "model_unavailable_native_required",
-      "top10_accuracy": null,
-      "top1_accuracy": null,
-      "top5_accuracy": null
+      "native_or_fallback": "native_sirius",
+      "notes": "",
+      "status": "completed",
+      "top10_accuracy": 0.6550218340611353,
+      "top1_accuracy": 0.6462882096069869,
+      "top5_accuracy": 0.6550218340611353
     },
     {
       "dataset": "CASMI2022",
@@ -153,19 +155,19 @@
     },
     {
       "dataset": "PFAS",
-      "mean_reciprocal_rank": 0.019027157243743736,
-      "mean_top1_tanimoto": 0.11678068775266423,
+      "mean_reciprocal_rank": 0.02480186933879968,
+      "mean_top1_tanimoto": 0.21353452806451576,
       "median_candidate_count": 463.0,
-      "median_true_rank": 71.0,
+      "median_true_rank": 96.0,
       "model": "SIRIUS",
       "molecular_formula_accuracy": 0.0,
       "n_queries": 64,
       "native_or_fallback": "precomputed_external_sirius_scores",
       "notes": "",
       "status": "completed",
-      "top10_accuracy": 0.0,
+      "top10_accuracy": 0.0625,
       "top1_accuracy": 0.0,
-      "top5_accuracy": 0.0
+      "top5_accuracy": 0.015625
     },
     {
       "dataset": "PFAS",
