@@ -21,7 +21,11 @@ dataset_status:
     native_score_status: native_sirius_formula_scores_available
     native_sirius_formula_score_path: /home/zhome/ec_structure/github_export/FragAnnotor/results/native_sirius_casmi/casmi2022_sirius_formula_candidates.csv
     native_sirius_spectra_with_scores: 229
-    fallback_status: deterministic_lightweight_scores_available_for_preliminary_only
+    fallback_status: deterministic_lightweight_scores_skipped_for_native_no_fallback_run
+    fragannotor_casmi_adapter_status: available
+    fragannotor_casmi_adapter_source: experimental_peak_lists + candidate_formulas
+      + precursor/adduct mass consistency + common fragment/neutral-loss formula plausibility
+      + native SIRIUS formula scores
   PFAS:
     status: available
     path: /home/zhome/ec_tp_work/ec-transformation-product-model-v1/outputs/pfas_no_sirius_fusion_locked_report_v1/locked_test_candidate_feature_matrix.csv

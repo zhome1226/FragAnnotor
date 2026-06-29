@@ -1,0 +1,18 @@
+{
+  "adapter_id": "fragannotor_casmi_zero_shot_formula_fragment_adapter_v1",
+  "formula_scores_present": 236358,
+  "guardrails": [
+    "No CASMI labels are used for training or weight search.",
+    "This is not a native CFM-ID, SIRIUS CSI, or MS2DeepScore baseline.",
+    "SIRIUS contributes formula plausibility only; it is not used as a synthetic spectrum generator.",
+    "Common fragment/neutral-loss formulas are fixed a priori and not optimized on CASMI."
+  ],
+  "n_candidate_rows": 408249,
+  "n_queries": 229,
+  "status": "available",
+  "weights": {
+    "common_fragment_or_neutral_loss_formula_plausibility": 0.15,
+    "native_sirius_formula_score": 0.65,
+    "precursor_mass_consistency": 0.2
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "candidate_ranking_included_in_main_table": false,
+  "command": "/usr/bin/python3 -m fiora.cli.predict -i /home/zhome/ec_structure/github_export/FragAnnotor/results/external_public_model_audit/fiora_smoke_input.csv -o /home/zhome/ec_structure/github_export/FragAnnotor/results/external_public_model_audit/fiora_smoke_output.mgf --model /home/zhome/ec_structure/external_ms_models/vendor/fiora/fiora/resources/models/fiora_OS_v1.0.0.pt --dev cpu --no-rt --no-ccs --no-annotation",
+  "model": "FIORA",
+  "native_or_fallback": "external_public_model_probe",
+  "output_mgf": "results/external_public_model_audit/fiora_smoke_output.mgf",
+  "reason": "FIORA can generate spectra on the server, but the current benchmark lacks a validated CASMI candidate-level spectral similarity wrapper; it is recorded as an optional public model readiness audit, not as a main four-model result.",
+  "status": "smoke_passed_not_integrated_as_ranker",
+  "stderr": "",
+  "stdout": "\n-----Model-----\nFIORA OS v1.0.0\n---------------\n\nDisclaimer: No prediction software is perfect. Use with caution.\nFinished prediction. Exported MS/MS spectra to /home/zhome/ec_structure/github_export/FragAnnotor/results/external_public_model_audit/fiora_smoke_output.mgf.\n",
+  "vendor_path": "/home/zhome/ec_structure/external_ms_models/vendor/fiora"
+}

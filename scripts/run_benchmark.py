@@ -22,6 +22,7 @@ import shutil
 import subprocess
 import sys
 from dataclasses import dataclass, field
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -65,6 +66,12 @@ PFAS_DECOY = TP_REPO / "outputs" / "pfas_decoy_threshold_calibration_v1"
 PFAS_EXTERNAL_GAP = TP_REPO / "outputs" / "pfas_external_validation_data_gap_and_acquisition_v1"
 NATIVE_SIRIUS_CASMI_CANDIDATES = ROOT / "results" / "native_sirius_casmi" / "casmi2022_sirius_formula_candidates.csv"
 NATIVE_SIRIUS_CASMI_AUDIT = ROOT / "results" / "native_sirius_casmi" / "casmi2022_sirius_formula_audit.json"
+FIORA_VENDOR_CANDIDATES = [
+    ROOT.parent / "external_ms_models" / "vendor" / "fiora",
+    ROOT.parent.parent / "external_ms_models" / "vendor" / "fiora",
+    Path("/home/zhome/ec_structure/external_ms_models/vendor/fiora"),
+]
+FIORA_VENDOR = next((candidate for candidate in FIORA_VENDOR_CANDIDATES if candidate.exists()), FIORA_VENDOR_CANDIDATES[0])
 
 DEFAULT_PFAS_MATRIX = (PFAS_FULL_LOCKED / "locked_test_candidate_feature_matrix.csv") if (PFAS_FULL_LOCKED / "locked_test_candidate_feature_matrix.csv").exists() else (PFAS_NO_SIRIUS_LOCKED / "locked_test_candidate_feature_matrix.csv")
 DEFAULT_PFAS_SCORE_MATRIX = PFAS_COMPLETE_V3 / "pfas_validation_score_matrix.csv"
@@ -188,6 +195,7 @@ def package_version(package: str) -> str | None:
             return None
 
 
+@lru_cache(maxsize=500000)
 def formula_from_smiles(smiles: str | None) -> str:
     if not smiles or Chem is None or rdMolDescriptors is None:
         return ""
@@ -195,6 +203,203 @@ def formula_from_smiles(smiles: str | None) -> str:
     if mol is None:
         return ""
     return rdMolDescriptors.CalcMolFormula(mol)
+
+
+EXACT_MASS = {
+    "H": 1.00782503223,
+    "C": 12.0,
+    "N": 14.00307400443,
+    "O": 15.99491461957,
+    "P": 30.97376199842,
+    "S": 31.9720711744,
+    "F": 18.99840316273,
+    "Cl": 34.968852682,
+    "Br": 78.9183376,
+    "I": 126.9044719,
+    "Na": 22.9897692820,
+    "K": 38.9637064864,
+}
+PROTON_MASS = 1.007276466621
+ELECTRON_MASS = 0.000548579909065
+FORMULA_PATTERN = re.compile(r"([A-Z][a-z]?)(\d*)")
+COMMON_LOSS_FORMULAS = [
+    "H2O",
+    "CO",
+    "CO2",
+    "NH3",
+    "CH2O",
+    "C2H2O",
+    "C2H4O2",
+    "SO2",
+    "SO3",
+    "H3PO4",
+    "HF",
+    "CF2",
+    "CF3",
+    "HCl",
+    "HBr",
+]
+COMMON_FRAGMENT_FORMULAS = [
+    "H2O",
+    "CO",
+    "CO2",
+    "CH2O",
+    "C2H3O",
+    "C2H5O",
+    "C3H5O",
+    "C6H5",
+    "C6H7",
+    "C7H7",
+    "NH4",
+    "NO2",
+    "SO2",
+    "SO3",
+    "PO2",
+    "PO3",
+    "H2PO4",
+    "CF",
+    "CF2",
+    "CF3",
+]
+
+
+@lru_cache(maxsize=500000)
+def parse_formula_counts(formula: str | None) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    if not formula:
+        return counts
+    for element, count_text in FORMULA_PATTERN.findall(str(formula)):
+        counts[element] = counts.get(element, 0) + int(count_text or 1)
+    return counts
+
+
+@lru_cache(maxsize=500000)
+def formula_exact_mass(formula: str | None) -> float:
+    counts = parse_formula_counts(formula)
+    if not counts:
+        return np.nan
+    total = 0.0
+    for element, count in counts.items():
+        mass = EXACT_MASS.get(element)
+        if mass is None:
+            return np.nan
+        total += mass * count
+    return float(total)
+
+
+def formula_is_subset(fragment_formula: str, parent_counts: dict[str, int]) -> bool:
+    fragment_counts = parse_formula_counts(fragment_formula)
+    return bool(fragment_counts) and all(parent_counts.get(element, 0) >= count for element, count in fragment_counts.items())
+
+
+def adduct_precursor_mz(neutral_mass: float, adduct: str | None, ion_mode: str | None = None) -> float:
+    if pd.isna(neutral_mass):
+        return np.nan
+    adduct = safe_str(adduct)
+    if "[M+H]+" in adduct:
+        return neutral_mass + PROTON_MASS
+    if "[M+Na]+" in adduct:
+        return neutral_mass + EXACT_MASS["Na"] - ELECTRON_MASS
+    if "[M+K]+" in adduct:
+        return neutral_mass + EXACT_MASS["K"] - ELECTRON_MASS
+    if "[M-H]-" in adduct:
+        return neutral_mass - PROTON_MASS
+    if "[M]+" in adduct:
+        return neutral_mass - ELECTRON_MASS
+    if "[M]-" in adduct:
+        return neutral_mass + ELECTRON_MASS
+    if safe_str(ion_mode).upper().startswith("N"):
+        return neutral_mass - PROTON_MASS
+    return neutral_mass + PROTON_MASS
+
+
+def ionized_fragment_mz(neutral_mass: float, adduct: str | None, ion_mode: str | None = None) -> float:
+    if safe_str(adduct).endswith("-") or safe_str(ion_mode).upper().startswith("N"):
+        return neutral_mass - PROTON_MASS
+    return neutral_mass + PROTON_MASS
+
+
+def mass_consistency_score(formula: str | None, precursor_mz: float | None, adduct: str | None, ion_mode: str | None) -> float:
+    neutral_mass = formula_exact_mass(formula)
+    observed = safe_float(precursor_mz, default=np.nan)
+    predicted = adduct_precursor_mz(neutral_mass, adduct, ion_mode)
+    if pd.isna(observed) or pd.isna(predicted) or observed <= 0:
+        return 0.0
+    ppm = abs(predicted - observed) / observed * 1e6
+    # CASMI processed candidates are already mass-filtered; this term is a
+    # soft consistency score, not a tuned hard filter.
+    return float(np.exp(-((ppm / 12.0) ** 2)))
+
+
+@lru_cache(maxsize=500000)
+def fragment_target_masses(formula: str | None, precursor_mz_key: str, adduct: str | None, ion_mode: str | None) -> tuple[float, ...]:
+    counts = parse_formula_counts(formula)
+    precursor_mz = safe_float(precursor_mz_key, default=np.nan)
+    targets: list[float] = []
+    for loss in COMMON_LOSS_FORMULAS:
+        if formula_is_subset(loss, counts):
+            loss_mass = formula_exact_mass(loss)
+            if not pd.isna(loss_mass) and not pd.isna(precursor_mz):
+                target = precursor_mz - loss_mass
+                if 20.0 <= target <= precursor_mz + 5.0:
+                    targets.append(float(target))
+    for fragment in COMMON_FRAGMENT_FORMULAS:
+        if formula_is_subset(fragment, counts):
+            frag_mass = formula_exact_mass(fragment)
+            target = ionized_fragment_mz(frag_mass, adduct, ion_mode)
+            if not pd.isna(target) and 20.0 <= target <= max(precursor_mz + 5.0, 20.0):
+                targets.append(float(target))
+    return tuple(sorted(set(round(x, 5) for x in targets)))
+
+
+def formula_fragment_plausibility_score(
+    formula: str | None,
+    peaks: list[tuple[float, float]],
+    precursor_mz: float | None,
+    adduct: str | None,
+    ion_mode: str | None,
+) -> float:
+    if not peaks or not formula:
+        return 0.0
+    top_peaks = sorted(peaks, key=lambda peak: peak[1], reverse=True)[:40]
+    max_intensity = max((intensity for _, intensity in top_peaks), default=0.0)
+    if max_intensity <= 0:
+        return 0.0
+    targets = fragment_target_masses(formula, f"{safe_float(precursor_mz, default=np.nan):.5f}", adduct, ion_mode)
+    if not targets:
+        return 0.0
+    score = 0.0
+    weight_sum = 0.0
+    for mz, intensity in top_peaks:
+        relative = max(0.0, float(intensity) / max_intensity)
+        if relative < 0.01:
+            continue
+        weight = relative ** 0.5
+        nearest = min(abs(float(mz) - target) for target in targets)
+        local = float(np.exp(-((nearest / 0.05) ** 2))) if nearest <= 0.25 else 0.0
+        score += weight * local
+        weight_sum += weight
+    return 0.0 if weight_sum <= 0 else float(max(0.0, min(1.0, score / weight_sum)))
+
+
+def casmi_fragannotor_adapter_components(
+    formula: str,
+    peaks: list[tuple[float, float]],
+    precursor_mz: float | None,
+    adduct: str | None,
+    ion_mode: str | None,
+    native_sirius_formula_score: float,
+) -> dict[str, float]:
+    mass_score = mass_consistency_score(formula, precursor_mz, adduct, ion_mode)
+    fragment_score = formula_fragment_plausibility_score(formula, peaks, precursor_mz, adduct, ion_mode)
+    sirius_score = 0.0 if pd.isna(native_sirius_formula_score) else float(native_sirius_formula_score)
+    adapter_score = (0.65 * sirius_score) + (0.20 * mass_score) + (0.15 * fragment_score)
+    return {
+        "casmi_mass_consistency_score": mass_score,
+        "casmi_fragment_formula_score": fragment_score,
+        "casmi_native_sirius_formula_score": sirius_score,
+        "fragannotor_casmi_adapter_score": float(max(0.0, min(1.0, adapter_score))),
+    }
 
 def load_native_sirius_casmi_scores(path: Path = NATIVE_SIRIUS_CASMI_CANDIDATES) -> dict[str, dict[str, Any]]:
     if not path.exists():
@@ -278,6 +483,46 @@ def write_yaml(path: Path, payload: Any) -> None:
     path.write_text(yaml.safe_dump(payload, sort_keys=False), encoding="utf-8")
 
 
+def write_csv_artifact(df: pd.DataFrame, path: Path, *, max_plaintext_mb: float = 95.0) -> dict[str, Any]:
+    """Write CSV directly when small, otherwise gzip full data and leave a small manifest.
+
+    GitHub rejects files above 100 MB. Candidate-level CASMI exports are useful
+    for reproducibility but too large as raw CSV, so this helper preserves the
+    full table in .csv.gz and keeps the requested .csv path as a human-readable
+    pointer.
+    """
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp_path = path.with_suffix(path.suffix + ".tmp")
+    df.to_csv(temp_path, index=False)
+    size_bytes = temp_path.stat().st_size
+    if size_bytes <= max_plaintext_mb * 1024 * 1024:
+        temp_path.replace(path)
+        return {
+            "path": str(path),
+            "format": "csv",
+            "rows": int(len(df)),
+            "columns": list(df.columns),
+            "size_bytes": int(size_bytes),
+            "compressed_path": "",
+        }
+    gz_path = path.with_suffix(path.suffix + ".gz")
+    df.to_csv(gz_path, index=False, compression="gzip")
+    temp_path.unlink(missing_ok=True)
+    manifest = {
+        "artifact": path.name,
+        "format": "csv.gz",
+        "rows": int(len(df)),
+        "columns": list(df.columns),
+        "uncompressed_size_bytes": int(size_bytes),
+        "compressed_size_bytes": int(gz_path.stat().st_size),
+        "compressed_path": gz_path.name,
+        "reason": "Raw CSV exceeds GitHub's 100 MB single-file limit; full data are stored in the adjacent gzip CSV.",
+    }
+    path.write_text("# Large CSV artifact manifest\n" + json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return {"path": str(path), **manifest}
+
+
 def parse_all_smiles(path: Path, needed_ids: set[int]) -> dict[int, str]:
     output: dict[int, str] = {}
     with path.open(encoding="utf-8") as handle:
@@ -342,7 +587,7 @@ def lightweight_spectrum_score(smiles: str, peaks: list[tuple[float, float]], pr
     return float(max(0.0, min(1.0, score)))
 
 
-def load_casmi_records(casmi_dir: Path | None, candidate_limit: int) -> tuple[list[QueryRecord], dict[str, Any]]:
+def load_casmi_records(casmi_dir: Path | None, candidate_limit: int, include_lightweight_fallback_scores: bool = False) -> tuple[list[QueryRecord], dict[str, Any]]:
     native_sirius_scores = load_native_sirius_casmi_scores()
     search_dirs = [casmi_dir] if casmi_dir else DEFAULT_CASMI_DIRS
     for directory in [p for p in search_dirs if p is not None]:
@@ -370,23 +615,56 @@ def load_casmi_records(casmi_dir: Path | None, candidate_limit: int) -> tuple[li
             needed_ids.update(candidates)
             needed_ids.add(query_mol_id)
         id_to_smiles = parse_all_smiles(smiles_path, set(needed_ids))
+        formula_cache = {mol_id: formula_from_smiles(smiles) for mol_id, smiles in id_to_smiles.items()}
         records: list[QueryRecord] = []
         missing_smiles = 0
         for _, row in spec_df.iterrows():
             query_mol_id = int(row["mol_id"])
             true_smiles = safe_str(row.get("smiles")) or id_to_smiles.get(query_mol_id, "")
+            true_formula = formula_from_smiles(true_smiles)
             peaks = [(float(mz), float(intensity)) for mz, intensity in row.get("peaks", [])]
             precursor_mz = safe_float(row.get("prec_mz"), default=np.nan)
             candidates: list[dict[str, Any]] = []
+            sirius_meta = native_sirius_scores.get(str(row["spec_id"]), {})
+            adapter_component_cache: dict[str, dict[str, float]] = {}
             for candidate_mol_id in selected_by_query.get(query_mol_id, []):
                 smiles = id_to_smiles.get(int(candidate_mol_id))
                 if not smiles:
                     missing_smiles += 1
                     continue
-                cfmid_score = lightweight_spectrum_score(smiles, peaks, precursor_mz, "cfmid")
-                sirius_score = lightweight_spectrum_score(smiles, peaks, precursor_mz, "sirius")
-                ms2_score = lightweight_spectrum_score(smiles, peaks, precursor_mz, "ms2deepscore")
-                our_score = lightweight_spectrum_score(smiles, peaks, precursor_mz, "fragannotor")
+                formula = formula_cache.get(int(candidate_mol_id), "") or formula_from_smiles(smiles)
+                native_formula_score = sirius_meta.get("formula_scores", {}).get(formula, {})
+                if native_formula_score:
+                    native_score = safe_float(native_formula_score.get("score"), default=np.nan)
+                    native_rank = native_formula_score.get("rank", np.nan)
+                    native_raw = native_formula_score.get("raw_score", np.nan)
+                else:
+                    native_score = np.nan
+                    native_rank = np.nan
+                    native_raw = np.nan
+                cache_key = f"{formula}|{native_score}"
+                adapter_components = adapter_component_cache.get(cache_key)
+                if adapter_components is None:
+                    adapter_components = casmi_fragannotor_adapter_components(
+                        formula,
+                        peaks,
+                        precursor_mz,
+                        safe_str(row.get("prec_type")),
+                        safe_str(row.get("ion_mode")),
+                        native_score,
+                    )
+                    adapter_component_cache[cache_key] = adapter_components
+                # These lightweight scores remain explicit preliminary fallbacks
+                # for tools that do not have native CASMI outputs. They are not
+                # computed during the native/no-fallback manuscript command.
+                if include_lightweight_fallback_scores:
+                    fallback_cfmid_score = lightweight_spectrum_score(smiles, peaks, precursor_mz, "cfmid")
+                    fallback_sirius_score = lightweight_spectrum_score(smiles, peaks, precursor_mz, "sirius")
+                    fallback_ms2_score = lightweight_spectrum_score(smiles, peaks, precursor_mz, "ms2deepscore")
+                else:
+                    fallback_cfmid_score = np.nan
+                    fallback_sirius_score = np.nan
+                    fallback_ms2_score = np.nan
                 candidates.append(
                     {
                         "candidate_id": f"CASMI_MOL_{candidate_mol_id}",
@@ -395,27 +673,25 @@ def load_casmi_records(casmi_dir: Path | None, candidate_limit: int) -> tuple[li
                         "inchikey": f"CASMI_MOL_{candidate_mol_id}",
                         "canonical_smiles": smiles,
                         "smiles": smiles,
-                        "candidate_formula": formula_from_smiles(smiles),
-                        "formula": formula_from_smiles(smiles),
-                        "our_spectrum_score": our_score,
-                        "cfmid_spectrum_score": cfmid_score,
-                        "sirius_formula_score": sirius_score,
-                        "fragment_formula_score": min(1.0, 0.65 * sirius_score + 0.35 * cfmid_score),
+                        "candidate_formula": formula,
+                        "formula": formula,
+                        "our_spectrum_score": adapter_components["fragannotor_casmi_adapter_score"],
+                        "cfmid_spectrum_score": fallback_cfmid_score,
+                        "sirius_formula_score": fallback_sirius_score,
+                        "fragment_formula_score": adapter_components["casmi_fragment_formula_score"],
+                        "casmi_mass_consistency_score": adapter_components["casmi_mass_consistency_score"],
+                        "casmi_fragment_formula_score": adapter_components["casmi_fragment_formula_score"],
+                        "fragannotor_casmi_adapter_score": adapter_components["fragannotor_casmi_adapter_score"],
                         "reaction_prior_score": 0.0,
-                        "ms2deepscore_score": ms2_score,
-                        "score_source": "massformer_casmi2022_lightweight_fallback_scores",
+                        "ms2deepscore_score": fallback_ms2_score,
+                        "score_source": "casmi2022_zero_shot_formula_fragment_adapter",
+                        "fallback_score_source": "massformer_casmi2022_lightweight_fallback_scores",
+                        "fragannotor_adapter_components": "0.65*native_sirius_formula_score + 0.20*precursor_mass_consistency + 0.15*common_fragment_or_neutral_loss_formula_plausibility",
                     }
                 )
-                sirius_meta = native_sirius_scores.get(str(row["spec_id"]), {})
-                native_formula_score = sirius_meta.get("formula_scores", {}).get(formula_from_smiles(smiles), {})
-                if native_formula_score:
-                    candidates[-1]["sirius_native_formula_score"] = native_formula_score.get("score", np.nan)
-                    candidates[-1]["sirius_native_formula_rank"] = native_formula_score.get("rank", np.nan)
-                    candidates[-1]["sirius_native_formula_score_raw"] = native_formula_score.get("raw_score", np.nan)
-                else:
-                    candidates[-1]["sirius_native_formula_score"] = np.nan
-                    candidates[-1]["sirius_native_formula_rank"] = np.nan
-                    candidates[-1]["sirius_native_formula_score_raw"] = np.nan
+                candidates[-1]["sirius_native_formula_score"] = native_score
+                candidates[-1]["sirius_native_formula_rank"] = native_rank
+                candidates[-1]["sirius_native_formula_score_raw"] = native_raw
                 candidates[-1]["sirius_native_status"] = sirius_meta.get("status", "native_sirius_not_run")
                 candidates[-1]["sirius_native_command"] = sirius_meta.get("command", "")
             records.append(
@@ -425,7 +701,7 @@ def load_casmi_records(casmi_dir: Path | None, candidate_limit: int) -> tuple[li
                     query_id=safe_str(row.get("spec_id")),
                     true_inchikey=f"CASMI_MOL_{query_mol_id}",
                     true_smiles=true_smiles,
-                    true_formula=formula_from_smiles(true_smiles),
+                    true_formula=true_formula,
                     precursor_mz=precursor_mz,
                     adduct=safe_str(row.get("prec_type")),
                     ion_mode=safe_str(row.get("ion_mode")),
@@ -453,7 +729,9 @@ def load_casmi_records(casmi_dir: Path | None, candidate_limit: int) -> tuple[li
             "native_score_status": "native_sirius_formula_scores_available" if native_sirius_scores else "no_native_baseline_outputs_found_in_processed_package",
             "native_sirius_formula_score_path": str(NATIVE_SIRIUS_CASMI_CANDIDATES) if native_sirius_scores else "",
             "native_sirius_spectra_with_scores": len(native_sirius_scores),
-            "fallback_status": "deterministic_lightweight_scores_available_for_preliminary_only",
+            "fallback_status": "deterministic_lightweight_scores_computed" if include_lightweight_fallback_scores else "deterministic_lightweight_scores_skipped_for_native_no_fallback_run",
+            "fragannotor_casmi_adapter_status": "available" if native_sirius_scores else "blocked_missing_native_sirius_formula_scores",
+            "fragannotor_casmi_adapter_source": "experimental_peak_lists + candidate_formulas + precursor/adduct mass consistency + common fragment/neutral-loss formula plausibility + native SIRIUS formula scores",
         }
     return [], {
         "status": "unavailable",
@@ -681,6 +959,8 @@ def native_baseline_audit(env: dict[str, Any]) -> list[dict[str, Any]]:
 
 def model_score(candidate: dict[str, Any], model: str, allow_fallback: bool) -> tuple[float, str]:
     if model == "FragAnnotor":
+        if "fragannotor_casmi_adapter_score" in candidate:
+            return safe_float(candidate.get("fragannotor_casmi_adapter_score"), default=np.nan), "fragannotor_casmi_zero_shot_formula_fragment_adapter"
         weights = {"our_spectrum_score": 0.35, "cfmid_spectrum_score": 0.50, "fragment_formula_score": 0.15}
     elif model == "CFM-ID":
         weights = {"cfmid_spectrum_score": 1.0}
@@ -733,6 +1013,10 @@ def model_availability(dataset: str, model: str, native_baselines: bool, allow_f
             return True, "deterministic_fallback", "Preliminary lightweight fallback scoring; not native baseline inference."
         if allow_fallback:
             return True, "deterministic_fallback", "Native CASMI outputs unavailable; explicit fallback was allowed."
+        if model == "FragAnnotor":
+            if NATIVE_SIRIUS_CASMI_CANDIDATES.exists():
+                return True, "zero_shot_formula_fragment_adapter", "CASMI FragAnnotor zero-shot adapter using experimental peaks, candidate formulas, precursor mass consistency, common fragment/neutral-loss formula plausibility, and native SIRIUS formula scores; no CASMI training or weight search."
+            return False, "native_unavailable", "CASMI FragAnnotor adapter requires native SIRIUS formula scores; run scripts/run_native_sirius_casmi.py first."
         if model == "CFM-ID":
             return False, "native_unavailable", "CFM-ID native CASMI execution/export parser is unavailable in this repository run; fallback disabled."
         if model == "SIRIUS":
@@ -741,7 +1025,7 @@ def model_availability(dataset: str, model: str, native_baselines: bool, allow_f
             return False, "native_unavailable", "SIRIUS native CASMI formula score file missing; run scripts/run_native_sirius_casmi.py first."
         if model == "MS2DeepScore":
             return False, "native_unavailable", "MS2DeepScore native CASMI model/embedding workflow is unavailable in this repository run; fallback disabled."
-        return False, "native_unavailable", "FragAnnotor native CASMI component scores are unavailable; fallback disabled."
+        return False, "native_unavailable", "Model is unavailable for CASMI with fallback disabled."
     return False, "dataset_unavailable", "Dataset unavailable."
 
 
@@ -829,6 +1113,8 @@ def tool_version_for_model(model: str, env: dict[str, Any], dataset: str) -> str
         version = env["versions"].get("sirius") or {}
         stdout = safe_str(version.get("stdout") if isinstance(version, dict) else version)
         return stdout.splitlines()[0] if stdout else "SIRIUS version unavailable"
+    if model == "FragAnnotor" and dataset == "CASMI2022":
+        return "FragAnnotor CASMI zero-shot formula/fragment adapter v1"
     return "FragAnnotor frozen no-SIRIUS weights"
 
 
@@ -946,12 +1232,12 @@ def write_prediction_files(predictions: pd.DataFrame, results_dir: Path) -> None
     dataset_slug = {"CASMI2022": "casmi2022", "PFAS": "pfas"}
     for (dataset, model), group in predictions.groupby(["dataset", "model"], dropna=False):
         filename = f"{dataset_slug.get(dataset, dataset.lower())}_{slug.get(model, model.lower())}_predictions.csv"
-        group[PREDICTION_COLUMNS].to_csv(outdir / filename, index=False)
+        write_csv_artifact(group[PREDICTION_COLUMNS], outdir / filename)
 
 
 def write_summary_files(summary: pd.DataFrame, query_df: pd.DataFrame, predictions: pd.DataFrame, results_dir: Path, dataset_status: dict[str, Any], env: dict[str, Any]) -> None:
     summary.to_csv(results_dir / "benchmark_results.csv", index=False)
-    predictions.to_csv(results_dir / "benchmark_predictions.csv", index=False)
+    write_csv_artifact(predictions, results_dir / "benchmark_predictions.csv")
     write_json(
         results_dir / "benchmark_results.json",
         {
@@ -1004,7 +1290,7 @@ def write_casmi_native_outputs(query_df: pd.DataFrame, predictions: pd.DataFrame
     write_json(results_dir / "casmi2022_native_benchmark_summary.json", casmi_summary.replace({np.nan: None}).to_dict(orient="records"))
     casmi_wide = query_level_wide(casmi_query, records)
     casmi_wide.to_csv(results_dir / "casmi2022_query_level_results.csv", index=False)
-    predictions[predictions["dataset"].eq("CASMI2022")].to_csv(results_dir / "casmi2022_candidate_level_predictions.csv", index=False)
+    write_csv_artifact(predictions[predictions["dataset"].eq("CASMI2022")], results_dir / "casmi2022_candidate_level_predictions.csv")
 
 
 def query_level_wide(query_df: pd.DataFrame, records: list[QueryRecord]) -> pd.DataFrame:
@@ -1632,7 +1918,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
     lines.extend(["", "## Main Results", "", markdown_table(summary), ""])
     lines.extend(["## Native CASMI2022 Results", "", markdown_table(summary[summary["dataset"].eq("CASMI2022")]), ""])
     lines.extend([
-        "CASMI2022 includes one completed native baseline in this run: SIRIUS 4.9.15 formula-only ranking. CASMI FragAnnotor component scores, CFM-ID, and MS2DeepScore remain unavailable under `--allow-fallback false`.",
+        "CASMI2022 includes one completed native baseline in this run: SIRIUS 4.9.15 formula-only ranking. FragAnnotor is reported separately as a zero-shot formula/fragment constrained CASMI adapter using real experimental peaks, candidate formulas, precursor/adduct mass consistency, common fragment/neutral-loss plausibility, and native SIRIUS formula scores. It is not labeled as a trained native CASMI model. CFM-ID and MS2DeepScore remain unavailable under `--allow-fallback false`.",
         "",
         "## Preliminary Fallback CASMI Results",
         "",
@@ -1660,12 +1946,28 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             except Exception:
                 lines.append("Peak-level annotation status is recorded in `results/case_studies/peak_annotation_status.json`.")
         lines.append("")
+    fiora_audit_path = results_dir / "external_public_model_audit" / "fiora_external_model_audit.json"
+    if fiora_audit_path.exists():
+        try:
+            fiora_audit = json.loads(fiora_audit_path.read_text(encoding="utf-8"))
+            lines.extend(
+                [
+                    "## External Public Model Audit",
+                    "",
+                    f"- FIORA status: `{fiora_audit.get('status')}`.",
+                    f"- FIORA main-table inclusion: `{fiora_audit.get('candidate_ranking_included_in_main_table')}`.",
+                    f"- Reason: {fiora_audit.get('reason', '')}",
+                    "",
+                ]
+            )
+        except Exception:
+            pass
     lines.extend(
         [
             "## Interpretation",
             "",
             "- PFAS locked-test ranking supports the selected primary FragAnnotor policy within the frozen PFAS benchmark.",
-            "- CASMI2022 native SIRIUS formula-only ranking completed; CASMI FragAnnotor, CFM-ID, and MS2DeepScore native structure-ranking outputs remain blocked and are not replaced with fallback scores.",
+            "- CASMI2022 native SIRIUS formula-only ranking completed; CASMI FragAnnotor is available only as a transparent zero-shot formula/fragment constrained adapter, while CFM-ID and MS2DeepScore native structure-ranking outputs remain blocked and are not replaced with fallback scores.",
             "- No result with `native_or_fallback=native_unavailable` should be described as a completed native baseline.",
             "- MS2DeepScore native comparison is blocked until the package and an appropriate pretrained model/embedding workflow are available.",
             "- SIRIUS is used here as molecular formula plausibility evidence, not as a synthetic spectrum generator or CSI:FingerID structure predictor.",
@@ -1674,14 +1976,14 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "",
             "- PFAS locked-test expert-fusion benchmark: ready as an internal frozen benchmark, with conservative claims.",
             "- PFAS ablation and case-study package: ready for manuscript drafting, subject to the external-validation limitation.",
-            "- CASMI benchmark: partially ready; only SIRIUS formula-only native baseline completed, while native CFM-ID, MS2DeepScore, and CASMI FragAnnotor component scores are blocked.",
-            "- SOTA comparison: partially ready; do not claim full FragAnnotor superiority on CASMI until missing native baselines and FragAnnotor CASMI scores are available.",
+            "- CASMI benchmark: partially ready; SIRIUS formula-only native baseline and FragAnnotor zero-shot formula/fragment adapter completed, while native CFM-ID and MS2DeepScore remain blocked.",
+            "- SOTA comparison: partially ready; do not claim full FragAnnotor superiority on CASMI until missing native baselines and independent CASMI-trained/validated FragAnnotor components are available.",
             "",
             "## Remaining Blockers",
             "",
             "- Native CFM-ID CASMI scoring is blocked by `Invalid Feature Configuration` in available pretrained model/config smoke tests.",
             "- Native MS2DeepScore is blocked because the package and a compatible pretrained model/embedding workflow are unavailable.",
-            "- CASMI FragAnnotor is blocked until real CASMI component scores are generated; fallback component scores are not reported as native results.",
+            "- CASMI FragAnnotor is currently a zero-shot formula/fragment adapter, not a trained native CASMI model.",
             "- PFAS results remain an internal frozen locked-test benchmark and are not independent external validation.",
             "",
             "## Exact Reproduction Command",
@@ -1692,7 +1994,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "",
             "## Known Limitations",
             "",
-            "- CASMI native benchmark execution is incomplete: SIRIUS formula-only scores are available, but CFM-ID smoke tests fail with model/config incompatibility and MS2DeepScore has no configured package/model.",
+            "- CASMI native benchmark execution is incomplete: SIRIUS formula-only scores and FragAnnotor zero-shot adapter scores are available, but CFM-ID smoke tests fail with model/config incompatibility and MS2DeepScore has no configured package/model.",
             "- PFAS results depend on the frozen candidate matrix generated in the transformation-product workflow.",
             "- The benchmark does not establish deployment-ready thresholds or universal LC-MS/MS prediction performance.",
         ]
@@ -1706,7 +2008,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
         "- `native_baseline_audit.csv/json`: native tool availability and blockers.",
         "- `native_tool_ready_audit.csv/json`: server-side native tool readiness audit from `scripts/setup_native_baselines.sh`.",
         "- `benchmark_results.csv/json`: unified benchmark metrics.",
-        "- `predictions/`: per-dataset, per-model candidate-level prediction exports.",
+        "- `predictions/`: per-dataset, per-model candidate-level prediction exports; large full tables are stored as adjacent `.csv.gz` files with a small `.csv` manifest.",
         "- `casmi2022_native_benchmark_summary.csv/json`: CASMI native benchmark status and metrics where available.",
         "- `sota_comparison_summary.csv/json`: unified model comparison table.",
         "- `sota_pairwise_rank_comparison.csv`: paired query-level rank comparisons.",
@@ -1714,6 +2016,8 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
         "- `ablation/`: FragAnnotor component ablation and weight sensitivity outputs.",
         "- `query_level/`: query-level comparison tables and PFAS Top-10 candidates.",
         "- `case_studies/`: automatically selected PFAS case-study rows and peak-annotation availability status.",
+        "- `casmi_fragannotor_adapter/`: CASMI zero-shot formula/fragment adapter components and guardrail audit.",
+        "- `external_public_model_audit/`: optional public-model readiness probes such as FIORA smoke execution.",
         "- `stratified/`: PFAS subclass and difficulty-stratified summaries.",
         "- `figures/`: matplotlib-only publication-draft plots.",
         "- `preliminary/`: preserved preliminary fallback CASMI result files.",
@@ -1764,6 +2068,115 @@ def write_decoy_and_external_summaries(results_dir: Path) -> None:
         summary.to_csv(results_dir / "external_validation_data_gap_summary.csv", index=False)
 
 
+def probe_fiora_external_model(results_dir: Path) -> dict[str, Any]:
+    outdir = results_dir / "external_public_model_audit"
+    outdir.mkdir(parents=True, exist_ok=True)
+    input_csv = outdir / "fiora_smoke_input.csv"
+    output_mgf = outdir / "fiora_smoke_output.mgf"
+    log_path = outdir / "fiora_smoke.log"
+    audit = {
+        "model": "FIORA",
+        "status": "not_checked",
+        "native_or_fallback": "external_public_model_probe",
+        "vendor_path": str(FIORA_VENDOR),
+        "command": "",
+        "stdout": "",
+        "stderr": "",
+        "output_mgf": str(output_mgf),
+        "candidate_ranking_included_in_main_table": False,
+        "reason": "",
+    }
+    if not FIORA_VENDOR.exists():
+        audit.update({"status": "unavailable", "reason": "FIORA vendor checkout not found on server."})
+    else:
+        input_csv.write_text(
+            "Name,SMILES,Precursor_type,CE,Instrument_type\n"
+            "fiora_smoke,CC(=O)Oc1ccccc1C(=O)O,[M+H]+,30,HCD\n",
+            encoding="utf-8",
+        )
+        cmd = [
+            sys.executable,
+            "-m",
+            "fiora.cli.predict",
+            "-i",
+            str(input_csv.resolve()),
+            "-o",
+            str(output_mgf.resolve()),
+            "--model",
+            str(FIORA_VENDOR / "fiora" / "resources" / "models" / "fiora_OS_v1.0.0.pt"),
+            "--dev",
+            "cpu",
+            "--no-rt",
+            "--no-ccs",
+            "--no-annotation",
+        ]
+        audit["command"] = " ".join(cmd)
+        env = os.environ.copy()
+        env["PYTHONPATH"] = str(FIORA_VENDOR) + os.pathsep + env.get("PYTHONPATH", "")
+        try:
+            completed = subprocess.run(cmd, cwd=FIORA_VENDOR, env=env, capture_output=True, text=True, timeout=180, check=False)
+            audit["stdout"] = completed.stdout[-4000:]
+            audit["stderr"] = completed.stderr[-4000:]
+            if completed.returncode == 0 and output_mgf.exists() and output_mgf.stat().st_size > 0:
+                audit["status"] = "smoke_passed_not_integrated_as_ranker"
+                audit["reason"] = "FIORA can generate spectra on the server, but the current benchmark lacks a validated CASMI candidate-level spectral similarity wrapper; it is recorded as an optional public model readiness audit, not as a main four-model result."
+            else:
+                audit["status"] = "smoke_failed"
+                audit["reason"] = f"FIORA smoke command returned {completed.returncode}; no candidate-ranking benchmark was generated."
+        except Exception as exc:
+            audit["status"] = "smoke_failed"
+            audit["stderr"] = repr(exc)
+            audit["reason"] = "FIORA smoke execution raised an exception."
+    log_path.write_text(json.dumps(audit, indent=2, sort_keys=True), encoding="utf-8")
+    write_json(outdir / "fiora_external_model_audit.json", audit)
+    pd.DataFrame([audit]).to_csv(outdir / "fiora_external_model_audit.csv", index=False)
+    return audit
+
+
+def write_casmi_adapter_audit(records: list[QueryRecord], results_dir: Path) -> None:
+    rows = []
+    for record in records:
+        for candidate in record.candidates:
+            rows.append(
+                {
+                    "spectrum_id": record.spectrum_id,
+                    "query_id": record.query_id,
+                    "candidate_id": safe_str(candidate.get("candidate_id")),
+                    "candidate_formula": safe_str(candidate.get("candidate_formula")),
+                    "fragannotor_casmi_adapter_score": safe_float(candidate.get("fragannotor_casmi_adapter_score"), default=np.nan),
+                    "casmi_mass_consistency_score": safe_float(candidate.get("casmi_mass_consistency_score"), default=np.nan),
+                    "casmi_fragment_formula_score": safe_float(candidate.get("casmi_fragment_formula_score"), default=np.nan),
+                    "sirius_native_formula_score": safe_float(candidate.get("sirius_native_formula_score"), default=np.nan),
+                    "sirius_native_formula_rank": safe_float(candidate.get("sirius_native_formula_rank"), default=np.nan),
+                    "sirius_native_status": safe_str(candidate.get("sirius_native_status")),
+                }
+            )
+    df = pd.DataFrame(rows)
+    audit_dir = results_dir / "casmi_fragannotor_adapter"
+    audit_dir.mkdir(parents=True, exist_ok=True)
+    if not df.empty:
+        df.to_csv(audit_dir / "casmi_fragannotor_adapter_candidate_components.csv", index=False)
+    payload = {
+        "adapter_id": "fragannotor_casmi_zero_shot_formula_fragment_adapter_v1",
+        "status": "available" if records else "unavailable",
+        "n_queries": len(records),
+        "n_candidate_rows": int(len(df)),
+        "formula_scores_present": int(df["sirius_native_formula_score"].notna().sum()) if not df.empty else 0,
+        "weights": {
+            "native_sirius_formula_score": 0.65,
+            "precursor_mass_consistency": 0.20,
+            "common_fragment_or_neutral_loss_formula_plausibility": 0.15,
+        },
+        "guardrails": [
+            "No CASMI labels are used for training or weight search.",
+            "This is not a native CFM-ID, SIRIUS CSI, or MS2DeepScore baseline.",
+            "SIRIUS contributes formula plausibility only; it is not used as a synthetic spectrum generator.",
+            "Common fragment/neutral-loss formulas are fixed a priori and not optimized on CASMI.",
+        ],
+    }
+    write_json(audit_dir / "casmi_fragannotor_adapter_audit.json", payload)
+
+
 def run_pipeline(args: argparse.Namespace) -> dict[str, Any]:
     set_seed(args.seed)
     results_dir = Path(args.output_dir)
@@ -1774,7 +2187,7 @@ def run_pipeline(args: argparse.Namespace) -> dict[str, Any]:
     save_native_audit(results_dir, env)
 
     pfas_records, pfas_status = load_pfas_records(Path(args.pfas_matrix), Path(args.pfas_score_matrix))
-    casmi_records, casmi_status = load_casmi_records(Path(args.casmi_dir) if args.casmi_dir else None, args.candidate_limit)
+    casmi_records, casmi_status = load_casmi_records(Path(args.casmi_dir) if args.casmi_dir else None, args.candidate_limit, include_lightweight_fallback_scores=args.allow_fallback)
     records_by_dataset = {"CASMI2022": casmi_records, "PFAS": pfas_records}
     dataset_status = {"CASMI2022": casmi_status, "PFAS": pfas_status}
 
@@ -1812,6 +2225,9 @@ def run_pipeline(args: argparse.Namespace) -> dict[str, Any]:
     if pfas_records and not query_df[query_df["dataset"].eq("PFAS")].empty:
         write_stratified_outputs(query_df[query_df["dataset"].eq("PFAS")], pfas_records, results_dir)
     write_decoy_and_external_summaries(results_dir)
+    if casmi_records:
+        write_casmi_adapter_audit(casmi_records, results_dir)
+    probe_fiora_external_model(results_dir)
     write_all_figures(summary, query_df, ablation, predictions, records_by_dataset, results_dir)
     command = (
         "python scripts/run_benchmark.py --dataset both --native-baselines --allow-fallback false "

@@ -1,6 +1,6 @@
 dataset,baseline,status,n_queries,fragannotor_better,baseline_better,ties,mean_rank_delta_baseline_minus_fragannotor,median_rank_delta_baseline_minus_fragannotor
 CASMI2022,CFM-ID,comparison_unavailable,,,,,,
-CASMI2022,SIRIUS,comparison_unavailable,,,,,,
+CASMI2022,SIRIUS,completed,229.0,34.0,0.0,195.0,135371150.50655022,0.0
 CASMI2022,MS2DeepScore,comparison_unavailable,,,,,,
 PFAS,CFM-ID,completed,64.0,21.0,17.0,26.0,14.203125,0.0
 PFAS,SIRIUS,completed,64.0,62.0,2.0,0.0,84.8125,85.0

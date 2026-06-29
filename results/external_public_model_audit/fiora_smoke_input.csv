@@ -1,0 +1,2 @@
+Name,SMILES,Precursor_type,CE,Instrument_type
+fiora_smoke,CC(=O)Oc1ccccc1C(=O)O,[M+H]+,30,HCD

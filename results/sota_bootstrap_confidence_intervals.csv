@@ -1,8 +1,8 @@
 dataset,baseline,metric,ci95_low,ci95_high,status
 CASMI2022,CFM-ID,top10_accuracy_difference,,,comparison_unavailable
 CASMI2022,CFM-ID,mrr_difference,,,comparison_unavailable
-CASMI2022,SIRIUS,top10_accuracy_difference,,,comparison_unavailable
-CASMI2022,SIRIUS,mrr_difference,,,comparison_unavailable
+CASMI2022,SIRIUS,top10_accuracy_difference,0.004366812227074236,0.034934497816593885,completed
+CASMI2022,SIRIUS,mrr_difference,0.0026401203687270282,0.01759274632266507,completed
 CASMI2022,MS2DeepScore,top10_accuracy_difference,,,comparison_unavailable
 CASMI2022,MS2DeepScore,mrr_difference,,,comparison_unavailable
 PFAS,CFM-ID,top10_accuracy_difference,-0.015625,0.1875,completed
