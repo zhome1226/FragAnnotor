@@ -1,0 +1,2 @@
+candidate_size_bin,n_queries,top1_accuracy,top5_accuracy,top10_accuracy,mrr
+gt200,64,0.328125,0.71875,0.828125,0.502844039959644

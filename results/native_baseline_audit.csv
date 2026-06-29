@@ -1,0 +1,4 @@
+model,native_available,executable_or_package,version,blocker
+CFM-ID,False,,,CFM-ID executable not found in PATH; no native CASMI CFM-ID inference was run.
+SIRIUS,False,,,SIRIUS executable not found in PATH; no native CASMI SIRIUS inference was run.
+MS2DeepScore,False,,,ms2deepscore Python package/model not available; no native MS2DeepScore inference was run.

@@ -1,45 +1,52 @@
 # Benchmark Report
 
-This report compares FragAnnotor against CFM-ID, SIRIUS, and MS2DeepScore through the unified `BaseAnnotator.predict()` interface.
+## What Was Run
 
-## Dataset Status
+The benchmark pipeline exported CASMI2022 and PFAS candidate-ranking outputs for FragAnnotor, CFM-ID, SIRIUS, and MS2DeepScore. Native baseline execution was required by the final command with `--allow-fallback false`; unavailable native tools are recorded as unavailable rather than replaced with fallback scores.
 
-- `CASMI2022`: `available`
-  - Queries: 229
-- `PFAS`: `available`
-  - Queries: 64
+## Native vs Fallback Tool Status
 
-## Results
+| model        | native_available   | executable_or_package   | version   | blocker                                                                                    |
+|:-------------|:-------------------|:------------------------|:----------|:-------------------------------------------------------------------------------------------|
+| CFM-ID       | False              |                         |           | CFM-ID executable not found in PATH; no native CASMI CFM-ID inference was run.             |
+| SIRIUS       | False              |                         |           | SIRIUS executable not found in PATH; no native CASMI SIRIUS inference was run.             |
+| MS2DeepScore | False              |                         |           | ms2deepscore Python package/model not available; no native MS2DeepScore inference was run. |
 
-| dataset   | model        | status    |   n_queries |   top1_accuracy |   top5_accuracy |   top10_accuracy |   mean_reciprocal_rank |   mean_top1_tanimoto |   molecular_formula_accuracy | notes   |
-|:----------|:-------------|:----------|------------:|----------------:|----------------:|-----------------:|-----------------------:|---------------------:|-----------------------------:|:--------|
-| CASMI2022 | FragAnnotor  | completed |         229 |      0          |      0.00436681 |       0.0131004  |             0.00482266 |            0.0913518 |                    0.0873362 |         |
-| CASMI2022 | CFM-ID       | completed |         229 |      0.00436681 |      0.0174672  |       0.0218341  |             0.0108374  |            0.0945282 |                    0.0917031 |         |
-| CASMI2022 | SIRIUS       | completed |         229 |      0          |      0          |       0.00873362 |             0.0034754  |            0.0922272 |                    0.126638  |         |
-| CASMI2022 | MS2DeepScore | completed |         229 |      0          |      0          |       0.00436681 |             0.00332422 |            0.0967545 |                    0.296943  |         |
-| PFAS      | FragAnnotor  | completed |          64 |      0.328125   |      0.71875    |       0.828125   |             0.502844   |            0.461697  |                    0.34375   |         |
-| PFAS      | CFM-ID       | completed |          64 |      0.328125   |      0.65625    |       0.75       |             0.466127   |            0.447842  |                    0.34375   |         |
-| PFAS      | SIRIUS       | completed |          64 |      0          |      0.015625   |       0.0625     |             0.0248019  |            0.213535  |                    0         |         |
-| PFAS      | MS2DeepScore | completed |          64 |      0.265625   |      0.671875   |       0.765625   |             0.432832   |            0.431796  |                    0.28125   |         |
+PFAS CFM-ID and SIRIUS entries use real precomputed external expert scores from the companion PFAS workflow. SIRIUS is used as a scalar formula plausibility feature, not as a synthetic spectrum generator.
 
-## PFAS Case Study Summary
+## Dataset Sizes
 
-On the frozen PFAS locked-test benchmark, FragAnnotor reached Top-1 0.328125, Top-5 0.718750, Top-10 0.828125, and MRR 0.502844. The best non-FragAnnotor Top-10 baseline reached 0.765625, and the best non-FragAnnotor MRR reached 0.466127.
+- `CASMI2022`: status `available`, queries `229`, candidate rows `408249`
+- `PFAS`: status `available`, queries `64`, candidate rows `29632`
 
-## CASMI 2022 Summary
+## Main Results
 
-CASMI 2022 standard test spectra were loaded from the MassFormer processed package. Native CFM-ID, SIRIUS, and MS2DeepScore executables/models were not available in this local environment, so CASMI model scores use deterministic lightweight fallback wrappers. These CASMI numbers verify pipeline execution and should be replaced with native baseline outputs before making SOTA claims.
+| dataset   | model        | status                            | native_or_fallback                 |   n_queries |   top1_accuracy |   top5_accuracy |   top10_accuracy |   mean_reciprocal_rank |   mean_top1_tanimoto |   molecular_formula_accuracy |   median_true_rank |   median_candidate_count | notes                                                                                                        |
+|:----------|:-------------|:----------------------------------|:-----------------------------------|------------:|----------------:|----------------:|-----------------:|-----------------------:|---------------------:|-----------------------------:|-------------------:|-------------------------:|:-------------------------------------------------------------------------------------------------------------|
+| CASMI2022 | FragAnnotor  | model_unavailable_native_required | native_unavailable                 |         229 |      nan        |       nan       |       nan        |            nan         |           nan        |                    nan       |                nan |                      nan | FragAnnotor native CASMI component scores are unavailable; fallback disabled.                                |
+| CASMI2022 | CFM-ID       | model_unavailable_native_required | native_unavailable                 |         229 |      nan        |       nan       |       nan        |            nan         |           nan        |                    nan       |                nan |                      nan | CFM-ID native CASMI execution/export parser is unavailable in this repository run; fallback disabled.        |
+| CASMI2022 | SIRIUS       | model_unavailable_native_required | native_unavailable                 |         229 |      nan        |       nan       |       nan        |            nan         |           nan        |                    nan       |                nan |                      nan | SIRIUS native CASMI execution/export parser is unavailable in this repository run; fallback disabled.        |
+| CASMI2022 | MS2DeepScore | model_unavailable_native_required | native_unavailable                 |         229 |      nan        |       nan       |       nan        |            nan         |           nan        |                    nan       |                nan |                      nan | MS2DeepScore native CASMI model/embedding workflow is unavailable in this repository run; fallback disabled. |
+| PFAS      | FragAnnotor  | completed                         | precomputed_external_real_scores   |          64 |        0.328125 |         0.71875 |         0.828125 |              0.502844  |             0.461697 |                      0.34375 |                  2 |                      463 |                                                                                                              |
+| PFAS      | CFM-ID       | completed                         | precomputed_external_cfmid4_scores |          64 |        0.328125 |         0.65625 |         0.75     |              0.466127  |             0.447842 |                      0.34375 |                  3 |                      463 |                                                                                                              |
+| PFAS      | SIRIUS       | completed                         | precomputed_external_sirius_scores |          64 |        0        |         0       |         0        |              0.0190272 |             0.116781 |                      0       |                 71 |                      463 |                                                                                                              |
+| PFAS      | MS2DeepScore | model_unavailable_native_required | native_unavailable                 |          64 |      nan        |       nan       |       nan        |            nan         |           nan        |                    nan       |                nan |                      nan | MS2DeepScore package/model unavailable and fallback disabled.                                                |
 
-## Model Execution Notes
+## Interpretation
 
-- `FragAnnotor`: `{'class': 'FragAnnotorAnnotator', 'weights': {'our_spectrum_score': 0.35, 'cfmid_spectrum_score': 0.5, 'fragment_formula_score': 0.15, 'sirius_formula_score': 0.0, 'reaction_prior_score': 0.0}, 'executable': None, 'package_available': None}`
-- `CFM-ID`: `{'class': 'CFMIDAnnotator', 'weights': {'cfmid_spectrum_score': 1.0}, 'executable': None, 'package_available': None}`
-- `SIRIUS`: `{'class': 'SiriusAnnotator', 'weights': {'sirius_formula_score': 1.0}, 'executable': None, 'package_available': None}`
-- `MS2DeepScore`: `{'class': 'MS2DeepScoreAnnotator', 'weights': {'ms2deepscore_score': 1.0}, 'executable': None, 'package_available': False}`
+- PFAS locked-test ranking supports the selected primary FragAnnotor policy within the frozen PFAS benchmark.
+- CASMI2022 native CFM-ID/SIRIUS/MS2DeepScore results are unavailable in this environment; preserved fallback CASMI results are preliminary only.
+- No result with `native_or_fallback=native_unavailable` should be described as a completed native baseline.
+- MS2DeepScore native comparison is blocked until the package and an appropriate pretrained model/embedding workflow are available.
 
-## Interpretation Guardrails
+## Exact Reproduction Command
 
-- Do not claim CASMI 2022 performance unless the CASMI standard test split is loaded and marked completed.
-- Do not describe deterministic fallback wrappers as native CFM-ID/SIRIUS/MS2DeepScore inference.
-- Clear FragAnnotor improvement is supported for the PFAS locked-test run in this artifact; CASMI uses fallback scores.
-- PFAS results use the frozen locked-test candidate matrix and do not tune on locked test.
+```bash
+python scripts/run_benchmark.py --dataset both --native-baselines --allow-fallback false --run-ablation --export-query-level --select-case-studies --output-dir results --seed 20260628
+```
+
+## Known Limitations
+
+- CASMI native baseline execution was not completed because required native tools were not installed.
+- PFAS results depend on the frozen candidate matrix generated in the transformation-product workflow.
+- The benchmark does not establish deployment-ready thresholds or universal LC-MS/MS prediction performance.

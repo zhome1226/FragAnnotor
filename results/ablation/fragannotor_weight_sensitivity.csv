@@ -1,0 +1,7 @@
+variant,top1_accuracy,top5_accuracy,top10_accuracy,mean_reciprocal_rank,mean_top1_tanimoto,molecular_formula_accuracy,n_queries,weight_our_spectrum_score,weight_cfmid_spectrum_score,weight_fragment_formula_score
+sens_our035_cfmid050_fragment015,0.328125,0.71875,0.828125,0.502844039959644,,,64,0.35,0.5,0.15
+sens_our050_cfmid035_fragment015,0.328125,0.6875,0.84375,0.4930655381891257,,,64,0.5,0.35,0.15
+sens_our045_cfmid045_fragment010,0.3125,0.734375,0.828125,0.4939567789388656,,,64,0.45,0.45,0.1
+sens_our060_cfmid025_fragment015,0.328125,0.65625,0.828125,0.4723958288816015,,,64,0.6,0.25,0.15
+sens_our025_cfmid060_fragment015,0.34375,0.71875,0.84375,0.5060091445350092,,,64,0.25,0.6,0.15
+sens_our040_cfmid040_fragment020,0.328125,0.6875,0.8125,0.48898007162924734,,,64,0.4,0.4,0.2

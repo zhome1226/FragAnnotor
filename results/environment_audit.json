@@ -1,0 +1,67 @@
+{
+  "conda_prefix": "",
+  "cuda": {
+    "cuda_available": true,
+    "device_count": 1
+  },
+  "cwd": "/home/zhome/ec_structure/github_export/FragAnnotor",
+  "executables": {
+    "cfm_id": null,
+    "cfm_predict": null,
+    "cfmid": null,
+    "git": "/usr/bin/git",
+    "java": null,
+    "python": "/usr/bin/python3",
+    "sirius": null
+  },
+  "git": {
+    "branch": "main",
+    "commit": "ab26cb5b7c6bad88678385da2e1076f12e981d9d",
+    "status_short": "M results/benchmark_predictions.csv\n M results/benchmark_report.md\n M results/benchmark_results.csv\n M results/benchmark_results.json\n M results/config.yaml\n M results/figures/bar_plot_topk_accuracy.png\n M results/figures/comparison_table.png\n M results/figures/pfas_case_study_examples.png\n M scripts/run_benchmark.py\n?? docs/\n?? results/README.md\n?? results/ablation/\n?? results/case_studies/\n?? results/casmi2022_candidate_level_predictions.csv\n?? results/casmi2022_native_benchmark_summary.csv\n?? results/casmi2022_native_benchmark_summary.json\n?? results/casmi2022_query_level_results.csv\n?? results/decoy_threshold_summary.csv\n?? results/environment_audit.json\n?? results/external_validation_data_gap_summary.csv\n?? results/figures/ablation_mrr.png\n?? results/figures/ablation_top10_accuracy.png\n?? results/figures/case_structures/\n?? results/figures/casmi2022_candidate_size_distribution.png\n?? results/figures/pfas_candidate_size_effect.png\n?? results/figures/pfas_case_rank_comparison.png\n?? results/figures/pfas_case_top10_score_profiles.png\n?? results/figures/pfas_formula_match_effect.png\n?? results/figures/pfas_subclass_top10_accuracy.png\n?? results/figures/sota_mrr_comparison.png\n?? results/figures/sota_rank_delta_boxplot.png\n?? results/figures/sota_topk_accuracy_grouped_bar.png\n?? results/figures/weight_sensitivity_heatmap.png\n?? results/logs/\n?? results/native_baseline_audit.csv\n?? results/native_baseline_audit.json\n?? results/predictions/\n?? results/preliminary/\n?? results/query_level/\n?? results/sota_bootstrap_confidence_intervals.csv\n?? results/sota_comparison_summary.csv\n?? results/sota_comparison_summary.json\n?? results/sota_pairwise_rank_comparison.csv\n?? results/stratified/\n?? scripts/setup_native_baselines.sh"
+  },
+  "os": "posix",
+  "packages": {
+    "matchms": {
+      "available": false,
+      "version": null
+    },
+    "matplotlib": {
+      "available": true,
+      "version": "3.9.2"
+    },
+    "ms2deepscore": {
+      "available": false,
+      "version": null
+    },
+    "numpy": {
+      "available": true,
+      "version": "1.26.3"
+    },
+    "pandas": {
+      "available": true,
+      "version": "2.3.3"
+    },
+    "rdkit": {
+      "available": true,
+      "version": "2026.3.1"
+    },
+    "torch": {
+      "available": true,
+      "version": "2.3.1"
+    },
+    "yaml": {
+      "available": true,
+      "version": "6.0.3"
+    }
+  },
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "python_executable": "/usr/bin/python3",
+  "python_version": "3.10.12 (main, Mar  3 2026, 11:56:32) [GCC 11.4.0]",
+  "versions": {
+    "cfm_predict": null,
+    "cfmid": null,
+    "java": null,
+    "sirius": null
+  },
+  "virtual_env": ""
+}
