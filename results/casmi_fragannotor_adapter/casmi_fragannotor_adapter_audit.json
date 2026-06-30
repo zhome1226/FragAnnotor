@@ -1,5 +1,5 @@
 {
-  "adapter_id": "fragannotor_casmi_zero_shot_formula_fragment_adapter_v1",
+  "adapter_id": "fragannotor_casmi_formal_fixed_component_score_mode_v1",
   "formula_scores_present": 236358,
   "guardrails": [
     "No CASMI labels are used for training or weight search.",

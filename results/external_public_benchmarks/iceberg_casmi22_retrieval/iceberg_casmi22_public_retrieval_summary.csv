@@ -1,0 +1,7 @@
+benchmark,method,cosine_similarity,top1_accuracy,mean_top1_tanimoto,source
+CASMI22 public retrieval,Random,,0.013,0.196,ms-pred-iceberg-2024 notebooks/iceberg_casmi22.ipynb cell 30 output
+CASMI22 public retrieval,CFM-ID,0.248,,,ms-pred-iceberg-2024 notebooks/iceberg_casmi22.ipynb cell 30 output
+CASMI22 public retrieval,NEIMS (FFN),0.361,0.086,0.333,ms-pred-iceberg-2024 notebooks/iceberg_casmi22.ipynb cell 30 output
+CASMI22 public retrieval,FixedVocab,0.409,0.073,0.324,ms-pred-iceberg-2024 notebooks/iceberg_casmi22.ipynb cell 30 output
+CASMI22 public retrieval,MassFormer,0.415,0.076,0.317,ms-pred-iceberg-2024 notebooks/iceberg_casmi22.ipynb cell 30 output
+CASMI22 public retrieval,ICEBERG,0.417,0.129,0.378,ms-pred-iceberg-2024 notebooks/iceberg_casmi22.ipynb cell 30 output

@@ -16,8 +16,8 @@
   },
   "git": {
     "branch": "main",
-    "commit": "3c3185f4b9e081d4b7a98dab118674fdfb97d9eb",
-    "status_short": "D results/benchmark_predictions.csv\n D results/casmi2022_candidate_level_predictions.csv\n D results/predictions/casmi2022_fragannotor_predictions.csv\n M scripts/run_benchmark.py"
+    "commit": "02deb8f9168423175a5feb068eaa0c004f07b9d4",
+    "status_short": "M docs/BENCHMARK_REPORT.md\n M results/README.md\n M results/benchmark_predictions.csv\n M results/benchmark_predictions.csv.gz\n M results/benchmark_report.md\n M results/benchmark_results.csv\n M results/benchmark_results.json\n M results/casmi2022_candidate_level_predictions.csv\n M results/casmi2022_candidate_level_predictions.csv.gz\n M results/casmi2022_native_benchmark_summary.csv\n M results/casmi2022_native_benchmark_summary.json\n M results/casmi2022_query_level_results.csv\n M results/casmi_fragannotor_adapter/casmi_fragannotor_adapter_audit.json\n M results/environment_audit.json\n M results/predictions/casmi2022_fragannotor_predictions.csv\n M results/predictions/casmi2022_fragannotor_predictions.csv.gz\n M results/query_level/casmi2022_query_level_comparison.csv\n M results/sota_comparison_summary.csv\n M results/sota_comparison_summary.json\n M scripts/run_benchmark.py\n?? results/casmi2022_fragannotor_formal_components/\n?? results/external_public_benchmarks/"
   },
   "os": "posix",
   "packages": {
@@ -91,7 +91,7 @@
         "--version"
       ],
       "returncode": 0,
-      "stderr": "Jun 29, 2026 3:05:31 PM org.apache.commons.beanutils.FluentPropertyBeanIntrospector introspect\nINFO: Error when creating PropertyDescriptor for public final void org.apache.commons.configuration2.AbstractConfiguration.setProperty(java.lang.String,java.lang.Object)! Ignoring this property.\nINFO    15:05:31 - Sirius Workspace Successfull initialized at: /home/zhome/.sirius-4.9\nINFO    15:05:31 - You run SIRIUS 4.9.15\nINFO    15:05:31 - Sirius was compiled with the following ILP solvers: GLPK-v1.7.0 (included), Gurobi-v9.1.1, CPLEX-v12.7.1, COIN-OR-v1.17.3\nINFO    15:05:31 - Treebuilder priorities loaded from 'sirius.properties' are: [GUROBI, CPLEX, CLP, GLPK]\nINFO    15:05:31 - CPU check done. 96 cores that handle 192 threads were found.\nINFO    15:05:31 - Bug reporter initialized.\nINFO    15:05:31 - Web API initialized.\nINFO    15:05:32 - Running with following arguments: [--version]\nINFO    15:05:32 - Job manager successful initialized with 96 CPU thread(s) and 3 IO thread(s).\nINFO    15:05:32 - CLI shut down hook: SIRIUS is cleaning up threads and shuts down...",
+      "stderr": "Jun 30, 2026 8:38:21 AM org.apache.commons.beanutils.FluentPropertyBeanIntrospector introspect\nINFO: Error when creating PropertyDescriptor for public final void org.apache.commons.configuration2.AbstractConfiguration.setProperty(java.lang.String,java.lang.Object)! Ignoring this property.\nINFO    08:38:22 - Sirius Workspace Successfull initialized at: /home/zhome/.sirius-4.9\nINFO    08:38:22 - You run SIRIUS 4.9.15\nINFO    08:38:22 - Sirius was compiled with the following ILP solvers: GLPK-v1.7.0 (included), Gurobi-v9.1.1, CPLEX-v12.7.1, COIN-OR-v1.17.3\nINFO    08:38:22 - Treebuilder priorities loaded from 'sirius.properties' are: [GUROBI, CPLEX, CLP, GLPK]\nINFO    08:38:22 - CPU check done. 96 cores that handle 192 threads were found.\nINFO    08:38:22 - Bug reporter initialized.\nINFO    08:38:22 - Web API initialized.\nINFO    08:38:22 - Running with following arguments: [--version]\nINFO    08:38:22 - Job manager successful initialized with 96 CPU thread(s) and 3 IO thread(s).\nINFO    08:38:22 - CLI shut down hook: SIRIUS is cleaning up threads and shuts down...",
       "stdout": "SIRIUS 4.9.15\nSIRIUS lib: 4.6.1\nCSI:FingerID lib: 1.6.0"
     }
   },

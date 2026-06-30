@@ -31,7 +31,7 @@
     }
   },
   "interpretation": {
-    "casmi_note": "CASMI native SIRIUS formula-only baseline scores were generated; CASMI FragAnnotor, CFM-ID, and MS2DeepScore native structure-ranking outputs remain unavailable with fallback disabled.",
+    "casmi_note": "CASMI native SIRIUS formula-only baseline scores and FragAnnotor formal fixed component scores were generated; native CFM-ID and MS2DeepScore structure-ranking outputs remain unavailable with fallback disabled.",
     "native_claim_guardrail": "Rows with native_or_fallback=native_unavailable are not native benchmark results.",
     "pfas_score_note": "PFAS CFM-ID and SIRIUS columns are real precomputed external expert scores from the companion PFAS workflow."
   },
@@ -68,7 +68,7 @@
       "model": "FragAnnotor",
       "molecular_formula_accuracy": 0.7991266375545851,
       "n_queries": 229,
-      "native_or_fallback": "zero_shot_formula_fragment_adapter",
+      "native_or_fallback": "formal_fixed_component_score_mode",
       "notes": "",
       "status": "completed",
       "top10_accuracy": 0.6724890829694323,

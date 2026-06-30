@@ -1,0 +1,13 @@
+{
+  "claim_guardrail": "These public CASMI22 retrieval results are external context. They should not be described as a direct apples-to-apples head-to-head against FragAnnotor unless the same candidate sets, preprocessing, and splits are harmonized.",
+  "direct_rerun_status": "not_rerun_in_fragannotor_repository; imported as public external benchmark context from vendor notebook output",
+  "source_cells": [
+    23,
+    29,
+    30
+  ],
+  "source_notebook": "notebooks/iceberg_casmi22.ipynb",
+  "source_repository": "/home/zhome/ec_structure/external_ms_models/vendor/ms-pred-iceberg-2024",
+  "stage": "external_public_benchmark_iceberg_casmi22_retrieval_v1",
+  "status": "public_vendor_notebook_results_imported_with_provenance"
+}

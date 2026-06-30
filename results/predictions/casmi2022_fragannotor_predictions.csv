@@ -23,9 +23,9 @@
     "error_message"
   ],
   "compressed_path": "casmi2022_fragannotor_predictions.csv.gz",
-  "compressed_size_bytes": 9076551,
+  "compressed_size_bytes": 9024761,
   "format": "csv.gz",
   "reason": "Raw CSV exceeds GitHub's 100 MB single-file limit; full data are stored in the adjacent gzip CSV.",
   "rows": 407600,
-  "uncompressed_size_bytes": 150048831
+  "uncompressed_size_bytes": 146788031
 }

@@ -1,0 +1,31 @@
+{
+  "claim_guardrail": "This is a formal fixed component-score mode using real CASMI spectra and native SIRIUS formula scores, not a trained FragAnnotor neural spectrum model and not a replacement for missing CFM-ID/MS2DeepScore native baselines.",
+  "component_weights": {
+    "fragment_formula_plausibility_score": 0.15,
+    "precursor_mass_consistency_score": 0.2,
+    "sirius_formula_plausibility_score": 0.65
+  },
+  "main_metrics": {
+    "mean_reciprocal_rank": 0.6585487281556323,
+    "mean_top1_tanimoto": 0.6940283564485756,
+    "molecular_formula_accuracy": 0.7991266375545851,
+    "top10_accuracy": 0.6724890829694323,
+    "top1_accuracy": 0.6506550218340611,
+    "top5_accuracy": 0.6593886462882096
+  },
+  "model_label": "FragAnnotor-CASMI fixed formula/fragment component mode",
+  "n_candidate_rows": 408249,
+  "n_queries": 229,
+  "native_sirius_formula_only_metrics": {
+    "mean_reciprocal_rank": 0.6499330162600465,
+    "mean_top1_tanimoto": 0.7496250635336656,
+    "molecular_formula_accuracy": 0.7947598253275109,
+    "top10_accuracy": 0.6550218340611353,
+    "top1_accuracy": 0.6462882096069869,
+    "top5_accuracy": 0.6550218340611353
+  },
+  "no_casmi_training_or_weight_search": true,
+  "not_native_learned_model": true,
+  "stage": "casmi2022_fragannotor_formal_components_v1",
+  "status": "formal_fixed_component_score_mode_available"
+}

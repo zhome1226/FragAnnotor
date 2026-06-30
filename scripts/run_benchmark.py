@@ -684,7 +684,7 @@ def load_casmi_records(casmi_dir: Path | None, candidate_limit: int, include_lig
                         "fragannotor_casmi_adapter_score": adapter_components["fragannotor_casmi_adapter_score"],
                         "reaction_prior_score": 0.0,
                         "ms2deepscore_score": fallback_ms2_score,
-                        "score_source": "casmi2022_zero_shot_formula_fragment_adapter",
+                        "score_source": "casmi2022_formal_fixed_component_score_mode",
                         "fallback_score_source": "massformer_casmi2022_lightweight_fallback_scores",
                         "fragannotor_adapter_components": "0.65*native_sirius_formula_score + 0.20*precursor_mass_consistency + 0.15*common_fragment_or_neutral_loss_formula_plausibility",
                     }
@@ -960,7 +960,7 @@ def native_baseline_audit(env: dict[str, Any]) -> list[dict[str, Any]]:
 def model_score(candidate: dict[str, Any], model: str, allow_fallback: bool) -> tuple[float, str]:
     if model == "FragAnnotor":
         if "fragannotor_casmi_adapter_score" in candidate:
-            return safe_float(candidate.get("fragannotor_casmi_adapter_score"), default=np.nan), "fragannotor_casmi_zero_shot_formula_fragment_adapter"
+            return safe_float(candidate.get("fragannotor_casmi_adapter_score"), default=np.nan), "fragannotor_casmi_formal_fixed_component_score"
         weights = {"our_spectrum_score": 0.35, "cfmid_spectrum_score": 0.50, "fragment_formula_score": 0.15}
     elif model == "CFM-ID":
         weights = {"cfmid_spectrum_score": 1.0}
@@ -1015,7 +1015,7 @@ def model_availability(dataset: str, model: str, native_baselines: bool, allow_f
             return True, "deterministic_fallback", "Native CASMI outputs unavailable; explicit fallback was allowed."
         if model == "FragAnnotor":
             if NATIVE_SIRIUS_CASMI_CANDIDATES.exists():
-                return True, "zero_shot_formula_fragment_adapter", "CASMI FragAnnotor zero-shot adapter using experimental peaks, candidate formulas, precursor mass consistency, common fragment/neutral-loss formula plausibility, and native SIRIUS formula scores; no CASMI training or weight search."
+                return True, "formal_fixed_component_score_mode", "CASMI FragAnnotor formal fixed component-score mode using experimental peaks, candidate formulas, precursor mass consistency, common fragment/neutral-loss formula plausibility, and native SIRIUS formula scores; no CASMI training or weight search."
             return False, "native_unavailable", "CASMI FragAnnotor adapter requires native SIRIUS formula scores; run scripts/run_native_sirius_casmi.py first."
         if model == "CFM-ID":
             return False, "native_unavailable", "CFM-ID native CASMI execution/export parser is unavailable in this repository run; fallback disabled."
@@ -1114,7 +1114,7 @@ def tool_version_for_model(model: str, env: dict[str, Any], dataset: str) -> str
         stdout = safe_str(version.get("stdout") if isinstance(version, dict) else version)
         return stdout.splitlines()[0] if stdout else "SIRIUS version unavailable"
     if model == "FragAnnotor" and dataset == "CASMI2022":
-        return "FragAnnotor CASMI zero-shot formula/fragment adapter v1"
+        return "FragAnnotor CASMI formal fixed component-score mode v1"
     return "FragAnnotor frozen no-SIRIUS weights"
 
 
@@ -1247,7 +1247,7 @@ def write_summary_files(summary: pd.DataFrame, query_df: pd.DataFrame, predictio
             "interpretation": {
                 "native_claim_guardrail": "Rows with native_or_fallback=native_unavailable are not native benchmark results.",
                 "pfas_score_note": "PFAS CFM-ID and SIRIUS columns are real precomputed external expert scores from the companion PFAS workflow.",
-                "casmi_note": "CASMI native SIRIUS formula-only baseline scores were generated; CASMI FragAnnotor, CFM-ID, and MS2DeepScore native structure-ranking outputs remain unavailable with fallback disabled.",
+                "casmi_note": "CASMI native SIRIUS formula-only baseline scores and FragAnnotor formal fixed component scores were generated; native CFM-ID and MS2DeepScore structure-ranking outputs remain unavailable with fallback disabled.",
             },
         },
     )
@@ -1918,7 +1918,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
     lines.extend(["", "## Main Results", "", markdown_table(summary), ""])
     lines.extend(["## Native CASMI2022 Results", "", markdown_table(summary[summary["dataset"].eq("CASMI2022")]), ""])
     lines.extend([
-        "CASMI2022 includes one completed native baseline in this run: SIRIUS 4.9.15 formula-only ranking. FragAnnotor is reported separately as a zero-shot formula/fragment constrained CASMI adapter using real experimental peaks, candidate formulas, precursor/adduct mass consistency, common fragment/neutral-loss plausibility, and native SIRIUS formula scores. It is not labeled as a trained native CASMI model. CFM-ID and MS2DeepScore remain unavailable under `--allow-fallback false`.",
+        "CASMI2022 includes one completed native baseline in this run: SIRIUS 4.9.15 formula-only ranking. FragAnnotor is reported separately as a formal fixed formula/fragment component-score CASMI mode using real experimental peaks, candidate formulas, precursor/adduct mass consistency, common fragment/neutral-loss plausibility, and native SIRIUS formula scores. It is not labeled as a trained native CASMI model. CFM-ID and MS2DeepScore remain unavailable under `--allow-fallback false`.",
         "",
         "## Preliminary Fallback CASMI Results",
         "",
@@ -1946,6 +1946,33 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             except Exception:
                 lines.append("Peak-level annotation status is recorded in `results/case_studies/peak_annotation_status.json`.")
         lines.append("")
+    formal_path = results_dir / "casmi2022_fragannotor_formal_components" / "formal_component_claim_audit.json"
+    if formal_path.exists():
+        try:
+            formal = json.loads(formal_path.read_text(encoding="utf-8"))
+            mm = formal.get("main_metrics", {})
+            lines.extend([
+                "## Formal CASMI FragAnnotor Component Package",
+                "",
+                f"Formal fixed component-score mode is available at `results/casmi2022_fragannotor_formal_components/` with Top-1 `{mm.get('top1_accuracy')}`, Top-5 `{mm.get('top5_accuracy')}`, Top-10 `{mm.get('top10_accuracy')}`, and MRR `{mm.get('mean_reciprocal_rank')}`.",
+                formal.get("claim_guardrail", ""),
+                "",
+            ])
+        except Exception:
+            pass
+    external_path = results_dir / "external_public_benchmarks" / "iceberg_casmi22_retrieval" / "external_benchmark_audit.json"
+    if external_path.exists():
+        try:
+            external = json.loads(external_path.read_text(encoding="utf-8"))
+            lines.extend([
+                "## External Public Benchmark Context",
+                "",
+                "ICEBERG CASMI22 public retrieval context is available at `results/external_public_benchmarks/iceberg_casmi22_retrieval/`, covering Random, CFM-ID, NEIMS, FixedVocab, MassFormer, and ICEBERG from the local vendor notebook outputs.",
+                external.get("claim_guardrail", ""),
+                "",
+            ])
+        except Exception:
+            pass
     fiora_audit_path = results_dir / "external_public_model_audit" / "fiora_external_model_audit.json"
     if fiora_audit_path.exists():
         try:
@@ -1967,7 +1994,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "## Interpretation",
             "",
             "- PFAS locked-test ranking supports the selected primary FragAnnotor policy within the frozen PFAS benchmark.",
-            "- CASMI2022 native SIRIUS formula-only ranking completed; CASMI FragAnnotor is available only as a transparent zero-shot formula/fragment constrained adapter, while CFM-ID and MS2DeepScore native structure-ranking outputs remain blocked and are not replaced with fallback scores.",
+            "- CASMI2022 native SIRIUS formula-only ranking completed; CASMI FragAnnotor is available as an audited fixed formula/fragment component-score mode, while CFM-ID and MS2DeepScore native structure-ranking outputs remain blocked and are not replaced with fallback scores.",
             "- No result with `native_or_fallback=native_unavailable` should be described as a completed native baseline.",
             "- MS2DeepScore native comparison is blocked until the package and an appropriate pretrained model/embedding workflow are available.",
             "- SIRIUS is used here as molecular formula plausibility evidence, not as a synthetic spectrum generator or CSI:FingerID structure predictor.",
@@ -1976,14 +2003,14 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "",
             "- PFAS locked-test expert-fusion benchmark: ready as an internal frozen benchmark, with conservative claims.",
             "- PFAS ablation and case-study package: ready for manuscript drafting, subject to the external-validation limitation.",
-            "- CASMI benchmark: partially ready; SIRIUS formula-only native baseline and FragAnnotor zero-shot formula/fragment adapter completed, while native CFM-ID and MS2DeepScore remain blocked.",
-            "- SOTA comparison: partially ready; do not claim full FragAnnotor superiority on CASMI until missing native baselines and independent CASMI-trained/validated FragAnnotor components are available.",
+            "- CASMI benchmark: partially ready; SIRIUS formula-only native baseline and FragAnnotor formal fixed component-score mode completed, while native CFM-ID and MS2DeepScore remain blocked.",
+            "- SOTA comparison: partially ready; public ICEBERG/MassFormer/NEIMS CASMI22 retrieval context is included with provenance, but do not claim direct head-to-head superiority until candidate sets and preprocessing are harmonized.",
             "",
             "## Remaining Blockers",
             "",
             "- Native CFM-ID CASMI scoring is blocked by `Invalid Feature Configuration` in available pretrained model/config smoke tests.",
             "- Native MS2DeepScore is blocked because the package and a compatible pretrained model/embedding workflow are unavailable.",
-            "- CASMI FragAnnotor is currently a zero-shot formula/fragment adapter, not a trained native CASMI model.",
+            "- CASMI FragAnnotor is currently a formal fixed component-score mode, not a trained native CASMI neural model.",
             "- PFAS results remain an internal frozen locked-test benchmark and are not independent external validation.",
             "",
             "## Exact Reproduction Command",
@@ -1994,7 +2021,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "",
             "## Known Limitations",
             "",
-            "- CASMI native benchmark execution is incomplete: SIRIUS formula-only scores and FragAnnotor zero-shot adapter scores are available, but CFM-ID smoke tests fail with model/config incompatibility and MS2DeepScore has no configured package/model.",
+            "- CASMI native benchmark execution is incomplete: SIRIUS formula-only scores and FragAnnotor fixed component scores are available, but CFM-ID smoke tests fail with model/config incompatibility and MS2DeepScore has no configured package/model.",
             "- PFAS results depend on the frozen candidate matrix generated in the transformation-product workflow.",
             "- The benchmark does not establish deployment-ready thresholds or universal LC-MS/MS prediction performance.",
         ]
@@ -2016,8 +2043,10 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
         "- `ablation/`: FragAnnotor component ablation and weight sensitivity outputs.",
         "- `query_level/`: query-level comparison tables and PFAS Top-10 candidates.",
         "- `case_studies/`: automatically selected PFAS case-study rows and peak-annotation availability status.",
-        "- `casmi_fragannotor_adapter/`: CASMI zero-shot formula/fragment adapter components and guardrail audit.",
+        "- `casmi_fragannotor_adapter/`: legacy CASMI adapter components and guardrail audit.",
         "- `external_public_model_audit/`: optional public-model readiness probes such as FIORA smoke execution.",
+        "- `casmi2022_fragannotor_formal_components/`: audited fixed component-score CASMI2022 FragAnnotor package.",
+        "- `external_public_benchmarks/iceberg_casmi22_retrieval/`: imported public ICEBERG CASMI22 retrieval benchmark context with provenance.",
         "- `stratified/`: PFAS subclass and difficulty-stratified summaries.",
         "- `figures/`: matplotlib-only publication-draft plots.",
         "- `preliminary/`: preserved preliminary fallback CASMI result files.",
@@ -2157,7 +2186,7 @@ def write_casmi_adapter_audit(records: list[QueryRecord], results_dir: Path) -> 
     if not df.empty:
         df.to_csv(audit_dir / "casmi_fragannotor_adapter_candidate_components.csv", index=False)
     payload = {
-        "adapter_id": "fragannotor_casmi_zero_shot_formula_fragment_adapter_v1",
+        "adapter_id": "fragannotor_casmi_formal_fixed_component_score_mode_v1",
         "status": "available" if records else "unavailable",
         "n_queries": len(records),
         "n_candidate_rows": int(len(df)),
@@ -2175,6 +2204,188 @@ def write_casmi_adapter_audit(records: list[QueryRecord], results_dir: Path) -> 
         ],
     }
     write_json(audit_dir / "casmi_fragannotor_adapter_audit.json", payload)
+
+
+def evaluate_component_variant_from_predictions(merged: pd.DataFrame, name: str, score_col: str | None = None, weights: dict[str, float] | None = None) -> tuple[dict[str, Any], pd.DataFrame]:
+    rows: list[dict[str, Any]] = []
+    for query_id, group in merged.groupby("query_id", sort=True):
+        scored = group.copy()
+        if score_col:
+            scored["score"] = pd.to_numeric(scored[score_col], errors="coerce").fillna(0.0)
+        else:
+            total = np.zeros(len(scored))
+            for col, weight in (weights or {}).items():
+                total += pd.to_numeric(scored[col], errors="coerce").fillna(0.0).to_numpy() * float(weight)
+            scored["score"] = total
+        # Match the main ranking path: keep the highest-scoring row per
+        # structure, then rank structures by score with deterministic ties.
+        ranked = (
+            scored.sort_values(["score", "candidate_inchikey", "candidate_id"], ascending=[False, True, True])
+            .drop_duplicates("candidate_inchikey", keep="first")
+            .sort_values(["score", "candidate_inchikey", "candidate_id"], ascending=[False, True, True])
+            .reset_index(drop=True)
+        )
+        correct = np.where(ranked["is_correct"].astype(bool).to_numpy())[0]
+        true_rank = np.nan if len(correct) == 0 else float(correct[0] + 1)
+        rows.append(
+            {
+                "variant": name,
+                "query_id": query_id,
+                "true_rank": true_rank,
+                "top1_correct": bool(not pd.isna(true_rank) and true_rank == 1),
+                "top5_correct": bool(not pd.isna(true_rank) and true_rank <= 5),
+                "top10_correct": bool(not pd.isna(true_rank) and true_rank <= 10),
+                "reciprocal_rank": 0.0 if pd.isna(true_rank) else 1.0 / true_rank,
+                "candidate_count": int(len(ranked)),
+            }
+        )
+    qdf = pd.DataFrame(rows)
+    metrics = {
+        "variant": name,
+        "n_queries": int(len(qdf)),
+        "top1_accuracy": float(qdf["top1_correct"].mean()),
+        "top5_accuracy": float(qdf["top5_correct"].mean()),
+        "top10_accuracy": float(qdf["top10_correct"].mean()),
+        "mean_reciprocal_rank": float(qdf["reciprocal_rank"].mean()),
+        "median_true_rank": float(pd.to_numeric(qdf["true_rank"], errors="coerce").median()),
+        "median_candidate_count": float(qdf["candidate_count"].median()),
+    }
+    return metrics, qdf
+
+def write_casmi_formal_component_package(query_df: pd.DataFrame, predictions: pd.DataFrame, records: list[QueryRecord], summary: pd.DataFrame, results_dir: Path) -> None:
+    outdir = results_dir / "casmi2022_fragannotor_formal_components"
+    outdir.mkdir(parents=True, exist_ok=True)
+    rows: list[dict[str, Any]] = []
+    for record in records:
+        for candidate in record.candidates:
+            rows.append(
+                {
+                    "spectrum_id": record.spectrum_id,
+                    "query_id": record.query_id,
+                    "candidate_id": safe_str(candidate.get("candidate_id")),
+                    "candidate_formula": safe_str(candidate.get("candidate_formula")),
+                    "fragannotor_formal_component_score": safe_float(candidate.get("fragannotor_casmi_adapter_score"), default=np.nan),
+                    "sirius_formula_plausibility_score": safe_float(candidate.get("sirius_native_formula_score"), default=np.nan),
+                    "precursor_mass_consistency_score": safe_float(candidate.get("casmi_mass_consistency_score"), default=np.nan),
+                    "fragment_formula_plausibility_score": safe_float(candidate.get("casmi_fragment_formula_score"), default=np.nan),
+                    "sirius_native_formula_rank": safe_float(candidate.get("sirius_native_formula_rank"), default=np.nan),
+                    "sirius_native_status": safe_str(candidate.get("sirius_native_status")),
+                    "component_weight_sirius_formula": 0.65,
+                    "component_weight_precursor_mass": 0.20,
+                    "component_weight_fragment_formula": 0.15,
+                    "component_weight_reaction_prior": 0.0,
+                    "component_weight_ms2deep_embedding": 0.0,
+                    "training_status": "fixed_components_no_casmi_training_or_weight_search",
+                    "component_score_formula": "0.65*sirius_formula_plausibility_score + 0.20*precursor_mass_consistency_score + 0.15*fragment_formula_plausibility_score",
+                }
+            )
+    components = pd.DataFrame(rows)
+    if components.empty:
+        return
+    components.to_csv(outdir / "casmi2022_fragannotor_formal_component_matrix.csv.gz", index=False, compression="gzip")
+    coverage_rows = []
+    for col in ["sirius_formula_plausibility_score", "precursor_mass_consistency_score", "fragment_formula_plausibility_score", "fragannotor_formal_component_score"]:
+        values = pd.to_numeric(components[col], errors="coerce")
+        coverage_rows.append(
+            {
+                "component": col,
+                "candidate_rows": int(len(components)),
+                "rows_with_score": int(values.notna().sum()),
+                "coverage_fraction": float(values.notna().mean()),
+                "min": np.nan if values.dropna().empty else float(values.min()),
+                "mean": np.nan if values.dropna().empty else float(values.mean()),
+                "median": np.nan if values.dropna().empty else float(values.median()),
+                "max": np.nan if values.dropna().empty else float(values.max()),
+            }
+        )
+    pd.DataFrame(coverage_rows).to_csv(outdir / "component_coverage_summary.csv", index=False)
+
+    casmi_query = query_df[(query_df["dataset"].eq("CASMI2022")) & (query_df["model"].eq("FragAnnotor"))].copy()
+    casmi_query.to_csv(outdir / "casmi2022_fragannotor_formal_query_results.csv", index=False)
+    frag_pred = predictions[(predictions["dataset"].eq("CASMI2022")) & (predictions["model"].eq("FragAnnotor")) & (predictions["candidate_id"].astype(str).ne(""))].copy()
+    merged = frag_pred[["query_id", "candidate_id", "candidate_inchikey", "true_inchikey", "is_correct"]].merge(components, on=["query_id", "candidate_id"], how="left")
+    metrics_rows = []
+    query_frames = []
+    full_q = casmi_query[["query_id", "true_rank", "top1_correct", "top5_correct", "top10_correct", "reciprocal_rank", "candidate_count"]].copy()
+    full_q.insert(0, "variant", "formal_full_fixed_components")
+    full_metrics = {
+        "variant": "formal_full_fixed_components",
+        "n_queries": int(len(full_q)),
+        "top1_accuracy": float(full_q["top1_correct"].mean()),
+        "top5_accuracy": float(full_q["top5_correct"].mean()),
+        "top10_accuracy": float(full_q["top10_correct"].mean()),
+        "mean_reciprocal_rank": float(full_q["reciprocal_rank"].mean()),
+        "median_true_rank": float(pd.to_numeric(full_q["true_rank"], errors="coerce").median()),
+        "median_candidate_count": float(full_q["candidate_count"].median()),
+    }
+    metrics_rows.append(full_metrics)
+    query_frames.append(full_q)
+    variants = [
+        ("sirius_formula_only_component", "sirius_formula_plausibility_score", None),
+        ("precursor_mass_only_component", "precursor_mass_consistency_score", None),
+        ("fragment_formula_only_component", "fragment_formula_plausibility_score", None),
+        ("without_sirius_formula_component", None, {"precursor_mass_consistency_score": 0.5714285714, "fragment_formula_plausibility_score": 0.4285714286}),
+        ("without_fragment_formula_component", None, {"sirius_formula_plausibility_score": 0.7647058824, "precursor_mass_consistency_score": 0.2352941176}),
+    ]
+    for name, score_col, weights in variants:
+        metrics, qdf = evaluate_component_variant_from_predictions(merged, name, score_col, weights)
+        metrics_rows.append(metrics)
+        query_frames.append(qdf)
+    pd.DataFrame(metrics_rows).to_csv(outdir / "component_ablation_metrics.csv", index=False)
+    pd.concat(query_frames, ignore_index=True).to_csv(outdir / "component_ablation_query_ranks.csv", index=False)
+
+    frag_summary = summary[(summary["dataset"].eq("CASMI2022")) & (summary["model"].eq("FragAnnotor"))].iloc[0].to_dict()
+    sirius_summary = summary[(summary["dataset"].eq("CASMI2022")) & (summary["model"].eq("SIRIUS"))].iloc[0].to_dict()
+    claim_audit = {
+        "stage": "casmi2022_fragannotor_formal_components_v1",
+        "status": "formal_fixed_component_score_mode_available",
+        "n_queries": int(frag_summary["n_queries"]),
+        "n_candidate_rows": int(len(components)),
+        "model_label": "FragAnnotor-CASMI fixed formula/fragment component mode",
+        "not_native_learned_model": True,
+        "no_casmi_training_or_weight_search": True,
+        "component_weights": {"sirius_formula_plausibility_score": 0.65, "precursor_mass_consistency_score": 0.20, "fragment_formula_plausibility_score": 0.15},
+        "main_metrics": {k: frag_summary[k] for k in ["top1_accuracy", "top5_accuracy", "top10_accuracy", "mean_reciprocal_rank", "mean_top1_tanimoto", "molecular_formula_accuracy"]},
+        "native_sirius_formula_only_metrics": {k: sirius_summary[k] for k in ["top1_accuracy", "top5_accuracy", "top10_accuracy", "mean_reciprocal_rank", "mean_top1_tanimoto", "molecular_formula_accuracy"]},
+        "claim_guardrail": "This is a formal fixed component-score mode using real CASMI spectra and native SIRIUS formula scores, not a trained FragAnnotor neural spectrum model and not a replacement for missing CFM-ID/MS2DeepScore native baselines.",
+    }
+    write_json(outdir / "formal_component_claim_audit.json", claim_audit)
+    report = f"""# CASMI2022 FragAnnotor Formal Component-Score Package\n\nThis package reports an audited fixed component-score mode for CASMI2022. It uses real CASMI experimental peaks, candidate formulas, native SIRIUS formula scores, precursor/adduct mass consistency, and fixed common fragment/neutral-loss plausibility components.\n\n## Main Result\n\n- Queries: {int(frag_summary['n_queries'])}\n- Candidate rows: {len(components)}\n- Top-1: {float(frag_summary['top1_accuracy']):.6f}\n- Top-5: {float(frag_summary['top5_accuracy']):.6f}\n- Top-10: {float(frag_summary['top10_accuracy']):.6f}\n- MRR: {float(frag_summary['mean_reciprocal_rank']):.6f}\n\n## Guardrail\n\nThis is not claimed as a CASMI-trained native neural FragAnnotor model. No CASMI labels were used for training or weight search. The fixed score formula is `0.65 * native SIRIUS formula plausibility + 0.20 * precursor mass consistency + 0.15 * common fragment/neutral-loss formula plausibility`.\n"""
+    (outdir / "casmi2022_fragannotor_formal_component_report.md").write_text(report, encoding="utf-8")
+
+
+def write_external_public_benchmark_context(summary: pd.DataFrame, results_dir: Path) -> None:
+    outdir = results_dir / "external_public_benchmarks" / "iceberg_casmi22_retrieval"
+    outdir.mkdir(parents=True, exist_ok=True)
+    rows = [
+        {"benchmark": "CASMI22 public retrieval", "method": "Random", "cosine_similarity": np.nan, "top1_accuracy": 0.013, "mean_top1_tanimoto": 0.196, "source": "ms-pred-iceberg-2024 notebooks/iceberg_casmi22.ipynb cell 30 output"},
+        {"benchmark": "CASMI22 public retrieval", "method": "CFM-ID", "cosine_similarity": 0.248, "top1_accuracy": np.nan, "mean_top1_tanimoto": np.nan, "source": "ms-pred-iceberg-2024 notebooks/iceberg_casmi22.ipynb cell 30 output"},
+        {"benchmark": "CASMI22 public retrieval", "method": "NEIMS (FFN)", "cosine_similarity": 0.361, "top1_accuracy": 0.086, "mean_top1_tanimoto": 0.333, "source": "ms-pred-iceberg-2024 notebooks/iceberg_casmi22.ipynb cell 30 output"},
+        {"benchmark": "CASMI22 public retrieval", "method": "FixedVocab", "cosine_similarity": 0.409, "top1_accuracy": 0.073, "mean_top1_tanimoto": 0.324, "source": "ms-pred-iceberg-2024 notebooks/iceberg_casmi22.ipynb cell 30 output"},
+        {"benchmark": "CASMI22 public retrieval", "method": "MassFormer", "cosine_similarity": 0.415, "top1_accuracy": 0.076, "mean_top1_tanimoto": 0.317, "source": "ms-pred-iceberg-2024 notebooks/iceberg_casmi22.ipynb cell 30 output"},
+        {"benchmark": "CASMI22 public retrieval", "method": "ICEBERG", "cosine_similarity": 0.417, "top1_accuracy": 0.129, "mean_top1_tanimoto": 0.378, "source": "ms-pred-iceberg-2024 notebooks/iceberg_casmi22.ipynb cell 30 output"},
+    ]
+    pd.DataFrame(rows).to_csv(outdir / "iceberg_casmi22_public_retrieval_summary.csv", index=False)
+    frag = summary[(summary["dataset"].eq("CASMI2022")) & (summary["model"].eq("FragAnnotor"))].iloc[0]
+    context = pd.DataFrame([
+        {"benchmark": "CASMI2022 MassFormer processed candidate retrieval", "method": "FragAnnotor formal fixed components", "cosine_similarity": np.nan, "top1_accuracy": frag["top1_accuracy"], "top5_accuracy": frag["top5_accuracy"], "top10_accuracy": frag["top10_accuracy"], "mean_reciprocal_rank": frag["mean_reciprocal_rank"], "mean_top1_tanimoto": frag["mean_top1_tanimoto"], "molecular_formula_accuracy": frag["molecular_formula_accuracy"], "directly_comparable_to_iceberg_public_table": False, "comparison_note": "Different processed candidate set/split and metric availability; shown as external context, not a direct head-to-head claim."},
+        {"benchmark": "CASMI22 public retrieval", "method": "ICEBERG", "cosine_similarity": 0.417, "top1_accuracy": 0.129, "top5_accuracy": np.nan, "top10_accuracy": np.nan, "mean_reciprocal_rank": np.nan, "mean_top1_tanimoto": 0.378, "molecular_formula_accuracy": np.nan, "directly_comparable_to_iceberg_public_table": True, "comparison_note": "Published/vendor notebook CASMI22 retrieval result."},
+        {"benchmark": "CASMI22 public retrieval", "method": "MassFormer", "cosine_similarity": 0.415, "top1_accuracy": 0.076, "top5_accuracy": np.nan, "top10_accuracy": np.nan, "mean_reciprocal_rank": np.nan, "mean_top1_tanimoto": 0.317, "molecular_formula_accuracy": np.nan, "directly_comparable_to_iceberg_public_table": True, "comparison_note": "Published/vendor notebook CASMI22 retrieval result."},
+        {"benchmark": "CASMI22 public retrieval", "method": "NEIMS (FFN)", "cosine_similarity": 0.361, "top1_accuracy": 0.086, "top5_accuracy": np.nan, "top10_accuracy": np.nan, "mean_reciprocal_rank": np.nan, "mean_top1_tanimoto": 0.333, "molecular_formula_accuracy": np.nan, "directly_comparable_to_iceberg_public_table": True, "comparison_note": "Published/vendor notebook CASMI22 retrieval result."},
+    ])
+    context.to_csv(outdir / "fragannotor_vs_public_casmi22_context.csv", index=False)
+    audit = {
+        "stage": "external_public_benchmark_iceberg_casmi22_retrieval_v1",
+        "status": "public_vendor_notebook_results_imported_with_provenance",
+        "source_repository": "/home/zhome/ec_structure/external_ms_models/vendor/ms-pred-iceberg-2024",
+        "source_notebook": "notebooks/iceberg_casmi22.ipynb",
+        "source_cells": [23, 29, 30],
+        "direct_rerun_status": "not_rerun_in_fragannotor_repository; imported as public external benchmark context from vendor notebook output",
+        "claim_guardrail": "These public CASMI22 retrieval results are external context. They should not be described as a direct apples-to-apples head-to-head against FragAnnotor unless the same candidate sets, preprocessing, and splits are harmonized.",
+    }
+    write_json(outdir / "external_benchmark_audit.json", audit)
+    report = """# ICEBERG CASMI22 Public Retrieval Benchmark Context\n\nThis package imports the CASMI22 public retrieval comparison reported in the local `ms-pred-iceberg-2024` vendor notebook `notebooks/iceberg_casmi22.ipynb`. It provides external/public benchmark context beyond the internal PFAS locked-test.\n\n## Imported Public Retrieval Table\n\n| Method | Cosine sim. | Top-1 | Avg. Tanimoto Similarity |\n| --- | ---: | ---: | ---: |\n| Random | NA | 0.013 | 0.196 |\n| CFM-ID | 0.248 | NA | NA |\n| NEIMS (FFN) | 0.361 | 0.086 | 0.333 |\n| FixedVocab | 0.409 | 0.073 | 0.324 |\n| MassFormer | 0.415 | 0.076 | 0.317 |\n| ICEBERG | 0.417 | 0.129 | 0.378 |\n\n## Guardrail\n\nThese results are imported from an external vendor notebook with provenance and are not a direct head-to-head rerun inside FragAnnotor. A direct comparison requires harmonizing candidate sets, preprocessing, and splits.\n"""
+    (outdir / "iceberg_casmi22_public_retrieval_report.md").write_text(report, encoding="utf-8")
 
 
 def run_pipeline(args: argparse.Namespace) -> dict[str, Any]:
@@ -2227,6 +2438,8 @@ def run_pipeline(args: argparse.Namespace) -> dict[str, Any]:
     write_decoy_and_external_summaries(results_dir)
     if casmi_records:
         write_casmi_adapter_audit(casmi_records, results_dir)
+        write_casmi_formal_component_package(query_df, predictions, casmi_records, summary, results_dir)
+    write_external_public_benchmark_context(summary, results_dir)
     probe_fiora_external_model(results_dir)
     write_all_figures(summary, query_df, ablation, predictions, records_by_dataset, results_dir)
     command = (

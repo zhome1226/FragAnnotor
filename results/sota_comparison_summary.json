@@ -8,7 +8,7 @@
     "model": "FragAnnotor",
     "molecular_formula_accuracy": 0.7991266375545851,
     "n_queries": 229,
-    "native_or_fallback": "zero_shot_formula_fragment_adapter",
+    "native_or_fallback": "formal_fixed_component_score_mode",
     "notes": "",
     "status": "completed",
     "top10_accuracy": 0.6724890829694323,

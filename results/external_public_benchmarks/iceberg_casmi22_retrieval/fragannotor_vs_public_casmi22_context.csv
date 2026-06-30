@@ -1,0 +1,5 @@
+benchmark,method,cosine_similarity,top1_accuracy,top5_accuracy,top10_accuracy,mean_reciprocal_rank,mean_top1_tanimoto,molecular_formula_accuracy,directly_comparable_to_iceberg_public_table,comparison_note
+CASMI2022 MassFormer processed candidate retrieval,FragAnnotor formal fixed components,,0.6506550218340611,0.6593886462882096,0.6724890829694323,0.6585487281556323,0.6940283564485756,0.7991266375545851,False,"Different processed candidate set/split and metric availability; shown as external context, not a direct head-to-head claim."
+CASMI22 public retrieval,ICEBERG,0.417,0.129,,,,0.378,,True,Published/vendor notebook CASMI22 retrieval result.
+CASMI22 public retrieval,MassFormer,0.415,0.076,,,,0.317,,True,Published/vendor notebook CASMI22 retrieval result.
+CASMI22 public retrieval,NEIMS (FFN),0.361,0.086,,,,0.333,,True,Published/vendor notebook CASMI22 retrieval result.

@@ -23,9 +23,9 @@
     "error_message"
   ],
   "compressed_path": "benchmark_predictions.csv.gz",
-  "compressed_size_bytes": 15487967,
+  "compressed_size_bytes": 15431730,
   "format": "csv.gz",
   "reason": "Raw CSV exceeds GitHub's 100 MB single-file limit; full data are stored in the adjacent gzip CSV.",
   "rows": 681142,
-  "uncompressed_size_bytes": 246615600
+  "uncompressed_size_bytes": 243354800
 }

@@ -23,7 +23,7 @@ PFAS CFM-ID and SIRIUS entries use real precomputed external expert scores from 
 
 | dataset | model | status | native_or_fallback | n_queries | top1_accuracy | top5_accuracy | top10_accuracy | mean_reciprocal_rank | mean_top1_tanimoto | molecular_formula_accuracy | median_true_rank | median_candidate_count | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CASMI2022 | FragAnnotor | completed | zero_shot_formula_fragment_adapter | 229 | 0.6506550218340611 | 0.6593886462882096 | 0.6724890829694323 | 0.6585487281556323 | 0.6940283564485756 | 0.7991266375545851 | 1.0 | 2001.0 |  |
+| CASMI2022 | FragAnnotor | completed | formal_fixed_component_score_mode | 229 | 0.6506550218340611 | 0.6593886462882096 | 0.6724890829694323 | 0.6585487281556323 | 0.6940283564485756 | 0.7991266375545851 | 1.0 | 2001.0 |  |
 | CASMI2022 | CFM-ID | model_unavailable_native_required | native_unavailable | 229 |  |  |  |  |  |  |  |  | CFM-ID native CASMI execution/export parser is unavailable in this repository run; fallback disabled. |
 | CASMI2022 | SIRIUS | completed | native_sirius | 229 | 0.6462882096069869 | 0.6550218340611353 | 0.6550218340611353 | 0.6499330162600465 | 0.7496250635336656 | 0.7947598253275109 | 1.0 | 2001.0 |  |
 | CASMI2022 | MS2DeepScore | model_unavailable_native_required | native_unavailable | 229 |  |  |  |  |  |  |  |  | MS2DeepScore native CASMI model/embedding workflow is unavailable in this repository run; fallback disabled. |
@@ -36,12 +36,12 @@ PFAS CFM-ID and SIRIUS entries use real precomputed external expert scores from 
 
 | dataset | model | status | native_or_fallback | n_queries | top1_accuracy | top5_accuracy | top10_accuracy | mean_reciprocal_rank | mean_top1_tanimoto | molecular_formula_accuracy | median_true_rank | median_candidate_count | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CASMI2022 | FragAnnotor | completed | zero_shot_formula_fragment_adapter | 229 | 0.6506550218340611 | 0.6593886462882096 | 0.6724890829694323 | 0.6585487281556323 | 0.6940283564485756 | 0.7991266375545851 | 1.0 | 2001.0 |  |
+| CASMI2022 | FragAnnotor | completed | formal_fixed_component_score_mode | 229 | 0.6506550218340611 | 0.6593886462882096 | 0.6724890829694323 | 0.6585487281556323 | 0.6940283564485756 | 0.7991266375545851 | 1.0 | 2001.0 |  |
 | CASMI2022 | CFM-ID | model_unavailable_native_required | native_unavailable | 229 |  |  |  |  |  |  |  |  | CFM-ID native CASMI execution/export parser is unavailable in this repository run; fallback disabled. |
 | CASMI2022 | SIRIUS | completed | native_sirius | 229 | 0.6462882096069869 | 0.6550218340611353 | 0.6550218340611353 | 0.6499330162600465 | 0.7496250635336656 | 0.7947598253275109 | 1.0 | 2001.0 |  |
 | CASMI2022 | MS2DeepScore | model_unavailable_native_required | native_unavailable | 229 |  |  |  |  |  |  |  |  | MS2DeepScore native CASMI model/embedding workflow is unavailable in this repository run; fallback disabled. |
 
-CASMI2022 includes one completed native baseline in this run: SIRIUS 4.9.15 formula-only ranking. FragAnnotor is reported separately as a zero-shot formula/fragment constrained CASMI adapter using real experimental peaks, candidate formulas, precursor/adduct mass consistency, common fragment/neutral-loss plausibility, and native SIRIUS formula scores. It is not labeled as a trained native CASMI model. CFM-ID and MS2DeepScore remain unavailable under `--allow-fallback false`.
+CASMI2022 includes one completed native baseline in this run: SIRIUS 4.9.15 formula-only ranking. FragAnnotor is reported separately as a formal fixed formula/fragment component-score CASMI mode using real experimental peaks, candidate formulas, precursor/adduct mass consistency, common fragment/neutral-loss plausibility, and native SIRIUS formula scores. It is not labeled as a trained native CASMI model. CFM-ID and MS2DeepScore remain unavailable under `--allow-fallback false`.
 
 ## Preliminary Fallback CASMI Results
 
@@ -78,6 +78,16 @@ Earlier deterministic fallback CASMI exports are preserved under `results/prelim
 Selected PFAS case studies: 5 rows in `results/case_studies/pfas_selected_cases.csv`.
 Peak-level annotations available: True; source: Existing PFAS SIRIUS/project-derived peak annotations preserved from scripts/export_pfas_peak_annotations.py.
 
+## Formal CASMI FragAnnotor Component Package
+
+Formal fixed component-score mode is available at `results/casmi2022_fragannotor_formal_components/` with Top-1 `0.6506550218340611`, Top-5 `0.6593886462882096`, Top-10 `0.6724890829694323`, and MRR `0.6585487281556323`.
+This is a formal fixed component-score mode using real CASMI spectra and native SIRIUS formula scores, not a trained FragAnnotor neural spectrum model and not a replacement for missing CFM-ID/MS2DeepScore native baselines.
+
+## External Public Benchmark Context
+
+ICEBERG CASMI22 public retrieval context is available at `results/external_public_benchmarks/iceberg_casmi22_retrieval/`, covering Random, CFM-ID, NEIMS, FixedVocab, MassFormer, and ICEBERG from the local vendor notebook outputs.
+These public CASMI22 retrieval results are external context. They should not be described as a direct apples-to-apples head-to-head against FragAnnotor unless the same candidate sets, preprocessing, and splits are harmonized.
+
 ## External Public Model Audit
 
 - FIORA status: `smoke_passed_not_integrated_as_ranker`.
@@ -87,7 +97,7 @@ Peak-level annotations available: True; source: Existing PFAS SIRIUS/project-der
 ## Interpretation
 
 - PFAS locked-test ranking supports the selected primary FragAnnotor policy within the frozen PFAS benchmark.
-- CASMI2022 native SIRIUS formula-only ranking completed; CASMI FragAnnotor is available only as a transparent zero-shot formula/fragment constrained adapter, while CFM-ID and MS2DeepScore native structure-ranking outputs remain blocked and are not replaced with fallback scores.
+- CASMI2022 native SIRIUS formula-only ranking completed; CASMI FragAnnotor is available as an audited fixed formula/fragment component-score mode, while CFM-ID and MS2DeepScore native structure-ranking outputs remain blocked and are not replaced with fallback scores.
 - No result with `native_or_fallback=native_unavailable` should be described as a completed native baseline.
 - MS2DeepScore native comparison is blocked until the package and an appropriate pretrained model/embedding workflow are available.
 - SIRIUS is used here as molecular formula plausibility evidence, not as a synthetic spectrum generator or CSI:FingerID structure predictor.
@@ -96,14 +106,14 @@ Peak-level annotations available: True; source: Existing PFAS SIRIUS/project-der
 
 - PFAS locked-test expert-fusion benchmark: ready as an internal frozen benchmark, with conservative claims.
 - PFAS ablation and case-study package: ready for manuscript drafting, subject to the external-validation limitation.
-- CASMI benchmark: partially ready; SIRIUS formula-only native baseline and FragAnnotor zero-shot formula/fragment adapter completed, while native CFM-ID and MS2DeepScore remain blocked.
-- SOTA comparison: partially ready; do not claim full FragAnnotor superiority on CASMI until missing native baselines and independent CASMI-trained/validated FragAnnotor components are available.
+- CASMI benchmark: partially ready; SIRIUS formula-only native baseline and FragAnnotor formal fixed component-score mode completed, while native CFM-ID and MS2DeepScore remain blocked.
+- SOTA comparison: partially ready; public ICEBERG/MassFormer/NEIMS CASMI22 retrieval context is included with provenance, but do not claim direct head-to-head superiority until candidate sets and preprocessing are harmonized.
 
 ## Remaining Blockers
 
 - Native CFM-ID CASMI scoring is blocked by `Invalid Feature Configuration` in available pretrained model/config smoke tests.
 - Native MS2DeepScore is blocked because the package and a compatible pretrained model/embedding workflow are unavailable.
-- CASMI FragAnnotor is currently a zero-shot formula/fragment adapter, not a trained native CASMI model.
+- CASMI FragAnnotor is currently a formal fixed component-score mode, not a trained native CASMI neural model.
 - PFAS results remain an internal frozen locked-test benchmark and are not independent external validation.
 
 ## Exact Reproduction Command
@@ -114,6 +124,6 @@ python scripts/run_benchmark.py --dataset both --native-baselines --allow-fallba
 
 ## Known Limitations
 
-- CASMI native benchmark execution is incomplete: SIRIUS formula-only scores and FragAnnotor zero-shot adapter scores are available, but CFM-ID smoke tests fail with model/config incompatibility and MS2DeepScore has no configured package/model.
+- CASMI native benchmark execution is incomplete: SIRIUS formula-only scores and FragAnnotor fixed component scores are available, but CFM-ID smoke tests fail with model/config incompatibility and MS2DeepScore has no configured package/model.
 - PFAS results depend on the frozen candidate matrix generated in the transformation-product workflow.
 - The benchmark does not establish deployment-ready thresholds or universal LC-MS/MS prediction performance.

@@ -12,8 +12,10 @@
 - `ablation/`: FragAnnotor component ablation and weight sensitivity outputs.
 - `query_level/`: query-level comparison tables and PFAS Top-10 candidates.
 - `case_studies/`: automatically selected PFAS case-study rows and peak-annotation availability status.
-- `casmi_fragannotor_adapter/`: CASMI zero-shot formula/fragment adapter components and guardrail audit.
+- `casmi_fragannotor_adapter/`: legacy CASMI adapter components and guardrail audit.
 - `external_public_model_audit/`: optional public-model readiness probes such as FIORA smoke execution.
+- `casmi2022_fragannotor_formal_components/`: audited fixed component-score CASMI2022 FragAnnotor package.
+- `external_public_benchmarks/iceberg_casmi22_retrieval/`: imported public ICEBERG CASMI22 retrieval benchmark context with provenance.
 - `stratified/`: PFAS subclass and difficulty-stratified summaries.
 - `figures/`: matplotlib-only publication-draft plots.
 - `preliminary/`: preserved preliminary fallback CASMI result files.
