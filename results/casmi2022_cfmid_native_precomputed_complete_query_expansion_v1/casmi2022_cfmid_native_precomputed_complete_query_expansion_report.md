@@ -2,14 +2,18 @@
 
 Do not report query 35 as completed CFM-ID ranking until all 233 candidate spectra are predicted and cfm-id-precomputed ranks the full candidate set.
 
-## Query 35 Status
+## Current Query 35 Status
 
-| dataset   | model   | status                            | native_or_fallback                             |   query_id |   spectrum_id | true_candidate_id   |   query_mol_id | adduct   |   candidate_count |   ranked_rows |   predicted_spectrum_ids |   missing_smiles |   missing_candidate_spectra |   true_rank | top1_correct   | top5_correct   | top10_correct   |   reciprocal_rank |   cfm_predict_seconds |   cfm_id_precomputed_seconds | rank_output_file                                                                                                                                                     |
-|:----------|:--------|:----------------------------------|:-----------------------------------------------|-----------:|--------------:|:--------------------|---------------:|:---------|------------------:|--------------:|-------------------------:|-----------------:|----------------------------:|------------:|:---------------|:---------------|:----------------|------------------:|----------------------:|-----------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| CASMI2022 | CFM-ID  | partial_missing_candidate_spectra | native_cfmid_precomputed_complete_query_subset |         35 |            35 | CASMI_MOL_1196824   |        1196824 | [M+H]+   |               233 |             0 |                       64 |                0 |                         169 |         nan | False          | False          | False           |                 0 |               5.00399 |                            0 | /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_35/cfmid_precomputed_ranked_35.txt |
+|   query_id |   candidate_count |   predicted_spectrum_ids |   missing_candidate_spectra |   ranked_rows |   true_rank | status                            |
+|-----------:|------------------:|-------------------------:|----------------------------:|--------------:|------------:|:----------------------------------|
+|         35 |               233 |                       88 |                         145 |             0 |         nan | partial_missing_candidate_spectra |
+
+## Runtime Interpretation
+
+Initial 30-minute expansion reached 64/233 predicted spectra. Chunked resume then advanced query 35 to 88/233 predicted spectra; 145 remain missing. Ranking is still skipped until all candidate spectra are available.
 
 ## Next Resume Command
 
 ```bash
-python3 scripts/run_cfmid_precomputed_complete_query_subset.py --max-queries 2 --max-candidates 250 --resume --timeout-seconds 14400
+python3 scripts/run_cfmid_complete_query_chunked_resume.py --query-id 35 --chunk-size 3 --max-chunks 5 --timeout-seconds 120
 ```
