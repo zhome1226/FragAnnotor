@@ -1,6 +1,6 @@
 [
   {
-    "blocker": "CFM-ID 4.x-compatible native binary was found and smoke-tested. A resumable full-run manifest is prepared for 170 supported `[M+H]+`/`[M-H]-` CASMI queries and 1062950 candidate rows. The precomputed route requires 936483 unique candidate spectra; current full-run cache progress is 10 candidate spectra and 0 completed supported query rankings. No full native CASMI CFM-ID metrics are reported until every required shard completes; unsupported adduct counts: {'[M+Na]+': 59}.",
+    "blocker": "CFM-ID 4.x-compatible native binary was found and smoke-tested. A resumable full-run manifest is prepared for 170 supported `[M+H]+`/`[M-H]-` CASMI queries and 1062950 candidate rows. The precomputed route requires 936483 unique candidate spectra; current full-run cache progress is 346 candidate spectra and 2 completed supported query rankings. No full native CASMI CFM-ID metrics are reported until every required shard completes; unsupported adduct counts: {'[M+Na]+': 59}.",
     "executable_or_package": "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id",
     "model": "CFM-ID",
     "native_available": false,

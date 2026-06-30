@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any
+import re
 
 import numpy as np
 import pandas as pd
@@ -38,21 +39,56 @@ def read_csvs(pattern: str) -> pd.DataFrame:
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
 
+def adduct_slug(adduct: Any) -> str:
+    return str(adduct).replace("[", "").replace("]", "").replace("+", "plus").replace("-", "minus")
+
+
+def infer_status_slug(row: pd.Series) -> str:
+    if "adduct" in row and not pd.isna(row.get("adduct")) and str(row.get("adduct")):
+        return adduct_slug(row.get("adduct"))
+    for col in ["spectrum_file", "target_file", "source_file"]:
+        text = str(row.get(col, ""))
+        match = re.search(r"candidate_spectra_cache/([^/]+)/", text)
+        if match:
+            return match.group(1)
+        match = re.search(r"candidate_spectrum_shards/([^/]+)/", text)
+        if match:
+            return match.group(1)
+    return "unknown"
+
+
+def completed_candidate_count(candidate_status: pd.DataFrame) -> tuple[int, int]:
+    if candidate_status.empty:
+        return 0, 0
+    status = candidate_status.copy()
+    if "candidate_mol_id" not in status.columns:
+        return 0, 0
+    status["candidate_key"] = status.apply(
+        lambda row: f"{infer_status_slug(row)}:{str(row['candidate_mol_id'])}",
+        axis=1,
+    )
+    completed = status[status["status"].astype(str).str.startswith(("completed", "imported"))].copy()
+    failed = status[status["status"].astype(str).eq("failed")].copy()
+    return int(completed["candidate_key"].nunique()), int(failed["candidate_key"].nunique())
+
+
 def main() -> None:
     RUN_OUTDIR.mkdir(parents=True, exist_ok=True)
     query_manifest = pd.read_csv(MANIFEST_DIR / "cfmid_precomputed_supported_query_manifest.csv")
     candidate_shards = pd.read_csv(MANIFEST_DIR / "cfmid_precomputed_candidate_spectrum_shards.csv")
     query_shards = pd.read_csv(MANIFEST_DIR / "cfmid_precomputed_query_ranking_shards.csv")
 
-    candidate_status = read_csvs("candidate_spectrum_shards/*/shard_*_*/candidate_spectrum_status.csv")
+    candidate_status = pd.concat(
+        [
+            read_csvs("candidate_spectrum_shards/*/shard_*_*/candidate_spectrum_status.csv"),
+            read_csvs("complete_query_subset_cache_import_v1/complete_query_subset_cache_import.csv"),
+        ],
+        ignore_index=True,
+    )
     query_results = read_csvs("query_shard_*_results.csv")
     predictions = read_csvs("query_shard_*_predictions.csv")
 
-    candidate_completed = 0
-    candidate_failed = 0
-    if not candidate_status.empty:
-        candidate_completed = int(candidate_status["status"].astype(str).str.startswith("completed").sum())
-        candidate_failed = int(candidate_status["status"].astype(str).eq("failed").sum())
+    candidate_completed, candidate_failed = completed_candidate_count(candidate_status)
     query_completed = 0
     if not query_results.empty:
         query_completed = int(query_results["status"].astype(str).isin(["completed", "completed_cached"]).sum())

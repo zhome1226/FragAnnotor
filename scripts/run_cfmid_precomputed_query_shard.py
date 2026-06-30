@@ -192,7 +192,7 @@ def main() -> None:
     if pred_rows:
         pd.DataFrame(pred_rows).to_csv(args.outdir / f"query_shard_{args.query_start}_{args.query_limit}_predictions.csv", index=False)
     with (args.outdir / f"query_shard_{args.query_start}_{args.query_limit}_commands.csv").open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=sorted({k for row in command_rows for k in row}))
+        writer = csv.DictWriter(handle, fieldnames=sorted({k for row in command_rows for k in row}), lineterminator="\n")
         writer.writeheader()
         writer.writerows(command_rows)
 

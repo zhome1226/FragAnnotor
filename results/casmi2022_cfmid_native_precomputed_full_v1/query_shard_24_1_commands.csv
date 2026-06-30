@@ -1,0 +1,2 @@
+command,elapsed_seconds,query_id,returncode,status,stderr,stdout
+,0.0,35,0,completed_cached,,
