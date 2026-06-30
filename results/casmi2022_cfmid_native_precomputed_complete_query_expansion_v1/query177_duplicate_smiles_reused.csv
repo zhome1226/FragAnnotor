@@ -1,0 +1,9 @@
+candidate_mol_id,source_candidate_mol_id,smiles,reason
+953037,952905,Cc1sc2c(c1C)C(c1ccc(Cl)cc1)=NC(CC(=O)NCCCCCCNC(=O)COc1cccc3c1C(=O)N(C1CCC(=O)NC1=O)C3=O)c1nnc(C)n1-2,identical_smiles_cfm_id_spectrum_reuse
+953197,952910,COC1=C2C(c3ccc(OC4OC(CO)C(O)C(O)C4O)cc3)C(c3cc(OC)cc(=O)o3)C2(C=Cc2ccc(OC3OC(CO)C(O)C(O)C3O)cc2)OC(=O)C1,identical_smiles_cfm_id_spectrum_reuse
+953198,952914,COc1cc(C2C(c3ccc(OC4OC(CO)C(O)C(O)C4O)cc3)C(c3cc(OC)cc(=O)o3)C2c2ccc(OC3OC(CO)C(O)C(O)C3O)cc2)oc(=O)c1,identical_smiles_cfm_id_spectrum_reuse
+953014,952965,CC(C)OC(=O)C(C)NP(=O)(OCC1OC(n2ccc(=O)[nH]c2=O)C(F)C1(C)COP(=O)(NC(C)C(=O)OC(C)C)Oc1ccccc1)Oc1ccccc1,identical_smiles_cfm_id_spectrum_reuse
+953083,952966,CC(c1cc(C(F)(F)F)cc(C(F)(F)F)c1)N(Cc1cc(C(F)(F)F)ccc1CCNCC1CCC(CC(=O)O)CC1)c1ncc(OCCS(C)(=O)=O)cn1,identical_smiles_cfm_id_spectrum_reuse
+953113,952916,COC(=O)CCSCCOC1OC(CO)C(OC2OC(CO)C(OC3OC(COC4OC(CO)C(O)C(O)C4O)C(O)C(O)C3O)C(O)C2O)C(O)C1O,identical_smiles_cfm_id_spectrum_reuse
+953168,952916,COC(=O)CCSCCOC1OC(CO)C(OC2OC(CO)C(OC3OC(COC4OC(CO)C(O)C(O)C4O)C(O)C(O)C3O)C(O)C2O)C(O)C1O,identical_smiles_cfm_id_spectrum_reuse
+953217,952916,COC(=O)CCSCCOC1OC(CO)C(OC2OC(CO)C(OC3OC(COC4OC(CO)C(O)C(O)C4O)C(O)C(O)C3O)C(O)C2O)C(O)C1O,identical_smiles_cfm_id_spectrum_reuse

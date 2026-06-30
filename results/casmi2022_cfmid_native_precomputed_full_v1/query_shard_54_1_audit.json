@@ -1,0 +1,9 @@
+{
+  "blocked_queries": 0,
+  "completed_queries": 1,
+  "query_limit": 1,
+  "query_start": 54,
+  "selected_queries": 1,
+  "stage": "cfmid_precomputed_query_ranking_shard",
+  "status": "completed"
+}

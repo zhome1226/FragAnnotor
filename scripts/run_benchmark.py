@@ -2094,17 +2094,27 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
         except Exception:
             pass
     cfmid_complete_query_summary = results_dir / "casmi2022_cfmid_native_precomputed_complete_query_subset_v1" / "casmi2022_cfmid_native_precomputed_complete_query_subset_summary.csv"
-    cfmid_complete_query_expansion = results_dir / "casmi2022_cfmid_native_precomputed_complete_query_expansion_v1" / "audit_summary.json"
+    cfmid_complete_query_partials = results_dir / "casmi2022_cfmid_native_precomputed_complete_query_subset_v1" / "partial_complete_query_attempts.csv"
     if cfmid_complete_query_summary.exists():
         try:
             subset = pd.read_csv(cfmid_complete_query_summary).iloc[0].to_dict()
-            expansion = json.loads(cfmid_complete_query_expansion.read_text(encoding="utf-8")) if cfmid_complete_query_expansion.exists() else {}
+            partials = pd.read_csv(cfmid_complete_query_partials) if cfmid_complete_query_partials.exists() else pd.DataFrame()
+            partial_note = ""
+            if not partials.empty:
+                partial_bits = []
+                for _, partial in partials.head(5).iterrows():
+                    partial_bits.append(
+                        f"query {partial.get('query_id')} status `{partial.get('status')}` "
+                        f"with `{partial.get('predicted_spectrum_ids')}/{partial.get('candidate_count')}` "
+                        "candidate spectra"
+                    )
+                partial_note = " Partial complete-query attempts excluded from metrics: " + "; ".join(partial_bits) + "."
             lines.extend(
                 [
                     "## Native CFM-ID Complete-Query Subset",
                     "",
                     f"Complete-query native CFM-ID precomputed subset evidence is available at `results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/`: `{int(subset.get('n_queries_completed', 0))}` selected supported `[M+H]+` CASMI queries, full candidate sets for each selected query, Top-1 `{subset.get('top1_accuracy')}`, Top-5 `{subset.get('top5_accuracy')}`, Top-10 `{subset.get('top10_accuracy')}`, and MRR `{subset.get('mean_reciprocal_rank')}`.",
-                    f"Query 35 expansion status: `{expansion.get('status', 'unknown')}`, candidate spectra `{expansion.get('predicted_spectrum_ids', 'NA')}/{expansion.get('candidate_count', 'NA')}`, ranked rows `{expansion.get('ranked_rows', 'NA')}`, true rank `{expansion.get('true_rank', 'NA')}`.",
+                    "The subset output is rebuilt from completed ranked work directories, and partial attempts are not counted in Top-k/MRR." + partial_note,
                     "This is full-candidate-set evidence for selected low-candidate queries only; it is not a full CASMI CFM-ID baseline.",
                     "",
                 ]

@@ -1,19 +1,33 @@
-# CASMI2022 CFM-ID Complete-Query Expansion Attempt
+# CASMI2022 CFM-ID Complete-Query Expansion Record
 
-Do not report query 35 as completed CFM-ID ranking until all 233 candidate spectra are predicted and cfm-id-precomputed ranks the full candidate set.
+This directory records native CFM-ID complete-query expansion attempts. Reportable
+Top-k/MRR values are now rebuilt from completed ranked work directories under:
 
-## Current Query 35 Status
+`results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/`
 
-|   query_id |   candidate_count |   predicted_spectrum_ids |   missing_candidate_spectra |   ranked_rows |   true_rank | status                            |
-|-----------:|------------------:|-------------------------:|----------------------------:|--------------:|------------:|:----------------------------------|
-|         35 |               233 |                       88 |                         145 |             0 |         nan | partial_missing_candidate_spectra |
+## Current Reportable Subset
 
-## Runtime Interpretation
+The formal complete-query subset currently contains five completed full-candidate
+CASMI queries: `16`, `34`, `35`, `78`, and `145`. Each query uses its full
+candidate set, but this is still a selected complete-query subset and must not be
+reported as a full CASMI CFM-ID baseline.
 
-Initial 30-minute expansion reached 64/233 predicted spectra. Chunked resume then advanced query 35 to 88/233 predicted spectra; 145 remain missing. Ranking is still skipped until all candidate spectra are available.
+Current native CFM-ID complete-query subset metrics:
 
-## Next Resume Command
+- Top-1: `0.0`
+- Top-5: `0.2`
+- Top-10: `0.2`
+- MRR: `0.05426704980726227`
 
-```bash
-python3 scripts/run_cfmid_complete_query_chunked_resume.py --query-id 35 --chunk-size 3 --max-chunks 5 --timeout-seconds 120
-```
+## Partial Attempts
+
+Query `177` remains a partial attempt and is excluded from the reportable subset:
+`117/336` candidate spectra are available and `219` candidate spectra remain
+missing. It should not contribute to Top-k/MRR until all candidate spectra are
+generated and the full candidate set is ranked.
+
+## Guardrail
+
+Use this directory as runtime provenance only. The authoritative reportable
+subset files are the rebuilt CSV/JSON/Markdown artifacts in
+`results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/`.

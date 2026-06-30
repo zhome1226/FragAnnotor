@@ -60,11 +60,11 @@ def main() -> None:
         / "casmi2022_cfmid_native_precomputed_complete_query_subset_v1"
         / "audit_summary.json"
     )
-    cfmid_complete_query_expansion = read_json(
+    cfmid_complete_query_partials = read_csv(
         ROOT
         / "results"
-        / "casmi2022_cfmid_native_precomputed_complete_query_expansion_v1"
-        / "audit_summary.json"
+        / "casmi2022_cfmid_native_precomputed_complete_query_subset_v1"
+        / "partial_complete_query_attempts.csv"
     )
     ms2_complete_query_hybrid = read_json(
         ROOT
@@ -75,7 +75,17 @@ def main() -> None:
     ms2 = read_json(ROOT / "results" / "native_ms2deepscore_casmi" / "native_ms2deepscore_audit.json")
     ms2_env = ms2.get("external_ms2deepscore_environment", {})
     ms2_resource = ms2.get("external_pretrained_model_cache", {})
-    expansion_complete = cfmid_complete_query_expansion.get("status") == "completed_ranked"
+    partial_attempt_count = int(len(cfmid_complete_query_partials)) if not cfmid_complete_query_partials.empty else 0
+    partial_attempt_note = "no partial complete-query attempts recorded"
+    if partial_attempt_count:
+        parts = []
+        for _, partial in cfmid_complete_query_partials.head(5).iterrows():
+            parts.append(
+                f"query {partial.get('query_id')} status={partial.get('status')} "
+                f"predicted={partial.get('predicted_spectrum_ids')}/{partial.get('candidate_count')} "
+                f"missing={partial.get('missing_candidate_spectra')}"
+            )
+        partial_attempt_note = "; ".join(parts)
 
     casmi_summary = summary[summary["dataset"].eq("CASMI2022")].copy() if not summary.empty else pd.DataFrame()
     frag = casmi_summary[casmi_summary["model"].eq("FragAnnotor")]
@@ -110,12 +120,7 @@ def main() -> None:
                 f"{cfmid_precomputed_progress.get('n_completed_queries', 0)}. A separate complete-query subset is available with "
                 f"{cfmid_complete_query_subset.get('summary', {}).get('n_queries_completed', 0)} selected queries using their full candidate sets; "
                 f"subset MRR={cfmid_complete_query_subset.get('summary', {}).get('mean_reciprocal_rank', 'NA')}. "
-                f"Expansion query {cfmid_complete_query_expansion.get('query_id', 'NA')} status="
-                f"{cfmid_complete_query_expansion.get('status', 'NA')} with "
-                f"{cfmid_complete_query_expansion.get('predicted_spectrum_ids', 'NA')}/"
-                f"{cfmid_complete_query_expansion.get('candidate_count', 'NA')} predicted spectra, "
-                f"ranked_rows={cfmid_complete_query_expansion.get('ranked_rows', 'NA')}, "
-                f"true_rank={cfmid_complete_query_expansion.get('true_rank', 'NA')}. "
+                f"Partial complete-query attempts excluded from metrics: {partial_attempt_note}. "
                 f"Unsupported adduct counts: {cfmid_full_manifest.get('unsupported_adduct_counts', {})}."
             ),
             "required_to_close": "execute all CFM-ID precomputed candidate-spectrum shards, then all query-ranking shards, and obtain complete per-query CFM-ID candidate score tables for every supported query; add an [M+Na]+ model or report those CASMI rows as unsupported",
@@ -212,18 +217,10 @@ def main() -> None:
             "guardrail": "Describe as a full-candidate-set subset for selected low-candidate queries only; do not report it as full CASMI CFM-ID.",
         },
         {
-            "claim": "A second native CFM-ID complete-query CASMI result is available",
-            "allowed": expansion_complete,
-            "support": (
-                f"Expansion status={cfmid_complete_query_expansion.get('status', 'missing')}; "
-                f"query_id={cfmid_complete_query_expansion.get('query_id')}; "
-                f"predicted spectra={cfmid_complete_query_expansion.get('predicted_spectrum_ids')}/"
-                f"{cfmid_complete_query_expansion.get('candidate_count')}; "
-                f"missing={cfmid_complete_query_expansion.get('missing_candidate_spectra')}; "
-                f"ranked_rows={cfmid_complete_query_expansion.get('ranked_rows')}; "
-                f"true_rank={cfmid_complete_query_expansion.get('true_rank')}."
-            ),
-            "guardrail": "Query 35 is complete-query subset evidence only; it remains far too small to serve as full CASMI CFM-ID.",
+            "claim": "Partial native CFM-ID complete-query attempts are excluded from subset metrics",
+            "allowed": True,
+            "support": f"partial_attempt_count={partial_attempt_count}; {partial_attempt_note}.",
+            "guardrail": "Only completed ranked full-candidate-set queries are counted in the complete-query subset Top-k/MRR.",
         },
         {
             "claim": "MS2DeepScore CASMI candidate-ranking benchmark is complete",
@@ -312,7 +309,8 @@ def main() -> None:
             "cfmid_precomputed_candidate_spectrum_completion_fraction": cfmid_precomputed_progress.get("candidate_spectrum_completion_fraction"),
             "cfmid_precomputed_query_completion_fraction": cfmid_precomputed_progress.get("query_completion_fraction"),
             "cfmid_complete_query_subset_available": bool(cfmid_complete_query_subset),
-            "cfmid_complete_query_expansion_partial_available": bool(cfmid_complete_query_expansion),
+            "cfmid_complete_query_partial_attempts_available": partial_attempt_count > 0,
+            "cfmid_complete_query_partial_attempt_count": partial_attempt_count,
             "ms2deepscore_environment_verified": ms2_env.get("status") == "verified",
             "ms2deepscore_pretrained_files_present": bool(ms2_resource.get("all_required_files_present")),
         },

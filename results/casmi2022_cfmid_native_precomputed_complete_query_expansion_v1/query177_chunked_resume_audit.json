@@ -1,0 +1,23 @@
+{
+  "candidate_count": 336,
+  "chunk_size": 10,
+  "chunks_requested_this_run": 8,
+  "claim_guardrail": "Only report Top-k/MRR for this query if status is completed_ranked.",
+  "duplicate_smiles_spectra_reused": 8,
+  "missing_candidate_spectra": 219,
+  "predicted_spectrum_ids": 117,
+  "query_id": "177",
+  "query_mol_id": 1196973,
+  "rank_run": {
+    "command": "",
+    "elapsed_seconds": 0.0,
+    "returncode": null,
+    "status": "skipped_missing_candidate_spectra",
+    "stderr": "",
+    "stdout": ""
+  },
+  "ranked_rows": 0,
+  "stage": "casmi2022_cfmid_native_precomputed_complete_query_chunked_resume_v1",
+  "status": "partial_missing_candidate_spectra",
+  "true_rank": null
+}

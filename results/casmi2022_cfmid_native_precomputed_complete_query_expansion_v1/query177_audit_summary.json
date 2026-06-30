@@ -1,0 +1,26 @@
+{
+  "candidate_count": 336,
+  "candidate_pool_policy": "full_candidate_set_for_selected_query",
+  "chunk_size_last_run": 10,
+  "chunks_requested_last_run": 8,
+  "claim_guardrail": "Query 177 may be reported only as complete-query subset evidence when completed; it is not a full CASMI CFM-ID baseline.",
+  "duplicate_smiles_spectra_reused_last_run": 8,
+  "included_in_completed_subset_metrics": false,
+  "missing_candidate_spectra": 219,
+  "predicted_spectrum_ids": 117,
+  "purpose": "Record expansion of the complete-query native CFM-ID CASMI subset beyond the initial completed query 16 result.",
+  "query_id": "177",
+  "query_mol_id": 1196973,
+  "rank_run": {
+    "command": "",
+    "elapsed_seconds": 0.0,
+    "returncode": null,
+    "status": "skipped_missing_candidate_spectra",
+    "stderr": "",
+    "stdout": ""
+  },
+  "ranked_rows": 0,
+  "stage": "casmi2022_cfmid_native_precomputed_complete_query_expansion_v1",
+  "status": "partial_missing_candidate_spectra",
+  "true_rank": null
+}
