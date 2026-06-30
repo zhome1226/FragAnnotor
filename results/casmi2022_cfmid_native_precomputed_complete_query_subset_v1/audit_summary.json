@@ -3,8 +3,8 @@
     {
       "adduct": "[M+H]+",
       "candidate_count": 103,
-      "cfm_id_precomputed_seconds": 0.0639305114746093,
-      "cfm_predict_seconds": 844.0681047439575,
+      "cfm_id_precomputed_seconds": 0.0,
+      "cfm_predict_seconds": 0.0,
       "dataset": "CASMI2022",
       "missing_candidate_spectra": 0,
       "missing_smiles": 0,
@@ -47,11 +47,35 @@
       "top5_correct": false,
       "true_candidate_id": "CASMI_MOL_1196824",
       "true_rank": 31.0
+    },
+    {
+      "adduct": "[M+H]+",
+      "candidate_count": 316,
+      "cfm_id_precomputed_seconds": 0.0,
+      "cfm_predict_seconds": 900.0049865245819,
+      "dataset": "CASMI2022",
+      "missing_candidate_spectra": 0,
+      "missing_smiles": 0,
+      "model": "CFM-ID",
+      "native_or_fallback": "native_cfmid_precomputed_complete_query_subset",
+      "predicted_spectrum_ids": 316,
+      "query_id": "145",
+      "query_mol_id": 1196938,
+      "rank_output_file": "/home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_145/cfmid_precomputed_ranked_145.txt",
+      "ranked_rows": 316,
+      "reciprocal_rank": 0.013513513513513514,
+      "spectrum_id": "145",
+      "status": "completed_cached",
+      "top10_correct": false,
+      "top1_correct": false,
+      "top5_correct": false,
+      "true_candidate_id": "CASMI_MOL_1196938",
+      "true_rank": 74.0
     }
   ],
   "selection": {
-    "max_candidates": 250,
-    "max_queries": 2,
+    "max_candidates": 400,
+    "max_queries": 3,
     "query_spec_id": ""
   },
   "stage": "casmi2022_cfmid_native_precomputed_complete_query_subset_v1",
@@ -61,16 +85,16 @@
     "candidate_pool_policy": "full_candidate_set_for_each_selected_query",
     "claim_guardrail": "Complete-query CFM-ID subset only. Each selected query uses its full candidate set, but this is not a full CASMI CFM-ID baseline.",
     "dataset": "CASMI2022",
-    "mean_reciprocal_rank": 0.11612903225806452,
-    "median_candidate_count": 168.0,
-    "median_true_rank": 18.0,
+    "mean_reciprocal_rank": 0.08192385934321418,
+    "median_candidate_count": 233.0,
+    "median_true_rank": 31.0,
     "model": "CFM-ID complete-query subset",
-    "n_queries": 2,
-    "n_queries_completed": 2,
+    "n_queries": 3,
+    "n_queries_completed": 3,
     "native_or_fallback": "native_cfmid_precomputed_complete_query_subset",
     "status": "completed_subset",
-    "top10_accuracy": 0.5,
+    "top10_accuracy": 0.3333333333333333,
     "top1_accuracy": 0.0,
-    "top5_accuracy": 0.5
+    "top5_accuracy": 0.3333333333333333
   }
 }

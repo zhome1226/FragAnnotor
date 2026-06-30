@@ -1,0 +1,26 @@
+{
+  "candidate_count": 316,
+  "candidate_pool_policy": "full_candidate_set_for_selected_query",
+  "chunk_size_last_run": 2,
+  "chunks_requested_last_run": 12,
+  "claim_guardrail": "Query 145 may be reported only as complete-query subset evidence when completed; it is not a full CASMI CFM-ID baseline.",
+  "duplicate_smiles_spectra_reused_last_run": 0,
+  "included_in_completed_subset_metrics": true,
+  "missing_candidate_spectra": 0,
+  "predicted_spectrum_ids": 316,
+  "purpose": "Record expansion of the complete-query native CFM-ID CASMI subset beyond the initial completed query 16 result.",
+  "query_id": "145",
+  "query_mol_id": 1196938,
+  "rank_run": {
+    "command": "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id-precomputed /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_145/query_spectrum_145.txt 145 /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_145/candidate_triples_plain.txt -1 10 0.01 DotProduct /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_145/cfmid_precomputed_ranked_145.txt 0 0",
+    "elapsed_seconds": 0.21460604667663574,
+    "returncode": 0,
+    "status": "completed",
+    "stderr": "/home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_145/logs/cfm_id_precomputed_chunked.stderr.log",
+    "stdout": "/home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_145/logs/cfm_id_precomputed_chunked.stdout.log"
+  },
+  "ranked_rows": 316,
+  "stage": "casmi2022_cfmid_native_precomputed_complete_query_expansion_v1",
+  "status": "completed_ranked",
+  "true_rank": 74
+}

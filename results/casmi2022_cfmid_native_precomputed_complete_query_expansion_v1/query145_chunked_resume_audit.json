@@ -1,0 +1,23 @@
+{
+  "candidate_count": 316,
+  "chunk_size": 2,
+  "chunks_requested_this_run": 12,
+  "claim_guardrail": "Only report Top-k/MRR for this query if status is completed_ranked.",
+  "duplicate_smiles_spectra_reused": 0,
+  "missing_candidate_spectra": 0,
+  "predicted_spectrum_ids": 316,
+  "query_id": "145",
+  "query_mol_id": 1196938,
+  "rank_run": {
+    "command": "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id-precomputed /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_145/query_spectrum_145.txt 145 /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_145/candidate_triples_plain.txt -1 10 0.01 DotProduct /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_145/cfmid_precomputed_ranked_145.txt 0 0",
+    "elapsed_seconds": 0.21460604667663574,
+    "returncode": 0,
+    "status": "completed",
+    "stderr": "/home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_145/logs/cfm_id_precomputed_chunked.stderr.log",
+    "stdout": "/home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_145/logs/cfm_id_precomputed_chunked.stdout.log"
+  },
+  "ranked_rows": 316,
+  "stage": "casmi2022_cfmid_native_precomputed_complete_query_chunked_resume_v1",
+  "status": "completed_ranked",
+  "true_rank": 74
+}

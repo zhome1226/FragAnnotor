@@ -1,5 +1,7 @@
 command,elapsed_seconds,phase,query_id,returncode,status,stderr,stdout
-,844.0681047439575,cfm_predict,16,0,completed_cached,,
-,0.0639305114746093,cfm_id_precomputed,16,0,completed_cached,,
+,0.0,cfm_predict,16,0,completed_cached,,
+,0.0,cfm_id_precomputed,16,0,completed_cached,,
 ,0.0,cfm_predict,35,0,completed_cached,,
 ,0.0,cfm_id_precomputed,35,0,completed_cached,,
+,900.0049865245819,cfm_predict,145,0,completed_cached,,
+,0.0,cfm_id_precomputed,145,0,completed_cached,,

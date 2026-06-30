@@ -192,6 +192,9 @@ def main() -> None:
     parser.add_argument("--score-type", default="DotProduct")
     args = parser.parse_args()
 
+    if args.work_dir == DEFAULT_WORK_DIR and str(args.query_id) != "35":
+        args.work_dir = DEFAULT_WORK_DIR.parent / f"query_{args.query_id}"
+
     args.outdir.mkdir(parents=True, exist_ok=True)
     args.work_dir.mkdir(parents=True, exist_ok=True)
     candidate_smiles = args.work_dir / "candidate_smiles.txt"
@@ -247,7 +250,7 @@ def main() -> None:
                 **run,
             }
         )
-        pd.DataFrame(command_rows).to_csv(args.outdir / "query35_chunked_resume_commands.csv", index=False)
+        pd.DataFrame(command_rows).to_csv(args.outdir / f"query{args.query_id}_chunked_resume_commands.csv", index=False)
 
     spectra = parse_msp(predicted_msp) if predicted_msp.exists() and predicted_msp.stat().st_size > 0 else {}
     cloned_after = reuse_duplicate_smiles_spectra(predicted_msp, candidate_rows, spectra)
@@ -305,7 +308,9 @@ def main() -> None:
         "rank_run": rank_run,
         "claim_guardrail": "Only report Top-k/MRR for this query if status is completed_ranked.",
     }
-    write_json(args.outdir / "chunked_resume_audit.json", audit)
+    write_json(args.outdir / f"query{args.query_id}_chunked_resume_audit.json", audit)
+    if str(args.query_id) == "35":
+        write_json(args.outdir / "chunked_resume_audit.json", audit)
     expansion_audit = {
         "stage": "casmi2022_cfmid_native_precomputed_complete_query_expansion_v1",
         "purpose": "Record expansion of the complete-query native CFM-ID CASMI subset beyond the initial completed query 16 result.",
@@ -323,10 +328,12 @@ def main() -> None:
         "duplicate_smiles_spectra_reused_last_run": audit["duplicate_smiles_spectra_reused"],
         "rank_run": audit["rank_run"],
         "included_in_completed_subset_metrics": audit["status"] == "completed_ranked",
-        "claim_guardrail": "Query 35 may be reported only as complete-query subset evidence; it is not a full CASMI CFM-ID baseline.",
+        "claim_guardrail": f"Query {args.query_id} may be reported only as complete-query subset evidence when completed; it is not a full CASMI CFM-ID baseline.",
     }
-    write_json(args.outdir / "audit_summary.json", expansion_audit)
-    pd.DataFrame(cloned_rows).to_csv(args.outdir / "query35_duplicate_smiles_reused.csv", index=False)
+    write_json(args.outdir / f"query{args.query_id}_audit_summary.json", expansion_audit)
+    if str(args.query_id) == "35":
+        write_json(args.outdir / "audit_summary.json", expansion_audit)
+    pd.DataFrame(cloned_rows).to_csv(args.outdir / f"query{args.query_id}_duplicate_smiles_reused.csv", index=False)
     pd.DataFrame(
         [
             {
@@ -339,8 +346,8 @@ def main() -> None:
                 "status": audit["status"],
             }
         ]
-    ).to_csv(args.outdir / "query35_chunked_resume_status.csv", index=False)
-    remaining_path = args.outdir / "query35_remaining_candidate_smiles.txt"
+    ).to_csv(args.outdir / f"query{args.query_id}_chunked_resume_status.csv", index=False)
+    remaining_path = args.outdir / f"query{args.query_id}_remaining_candidate_smiles.txt"
     if missing_after:
         write_candidate_smiles(remaining_path, missing_after)
     elif remaining_path.exists():
