@@ -1,5 +1,9 @@
 {
+  "cfmid_full_manifest_available": true,
+  "cfmid_full_supported_completion_fraction": 0.0,
   "complete_native_cfmid_casmi_available": false,
+  "ms2deepscore_environment_verified": true,
+  "ms2deepscore_pretrained_files_present": true,
   "native_ms2deepscore_casmi_available": false,
   "outputs": [
     "remaining_gap_status.csv",

@@ -212,7 +212,10 @@ def build_tasks(args: argparse.Namespace) -> tuple[list[dict[str, Any]], dict[st
             original_positions[query_mol_id] = full_candidates.index(query_mol_id) + 1
         except ValueError:
             original_positions[query_mol_id] = None
-        limited = full_candidates[: max(0, int(args.candidate_limit))]
+        if int(args.candidate_limit) < 0:
+            limited = list(full_candidates)
+        else:
+            limited = full_candidates[: max(0, int(args.candidate_limit))]
         if args.candidate_pool_policy == "first_n_plus_true" and query_mol_id not in limited:
             limited = [query_mol_id] + limited
         selected_by_query[query_mol_id] = limited
@@ -276,7 +279,7 @@ def build_tasks(args: argparse.Namespace) -> tuple[list[dict[str, Any]], dict[st
         "spec_df_sha256": sha256_file(args.casmi_dir / "spec_df.pkl"),
         "cand_df_sha256": sha256_file(args.casmi_dir / "cand_df.pkl"),
         "all_smiles_sha256": sha256_file(smiles_path),
-        "claim_guardrail": "This is a native CFM-ID subset/candidate-limited benchmark. It is not a complete CASMI2022 CFM-ID result and must not be used as full-SOTA evidence.",
+        "claim_guardrail": "This is a native CFM-ID subset/candidate-limited benchmark unless candidate_limit=-1 and all supported queries complete. It is not a complete CASMI2022 CFM-ID result until every supported query has a complete per-candidate score table, and [M+Na]+ remains unsupported by the local cfmid4 model directory.",
     }
     return tasks, audit
 

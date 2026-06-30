@@ -1,0 +1,40 @@
+{
+  "completion_gate": "Full native CFM-ID CASMI metrics may be reported only after every supported query has a completed full_output_file with candidate_count scored rows; [M+Na]+ remains unsupported unless an appropriate CFM-ID model is added.",
+  "full_outdir": "/home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_full_supported_v1",
+  "n_shards": 34,
+  "runner": "scripts/run_native_cfmid_casmi_subset.py --candidate-limit -1",
+  "runtime_extrapolation": [
+    {
+      "basis": "mean_seconds_per_candidate_from_10_query_subset",
+      "estimated_16_worker_hours_ideal": 155.71089305361224,
+      "estimated_single_worker_hours": 2491.374288857796,
+      "estimated_single_worker_seconds": 8968947.439888066,
+      "guardrail": "Back-of-envelope estimate only; CFM-ID runtime varies by molecule and this does not include [M+Na]+ unsupported queries.",
+      "seconds_per_candidate": 8.437788644703952,
+      "supported_queries": 170,
+      "total_supported_candidate_rows": 1062950,
+      "unsupported_queries": 59
+    },
+    {
+      "basis": "median_seconds_per_candidate_from_10_query_subset",
+      "estimated_16_worker_hours_ideal": 123.83538064165886,
+      "estimated_single_worker_hours": 1981.3660902665415,
+      "estimated_single_worker_seconds": 7132917.924959551,
+      "guardrail": "Back-of-envelope estimate only; CFM-ID runtime varies by molecule and this does not include [M+Na]+ unsupported queries.",
+      "seconds_per_candidate": 6.710492426698858,
+      "supported_queries": 170,
+      "total_supported_candidate_rows": 1062950,
+      "unsupported_queries": 59
+    }
+  ],
+  "shard_size": 5,
+  "stage": "cfmid_full_casmi_run_manifest_v1",
+  "status": "prepared_not_executed",
+  "supported_queries": 170,
+  "total_casmi_queries": 229,
+  "total_supported_candidate_rows": 1062950,
+  "unsupported_adduct_counts": {
+    "[M+Na]+": 59
+  },
+  "unsupported_queries": 59
+}

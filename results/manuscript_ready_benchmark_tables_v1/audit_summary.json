@@ -1,5 +1,7 @@
 {
+  "cfmid_full_manifest_available": true,
   "cfmid_subset_included_as_full_result": false,
+  "ms2deepscore_environment_verified": true,
   "ms2deepscore_full_candidate_ranking_available": false,
   "stage": "manuscript_ready_benchmark_tables_v1",
   "strong_sota_claim_supported": false,

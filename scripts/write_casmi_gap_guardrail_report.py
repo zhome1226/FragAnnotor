@@ -49,7 +49,11 @@ def main() -> None:
     summary = read_csv(ROOT / "results" / "sota_comparison_summary.csv")
     neural = read_csv(ROOT / "results" / "casmi2022_fragannotor_trained_neural_v1" / "casmi2022_fragannotor_trained_neural_summary.csv")
     cfmid = read_json(ROOT / "results" / "native_cfmid_casmi" / "native_cfmid_runtime_audit.json")
+    cfmid_full_manifest = read_json(ROOT / "results" / "cfmid_full_casmi_run_manifest_v1" / "audit_summary.json")
+    cfmid_full_progress = read_json(ROOT / "results" / "casmi2022_cfmid_native_full_supported_v1" / "audit_summary.json")
     ms2 = read_json(ROOT / "results" / "native_ms2deepscore_casmi" / "native_ms2deepscore_audit.json")
+    ms2_env = ms2.get("external_ms2deepscore_environment", {})
+    ms2_resource = ms2.get("external_pretrained_model_cache", {})
 
     casmi_summary = summary[summary["dataset"].eq("CASMI2022")].copy() if not summary.empty else pd.DataFrame()
     frag = casmi_summary[casmi_summary["model"].eq("FragAnnotor")]
@@ -58,18 +62,31 @@ def main() -> None:
     gap_rows = [
         {
             "gap": "CFM-ID complete CASMI native ranking",
-            "status": cfmid.get("status", "missing_audit"),
+            "status": cfmid_full_progress.get("status", cfmid.get("status", "missing_audit")),
             "resolved_now": False,
-            "current_evidence": "cfmid4-compatible native binary smoke passed; full 1241-candidate query and 100-candidate timing probe exceeded 15 minutes",
-            "required_to_close": "complete per-query CFM-ID candidate score table for all 229 CASMI queries, preferably through precomputed candidate spectra plus cfm-id-precomputed or a successful full native batch run",
+            "current_evidence": (
+                "cfmid4-compatible native binary smoke passed; a resumable full-run manifest now covers "
+                f"{cfmid_full_manifest.get('supported_queries', 'unknown')} supported [M+H]+/[M-H]- CASMI queries, "
+                f"{cfmid_full_manifest.get('total_supported_candidate_rows', 'unknown')} candidate rows, and "
+                f"{cfmid_full_manifest.get('n_shards', 'unknown')} shards; completed full supported queries="
+                f"{cfmid_full_progress.get('n_completed_queries', 0)}. "
+                f"Unsupported adduct counts: {cfmid_full_manifest.get('unsupported_adduct_counts', {})}."
+            ),
+            "required_to_close": "execute the full CFM-ID shard manifest and obtain complete per-query CFM-ID candidate score tables for every supported query; add an [M+Na]+ model or report those CASMI rows as unsupported",
             "can_include_in_main_benchmark": False,
         },
         {
             "gap": "MS2DeepScore reasonable CASMI candidate-ranking benchmark",
             "status": ms2.get("status", "missing_audit"),
             "resolved_now": False,
-            "current_evidence": "no configured MS2DeepScore pretrained model and no complete per-candidate measured/predicted spectrum library in repository",
-            "required_to_close": "install/configure a pretrained MS2DeepScore model and construct a complete candidate spectrum library; label any generator+MS2DeepScore reranker as hybrid rather than native MS2DeepScore",
+            "current_evidence": (
+                "official dual-mode MS2DeepScore model cache recorded outside Git; CPU environment verified "
+                f"with MS2DeepScore {ms2_env.get('ms2deepscore_version', 'unknown')}, MatchMS {ms2_env.get('matchms_version', 'unknown')}, "
+                f"Torch {ms2_env.get('torch_version', 'unknown')}; required model files present="
+                f"{ms2_resource.get('all_required_files_present', False)}. A candidate-limited CFM-ID + MS2DeepScore "
+                "hybrid subset exists, but full CASMI candidate ranking still lacks a complete per-candidate spectrum library."
+            ),
+            "required_to_close": "construct a complete CASMI per-candidate measured or generated spectrum library and run a documented MS2DeepScore query-candidate scoring wrapper; label generator+MS2DeepScore reranking as hybrid rather than native MS2DeepScore",
             "can_include_in_main_benchmark": False,
         },
         {
@@ -116,13 +133,23 @@ def main() -> None:
         {
             "claim": "Complete native CFM-ID CASMI candidate-ranking metrics are available",
             "allowed": False,
-            "support": cfmid.get("benchmark_decision", ""),
+            "support": (
+                f"Full-run manifest prepared for {cfmid_full_manifest.get('supported_queries', 'unknown')} supported "
+                f"queries and {cfmid_full_manifest.get('total_supported_candidate_rows', 'unknown')} candidate rows, "
+                f"but completion status is {cfmid_full_progress.get('status', 'missing_progress')} with "
+                f"{cfmid_full_progress.get('n_completed_queries', 0)} completed queries. "
+                f"{cfmid.get('benchmark_decision', '')}"
+            ),
             "guardrail": "Only report CFM-ID smoke/runtime audit until a full candidate score table exists.",
         },
         {
             "claim": "MS2DeepScore CASMI candidate-ranking benchmark is complete",
             "allowed": False,
-            "support": ms2.get("benchmark_decision", ""),
+            "support": (
+                f"MS2DeepScore environment/model cache verified={ms2_env.get('status', 'unknown')}; "
+                "full candidate ranking remains blocked because CASMI structure candidates lack a complete candidate spectrum library. "
+                f"{ms2.get('benchmark_decision', '')}"
+            ),
             "guardrail": "Do not substitute CFM-ID-generated spectra and call it native MS2DeepScore.",
         },
         {
@@ -160,7 +187,7 @@ def main() -> None:
         "",
         "## Bottom Line",
         "",
-        "The pairwise rank-delta artifact is fixed. Complete CASMI native CFM-ID ranking, native or defensible hybrid MS2DeepScore candidate ranking, and an effective trained neural FragAnnotor CASMI result remain unavailable. A strong SOTA claim remains blocked until all compared models are rerun on a harmonized candidate set and evaluation protocol.",
+        "The pairwise rank-delta artifact is fixed, and a report-only trained neural FragAnnotor CASMI result is available but weak. Complete CASMI native CFM-ID ranking remains a long full-shard execution task. MS2DeepScore has a verified pretrained environment and a CFM-ID-generated hybrid subset, but not a complete full candidate-ranking benchmark. A strong SOTA claim remains blocked until all compared models are rerun on a harmonized candidate set and evaluation protocol.",
         "",
     ]
     (OUTDIR / "casmi_remaining_gap_and_sota_guardrail_report.md").write_text("\n".join(report), encoding="utf-8")
@@ -180,6 +207,10 @@ def main() -> None:
                 "rank_delta_validity_audit.csv",
                 "casmi_remaining_gap_and_sota_guardrail_report.md",
             ],
+            "cfmid_full_manifest_available": bool(cfmid_full_manifest),
+            "cfmid_full_supported_completion_fraction": cfmid_full_progress.get("completion_fraction"),
+            "ms2deepscore_environment_verified": ms2_env.get("status") == "verified",
+            "ms2deepscore_pretrained_files_present": bool(ms2_resource.get("all_required_files_present")),
         },
     )
 

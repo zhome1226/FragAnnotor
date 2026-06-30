@@ -1,0 +1,14 @@
+{
+  "claim_guardrail": "Do not report full native CFM-ID metrics until status is completed_full_supported; [M+Na]+ CASMI queries remain unsupported by the local cfmid4 model directory.",
+  "completion_fraction": 0.0,
+  "dataset": "CASMI2022",
+  "mean_reciprocal_rank": null,
+  "model": "CFM-ID",
+  "n_completed_queries": 0,
+  "n_supported_queries": 170,
+  "native_or_fallback": "native_cfmid_full_supported_queries",
+  "status": "incomplete_full_supported",
+  "top10_accuracy": null,
+  "top1_accuracy": null,
+  "top5_accuracy": null
+}
