@@ -2124,7 +2124,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "",
             "## Known Limitations",
             "",
-            "- CASMI native benchmark execution is incomplete: SIRIUS formula-only scores, FragAnnotor fixed component scores, and a frozen trained neural checkpoint report are available, but CFM-ID full candidate ranking is runtime-blocked and MS2DeepScore has no complete candidate spectrum library.",
+            "- CASMI native benchmark execution is incomplete: SIRIUS formula-only scores, FragAnnotor fixed component scores, and a frozen trained neural checkpoint report are available, but CFM-ID full candidate ranking is runtime-blocked and MS2DeepScore has no complete full-CASMI candidate spectrum library.",
             "- PFAS results depend on the frozen candidate matrix generated in the transformation-product workflow.",
             "- The benchmark does not establish deployment-ready thresholds or universal LC-MS/MS prediction performance.",
         ]

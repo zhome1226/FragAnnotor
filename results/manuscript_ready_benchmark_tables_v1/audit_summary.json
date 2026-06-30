@@ -3,6 +3,7 @@
   "cfmid_precomputed_candidate_spectrum_completion_fraction": 1.06782504327361e-05,
   "cfmid_precomputed_manifest_available": true,
   "cfmid_subset_included_as_full_result": false,
+  "ms2deepscore_complete_query_hybrid_subset_available": true,
   "ms2deepscore_environment_verified": true,
   "ms2deepscore_full_candidate_ranking_available": false,
   "stage": "manuscript_ready_benchmark_tables_v1",

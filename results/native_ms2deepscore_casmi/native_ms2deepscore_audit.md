@@ -1,10 +1,10 @@
 # Native MS2DeepScore CASMI Audit
 
-Status: `blocked_no_candidate_spectrum_library`
+Status: `blocked_full_casmi_no_candidate_spectrum_library`
 
-MS2DeepScore is a spectrum-to-spectrum similarity model. The current CASMI2022 benchmark is a structure-candidate ranking task, and no complete per-candidate spectrum library or configured pretrained model is present.
+MS2DeepScore is a spectrum-to-spectrum similarity model. The current CASMI2022 benchmark is a structure-candidate ranking task. The pretrained environment is verified, and a CFM-ID-generated complete-query hybrid subset is available, but no complete full-CASMI per-candidate spectrum library is present.
 
-Do not report MS2DeepScore CASMI Top-k metrics yet. MS2DeepScore scores spectrum pairs; the pretrained model and CPU environment are now externally available/verified, but the CASMI structure-candidate benchmark still lacks a complete per-candidate measured or predicted spectrum library and a query-candidate scoring wrapper. CFM-ID predicted spectra must be labeled as a CFM-ID plus MS2DeepScore hybrid baseline rather than native MS2DeepScore.
+Do not report full-CASMI native MS2DeepScore Top-k metrics yet. MS2DeepScore scores spectrum pairs; the pretrained model and CPU environment are externally available/verified, and a CFM-ID-generated complete-query hybrid subset is available when cached candidate spectra exist. The full CASMI structure-candidate benchmark still lacks a complete per-candidate measured or predicted spectrum library. CFM-ID predicted spectra must be labeled as a CFM-ID plus MS2DeepScore hybrid baseline rather than native MS2DeepScore.
 
 ## Hybrid Baseline Protocol
 

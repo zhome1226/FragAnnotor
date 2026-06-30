@@ -59,6 +59,12 @@ def main() -> None:
         / "casmi2022_cfmid_native_precomputed_complete_query_subset_v1"
         / "audit_summary.json"
     )
+    ms2_complete_query_hybrid = read_json(
+        ROOT
+        / "results"
+        / "casmi2022_cfmid_ms2deepscore_complete_query_hybrid_subset_v1"
+        / "audit_summary.json"
+    )
     ms2 = read_json(ROOT / "results" / "native_ms2deepscore_casmi" / "native_ms2deepscore_audit.json")
     ms2_env = ms2.get("external_ms2deepscore_environment", {})
     ms2_resource = ms2.get("external_pretrained_model_cache", {})
@@ -66,6 +72,18 @@ def main() -> None:
     casmi_summary = summary[summary["dataset"].eq("CASMI2022")].copy() if not summary.empty else pd.DataFrame()
     frag = casmi_summary[casmi_summary["model"].eq("FragAnnotor")]
     sirius = casmi_summary[casmi_summary["model"].eq("SIRIUS")]
+    rank_delta_cols = [
+        "mean_rank_delta_baseline_minus_fragannotor",
+        "median_rank_delta_baseline_minus_fragannotor",
+    ]
+    rank_delta_values = pd.Series(dtype=float)
+    if not pairwise.empty:
+        rank_delta_values = pd.concat(
+            [pd.to_numeric(pairwise[col], errors="coerce") for col in rank_delta_cols if col in pairwise.columns],
+            ignore_index=True,
+        ).dropna()
+    max_abs_rank_delta = float(rank_delta_values.abs().max()) if not rank_delta_values.empty else np.nan
+    has_sentinel_scale_rank_delta = bool(not pd.isna(max_abs_rank_delta) and max_abs_rank_delta > 1_000_000)
 
     gap_rows = [
         {
@@ -91,14 +109,19 @@ def main() -> None:
         },
         {
             "gap": "MS2DeepScore reasonable CASMI candidate-ranking benchmark",
-            "status": ms2.get("status", "missing_audit"),
+            "status": "partial_complete_query_hybrid_subset_available_full_casmi_blocked",
             "resolved_now": False,
             "current_evidence": (
                 "official dual-mode MS2DeepScore model cache recorded outside Git; CPU environment verified "
                 f"with MS2DeepScore {ms2_env.get('ms2deepscore_version', 'unknown')}, MatchMS {ms2_env.get('matchms_version', 'unknown')}, "
                 f"Torch {ms2_env.get('torch_version', 'unknown')}; required model files present="
                 f"{ms2_resource.get('all_required_files_present', False)}. A candidate-limited CFM-ID + MS2DeepScore "
-                "hybrid subset exists, but full CASMI candidate ranking still lacks a complete per-candidate spectrum library."
+                "hybrid subset exists. A complete-query CFM-ID + MS2DeepScore hybrid subset is also available for the "
+                f"selected low-candidate query with n_queries={ms2_complete_query_hybrid.get('n_queries', 'NA')}, "
+                f"candidate policy={ms2_complete_query_hybrid.get('candidate_pool_policy', 'NA')}, "
+                f"Top-5={ms2_complete_query_hybrid.get('top5_accuracy', 'NA')}, "
+                f"MRR={ms2_complete_query_hybrid.get('mean_reciprocal_rank', 'NA')}. Full CASMI candidate ranking "
+                "still lacks a complete per-candidate spectrum library."
             ),
             "required_to_close": "construct a complete CASMI per-candidate measured or generated spectrum library and run a documented MS2DeepScore query-candidate scoring wrapper; label generator+MS2DeepScore reranking as hybrid rather than native MS2DeepScore",
             "can_include_in_main_benchmark": False,
@@ -115,7 +138,11 @@ def main() -> None:
             "gap": "CASMI pairwise rank delta outliers",
             "status": "fixed",
             "resolved_now": True,
-            "current_evidence": "sota_pairwise_rank_comparison.csv now reports n_completed_queries, n_rank_valid_queries, and n_missing_rank_pairs; no 1e9 missing-rank sentinel participates in deltas",
+            "current_evidence": (
+                "sota_pairwise_rank_comparison.csv now reports n_completed_queries, n_rank_valid_queries, "
+                f"and n_missing_rank_pairs; max_abs_reported_rank_delta={max_abs_rank_delta}; "
+                f"has_sentinel_scale_rank_delta={has_sentinel_scale_rank_delta}"
+            ),
             "required_to_close": "none for the current artifact; continue excluding unavailable or non-finite rank pairs from paired deltas",
             "can_include_in_main_benchmark": True,
         },
@@ -176,9 +203,22 @@ def main() -> None:
             "support": (
                 f"MS2DeepScore environment/model cache verified={ms2_env.get('status', 'unknown')}; "
                 "full candidate ranking remains blocked because CASMI structure candidates lack a complete candidate spectrum library. "
+                "A complete-query hybrid subset exists only for a selected low-candidate query and uses CFM-ID-generated candidate spectra. "
                 f"{ms2.get('benchmark_decision', '')}"
             ),
             "guardrail": "Do not substitute CFM-ID-generated spectra and call it native MS2DeepScore.",
+        },
+        {
+            "claim": "A CFM-ID + MS2DeepScore complete-query CASMI hybrid subset is available",
+            "allowed": True,
+            "support": (
+                f"status={ms2_complete_query_hybrid.get('status', 'missing')}; "
+                f"n_queries={ms2_complete_query_hybrid.get('n_queries')}; "
+                f"candidate policy={ms2_complete_query_hybrid.get('candidate_pool_policy')}; "
+                f"Top-5={ms2_complete_query_hybrid.get('top5_accuracy')}; "
+                f"MRR={ms2_complete_query_hybrid.get('mean_reciprocal_rank')}."
+            ),
+            "guardrail": "Describe as a CFM-ID-generated spectrum hybrid complete-query subset only; not native MS2DeepScore and not full CASMI.",
         },
         {
             "claim": "FragAnnotor is SOTA over ICEBERG/MassFormer/NEIMS on CASMI",
@@ -215,7 +255,7 @@ def main() -> None:
         "",
         "## Bottom Line",
         "",
-        "The pairwise rank-delta artifact is fixed, and a report-only trained neural FragAnnotor CASMI result is available but weak. Complete CASMI native CFM-ID ranking remains a long full-shard execution task. MS2DeepScore has a verified pretrained environment and a CFM-ID-generated hybrid subset, but not a complete full candidate-ranking benchmark. A strong SOTA claim remains blocked until all compared models are rerun on a harmonized candidate set and evaluation protocol.",
+        "The pairwise rank-delta artifact is fixed, and a report-only trained neural FragAnnotor CASMI result is available but weak. Complete CASMI native CFM-ID ranking remains a long full-shard execution task. MS2DeepScore has a verified pretrained environment, a candidate-limited CFM-ID-generated hybrid subset, and a selected complete-query CFM-ID-generated hybrid subset, but not a complete full-CASMI candidate-ranking benchmark. A strong SOTA claim remains blocked until all compared models are rerun on a harmonized candidate set and evaluation protocol.",
         "",
     ]
     (OUTDIR / "casmi_remaining_gap_and_sota_guardrail_report.md").write_text("\n".join(report), encoding="utf-8")
@@ -225,8 +265,11 @@ def main() -> None:
         {
             "stage": "casmi_remaining_gap_and_sota_guardrail_v1",
             "rank_delta_outlier_fixed": True,
+            "max_abs_reported_rank_delta": None if pd.isna(max_abs_rank_delta) else max_abs_rank_delta,
+            "has_sentinel_scale_rank_delta": has_sentinel_scale_rank_delta,
             "complete_native_cfmid_casmi_available": False,
             "native_ms2deepscore_casmi_available": False,
+            "ms2deepscore_complete_query_hybrid_subset_available": bool(ms2_complete_query_hybrid),
             "trained_neural_casmi_effective_primary": False,
             "strong_sota_claim_supported": False,
             "outputs": [
