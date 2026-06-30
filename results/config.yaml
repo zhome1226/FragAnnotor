@@ -44,7 +44,7 @@ native_baseline_audit:
   blocker: 'CFM-ID 4.x-compatible native binary was found and smoke-tested. A resumable
     full-run manifest is prepared for 170 supported `[M+H]+`/`[M-H]-` CASMI queries
     and 1062950 candidate rows. The precomputed route requires 936483 unique candidate
-    spectra; current full-run cache progress is 3971 candidate spectra and 7 completed
+    spectra; current full-run cache progress is 6441 candidate spectra and 9 completed
     supported query rankings. No full native CASMI CFM-ID metrics are reported until
     every required shard completes; unsupported adduct counts: {''[M+Na]+'': 59}.'
 - model: SIRIUS
@@ -63,5 +63,5 @@ native_baseline_audit:
     still lacks a complete per-candidate measured or predicted spectrum library. CFM-ID
     predicted spectra must be labeled as a CFM-ID plus MS2DeepScore hybrid baseline
     rather than native MS2DeepScore. Complete-query CFM-ID + MS2DeepScore hybrid subset
-    is available for 7 selected queries with MRR=0.1042333970845776; it is not native
+    is available for 9 selected queries with MRR=0.08139700702143969; it is not native
     MS2DeepScore.

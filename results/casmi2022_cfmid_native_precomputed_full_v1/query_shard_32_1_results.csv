@@ -1,0 +1,2 @@
+dataset,model,status,native_or_fallback,query_id,spectrum_id,true_candidate_id,adduct,candidate_count,ranked_rows,missing_candidate_spectra,true_rank,top1_correct,top5_correct,top10_correct,reciprocal_rank,elapsed_seconds,rank_output_file
+CASMI2022,CFM-ID,completed,native_cfmid_precomputed_full_supported_queries,46,46,CASMI_MOL_1196837,[M+H]+,960,960,0,191.0,False,False,False,0.005235602094240838,0.4649994373321533,/home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_full_v1/work/query_46/cfmid_precomputed_ranked_46.txt

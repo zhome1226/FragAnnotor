@@ -1,7 +1,7 @@
 {
   "cfmid_complete_query_partial_attempt_count": 1,
   "cfmid_full_manifest_available": true,
-  "cfmid_precomputed_candidate_spectrum_completion_fraction": 0.004240333246839505,
+  "cfmid_precomputed_candidate_spectrum_completion_fraction": 0.006877861103725322,
   "cfmid_precomputed_manifest_available": true,
   "cfmid_subset_included_as_full_result": false,
   "ms2deepscore_complete_query_hybrid_subset_available": true,

@@ -28,8 +28,8 @@ DEFAULT_MODEL_ROOT = Path("/home/zhome/ec_structure/external_ms_models/vendor/cf
 DEFAULT_OUTDIR = ROOT / "results" / "casmi2022_cfmid_native_precomputed_complete_query_subset_v1"
 
 
-def read_candidate_smiles(path: Path) -> dict[int, str]:
-    rows: dict[int, str] = {}
+def read_candidate_smiles(path: Path) -> list[tuple[int, str]]:
+    rows: list[tuple[int, str]] = []
     if not path.exists():
         return rows
     with path.open(encoding="utf-8") as handle:
@@ -43,7 +43,7 @@ def read_candidate_smiles(path: Path) -> dict[int, str]:
             except ValueError:
                 continue
             if smiles:
-                rows[mol_id] = smiles
+                rows.append((mol_id, smiles))
     return rows
 
 
