@@ -1,22 +1,23 @@
 {
   "candidate_count": 233,
-  "chunk_size": 3,
-  "chunks_requested_this_run": 5,
+  "chunk_size": 2,
+  "chunks_requested_this_run": 0,
   "claim_guardrail": "Only report Top-k/MRR for this query if status is completed_ranked.",
-  "missing_candidate_spectra": 145,
-  "predicted_spectrum_ids": 88,
+  "duplicate_smiles_spectra_reused": 0,
+  "missing_candidate_spectra": 0,
+  "predicted_spectrum_ids": 233,
   "query_id": "35",
   "query_mol_id": 1196824,
   "rank_run": {
-    "command": "",
-    "elapsed_seconds": 0.0,
-    "returncode": null,
-    "status": "skipped_missing_candidate_spectra",
-    "stderr": "",
-    "stdout": ""
+    "command": "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id-precomputed /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_35/query_spectrum_35.txt 35 /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_35/candidate_triples_plain.txt -1 10 0.01 DotProduct /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_35/cfmid_precomputed_ranked_35.txt 0 0",
+    "elapsed_seconds": 0.21443438529968262,
+    "returncode": 0,
+    "status": "completed",
+    "stderr": "/home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_35/logs/cfm_id_precomputed_chunked.stderr.log",
+    "stdout": "/home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_35/logs/cfm_id_precomputed_chunked.stdout.log"
   },
-  "ranked_rows": 0,
+  "ranked_rows": 233,
   "stage": "casmi2022_cfmid_native_precomputed_complete_query_chunked_resume_v1",
-  "status": "partial_missing_candidate_spectra",
-  "true_rank": null
+  "status": "completed_ranked",
+  "true_rank": 31
 }

@@ -8,9 +8,9 @@ The benchmark pipeline exported CASMI2022 and PFAS candidate-ranking outputs for
 
 | model | native_available | executable_or_package | version | blocker |
 | --- | --- | --- | --- | --- |
-| CFM-ID | False | /home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id | native_binary_smoke_passed_runtime_blocked | CFM-ID 4.x-compatible native binary was found and smoke-tested. A resumable full-run manifest is prepared for 170 supported `[M+H]+`/`[M-H]-` CASMI queries and 1,062,950 candidate rows, but no full native CASMI CFM-ID score table is reported until every shard completes; 59 `[M+Na]+` queries remain unsupported by the local cfmid4 model directory. |
+| CFM-ID | False | /home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id | native_binary_smoke_passed_runtime_blocked | CFM-ID 4.x-compatible native binary was found and smoke-tested. A resumable full-run manifest is prepared for 170 supported `[M+H]+`/`[M-H]-` CASMI queries and 1062950 candidate rows. The precomputed route requires 936483 unique candidate spectra; current full-run cache progress is 10 candidate spectra and 0 completed supported query rankings. No full native CASMI CFM-ID metrics are reported until every required shard completes; unsupported adduct counts: {'[M+Na]+': 59}. |
 | SIRIUS | True |  | SIRIUS 4.9.15 native formula result file |  |
-| MS2DeepScore | False | /home/zhome/ec_structure/external_ms_models/envs/ms2deepscore_casmi/bin/python | MS2DeepScore 2.7.2 / MatchMS 0.33.1 / Torch 2.4.1+cpu verified | MS2DeepScore is a spectrum-to-spectrum similarity model. The pretrained model cache and CPU environment are verified. A selected CFM-ID-generated complete-query hybrid subset is available, but full-CASMI/native MS2DeepScore ranking still lacks a complete per-candidate spectrum library. No full native MS2DeepScore candidate-ranking scores are reported. |
+| MS2DeepScore | False | /home/zhome/ec_structure/external_ms_models/envs/ms2deepscore_casmi/bin/python | MS2DeepScore 2.7.2 / MatchMS 0.33.1 / Torch 2.4.1+cpu verified | Do not report full-CASMI native MS2DeepScore Top-k metrics yet. MS2DeepScore scores spectrum pairs; the pretrained model and CPU environment are externally available/verified, and a CFM-ID-generated complete-query hybrid subset is available when cached candidate spectra exist. The full CASMI structure-candidate benchmark still lacks a complete per-candidate measured or predicted spectrum library. CFM-ID predicted spectra must be labeled as a CFM-ID plus MS2DeepScore hybrid baseline rather than native MS2DeepScore. Complete-query CFM-ID + MS2DeepScore hybrid subset is available for 2 selected queries with MRR=0.10704225352112677; it is not native MS2DeepScore. |
 
 PFAS CFM-ID and SIRIUS entries use real precomputed external expert scores from the companion PFAS workflow. SIRIUS is used as a scalar formula plausibility feature, not as a synthetic spectrum generator.
 
@@ -41,7 +41,7 @@ PFAS CFM-ID and SIRIUS entries use real precomputed external expert scores from 
 | CASMI2022 | SIRIUS | completed | native_sirius | 229 | 0.6462882096069869 | 0.6550218340611353 | 0.6550218340611353 | 0.6499330162600465 | 0.7496250635336656 | 0.7947598253275109 | 1.0 | 2001.0 |  |
 | CASMI2022 | MS2DeepScore | model_unavailable_native_required | native_unavailable | 229 |  |  |  |  |  |  |  |  | MS2DeepScore native CASMI candidate-ranking workflow is unavailable: the package/model may be installable, but this structure-candidate benchmark lacks a complete candidate spectrum library or configured pretrained MS2DeepScore embedding workflow. |
 
-CASMI2022 includes one completed native baseline in this run: SIRIUS 4.9.15 formula-only ranking. FragAnnotor is reported separately as a formal fixed formula/fragment component-score CASMI mode using real experimental peaks, candidate formulas, precursor/adduct mass consistency, common fragment/neutral-loss plausibility, and native SIRIUS formula scores. A separate trained neural checkpoint report is included when available. CFM-ID and MS2DeepScore remain unavailable as completed full native CASMI candidate-ranking baselines under `--allow-fallback false`; CFM-ID and CFM-ID + MS2DeepScore subset rows are explicitly labeled as subset evidence only.
+CASMI2022 includes one completed native baseline in this run: SIRIUS 4.9.15 formula-only ranking. FragAnnotor is reported separately as a formal fixed formula/fragment component-score CASMI mode using real experimental peaks, candidate formulas, precursor/adduct mass consistency, common fragment/neutral-loss plausibility, and native SIRIUS formula scores. A separate trained neural checkpoint report is included when available. CFM-ID and MS2DeepScore remain unavailable as completed full native CASMI candidate-ranking baselines under `--allow-fallback false`.
 
 ## Preliminary Fallback CASMI Results
 
@@ -94,28 +94,21 @@ This is report-only inference from a frozen checkpoint, not CASMI training, weig
 CFM-ID native binary status: `passed`; full CASMI status: `runtime_blocked_full_casmi_not_reported`.
 Do not report native CFM-ID CASMI Top-k metrics until a complete per-query candidate score table is generated. Smoke/partial outputs are readiness evidence only, not benchmark results.
 
-Candidate-limited native CFM-ID subset evidence is available at `results/casmi2022_cfmid_native_subset_v1/`: 10 supported `[M+H]+` CASMI queries, `candidate_limit=10`, `first_n_plus_true` pool, Top-1 `0.7`, Top-5 `0.9`, Top-10 `1.0`, MRR `0.7658333333333334`. This subset validates the native ranking path only and is not a full CASMI CFM-ID baseline.
-Runtime extrapolation is recorded in `results/cfmid_full_runtime_extrapolation_v1/`: the supported `[M+H]+/[M-H]-` CASMI subset has about 1,062,950 candidate rows, and the observed subset timing implies roughly 1,981-2,491 single-worker hours, or 124-156 idealized 16-worker hours, before handling unsupported `[M+Na]+` queries.
-The resumable full-run manifest is prepared at `results/cfmid_full_casmi_run_manifest_v1/`; current progress is summarized in `results/casmi2022_cfmid_native_full_supported_v1/` as `incomplete_full_supported` with `0/170` supported queries complete. The manifest is readiness infrastructure, not a completed benchmark result.
+## Native CFM-ID Complete-Query Subset
 
-A faster native route using precomputed candidate spectra is now validated at `results/cfmid_precomputed_smoke_v1/`: `cfm-predict` generated 11 candidate spectra in about 163 seconds, and `cfm-id-precomputed` ranked them in about 0.016 seconds. The full precomputed manifest is prepared at `results/cfmid_precomputed_full_casmi_manifest_v1/` and current progress is summarized at `results/casmi2022_cfmid_native_precomputed_full_v1/`. This route still requires 936,483 unique `[M+H]+` candidate spectra for the 170 supported CASMI queries; current progress is 10 cached candidate spectra and 0 completed supported query rankings. It remains a long-running candidate-spectrum generation task and must not be reported as full CFM-ID metrics until completion.
-
-A complete-query native CFM-ID precomputed subset is available at `results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/`. It selected the smallest supported CASMI query (`spec_id=16`) and used the full candidate set for that query (`103/103` candidates predicted and ranked). The true structure ranked 5th, giving subset Top-1 `0.0`, Top-5 `1.0`, Top-10 `1.0`, and MRR `0.2`. This is stronger than the earlier candidate-limited smoke because no candidate limit was applied for the selected query, but it is still a one-query subset and not a full CASMI CFM-ID baseline.
-
-A second complete-query CFM-ID expansion attempt is recorded at `results/casmi2022_cfmid_native_precomputed_complete_query_expansion_v1/`. Query `35` has 233 candidates; the attempted run plus chunked resume generated 88/233 candidate spectra and has 145 candidate spectra still missing, so it is not included in Top-k/MRR metrics. The CFM-ID complete-query script now detects partial MSP caches and writes a resume input for only missing candidates instead of treating a partial MSP as complete.
+Complete-query native CFM-ID precomputed subset evidence is available at `results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/`: `2` selected supported `[M+H]+` CASMI queries, full candidate sets for each selected query, Top-1 `0.0`, Top-5 `0.5`, Top-10 `0.5`, and MRR `0.1161290322580645`.
+Query 35 expansion status: `completed_ranked`, candidate spectra `233/233`, ranked rows `233`, true rank `31`.
+This is full-candidate-set evidence for selected low-candidate queries only; it is not a full CASMI CFM-ID baseline.
 
 ## Native MS2DeepScore CASMI Audit
 
 MS2DeepScore CASMI status: `blocked_full_casmi_no_candidate_spectrum_library`.
-Do not report full-CASMI native MS2DeepScore Top-k metrics yet. MS2DeepScore scores spectrum pairs; the pretrained model and CPU environment are externally available/verified, and a selected CFM-ID-generated complete-query hybrid subset is available when cached candidate spectra exist. The full CASMI structure-candidate benchmark still lacks a complete per-candidate measured or predicted spectrum library. CFM-ID predicted spectra must be labeled as a CFM-ID plus MS2DeepScore hybrid baseline rather than native MS2DeepScore.
+Do not report full-CASMI native MS2DeepScore Top-k metrics yet. MS2DeepScore scores spectrum pairs; the pretrained model and CPU environment are externally available/verified, and a CFM-ID-generated complete-query hybrid subset is available when cached candidate spectra exist. The full CASMI structure-candidate benchmark still lacks a complete per-candidate measured or predicted spectrum library. CFM-ID predicted spectra must be labeled as a CFM-ID plus MS2DeepScore hybrid baseline rather than native MS2DeepScore.
 
-The documented path forward is a clearly labeled generator + MS2DeepScore hybrid baseline: generate candidate spectra for every CASMI candidate, load a documented pretrained MS2DeepScore model, score query/candidate spectrum pairs, and report coverage/failures without calling it native MS2DeepScore.
-The official dual-mode pretrained MS2DeepScore model from Zenodo `10.5281/zenodo.17826815` has been downloaded to external storage and recorded in `results/ms2deepscore_resource_manifest_v1/`; it is not committed to Git. The CPU environment is verified in `results/ms2deepscore_environment_verification_v1/` with MS2DeepScore `2.7.2`, MatchMS `0.33.1`, and Torch `2.4.1+cpu`. Full MS2DeepScore ranking remains blocked until a complete CASMI per-candidate spectrum library is available.
-The reproducible setup script is `scripts/setup_ms2deepscore_cpu_env.sh`; it installs CPU-only Torch before MS2DeepScore to avoid multi-GB CUDA wheel resolution.
+## CFM-ID + MS2DeepScore Complete-Query Hybrid Subset
 
-A candidate-limited `CFM-ID + MS2DeepScore` hybrid subset is available at `results/casmi2022_cfmid_ms2deepscore_hybrid_subset_v1/`: 10 supported `[M+H]+` CASMI queries, CFM-ID-generated candidate spectra, `candidate_limit=10`, `first_n_plus_true` pool, Top-1 `0.5`, Top-5 `0.8`, Top-10 `1.0`, MRR `0.6133333333333334`. This is not native MS2DeepScore and not a full CASMI benchmark.
-
-A selected complete-query `CFM-ID + MS2DeepScore` hybrid subset is available at `results/casmi2022_cfmid_ms2deepscore_complete_query_hybrid_subset_v1/`: 1 supported `[M+H]+` CASMI query, full candidate set for that selected query, 103 candidate spectra, Top-1 `0.0`, Top-5 `1.0`, Top-10 `1.0`, MRR `0.2`. This is not native MS2DeepScore and not a full CASMI benchmark.
+Complete-query CFM-ID + MS2DeepScore hybrid subset evidence is available for `2` selected queries with full candidate sets: Top-1 `0.0`, Top-5 `0.5`, Top-10 `0.5`, and MRR `0.1070422535211267`.
+Candidate spectra are generated by CFM-ID, so this is a complete-query CFM-ID + MS2DeepScore hybrid subset, not native MS2DeepScore and not a full CASMI benchmark.
 
 ## External Public Benchmark Context
 
@@ -135,7 +128,7 @@ These public CASMI22 retrieval results are external context. They should not be 
 - The trained neural checkpoint CASMI result is substantially weaker than the fixed component-score mode, so it should be reported as a checkpoint audit result rather than the primary CASMI ranking policy.
 - CFM-ID native binary compatibility was repaired, but full CASMI candidate ranking remains runtime-blocked and is not replaced with fallback scores.
 - No result with `native_or_fallback=native_unavailable` should be described as a completed native baseline.
-- MS2DeepScore native comparison is blocked until a complete full-CASMI per-candidate spectrum library is available; current MS2DeepScore evidence is limited to CFM-ID-generated hybrid subsets.
+- MS2DeepScore native comparison is blocked until a complete full-CASMI per-candidate spectrum library is available; current MS2DeepScore evidence is a CFM-ID-generated hybrid subset.
 - Pairwise rank-delta statistics exclude unavailable baselines and non-finite true-rank pairs; missing true ranks are counted separately and are not replaced with sentinel ranks.
 - SIRIUS is used here as molecular formula plausibility evidence, not as a synthetic spectrum generator or CSI:FingerID structure predictor.
 
@@ -148,8 +141,8 @@ These public CASMI22 retrieval results are external context. They should not be 
 
 ## Remaining Blockers
 
-- Native CFM-ID full CASMI scoring is prepared both as a direct 34-shard query manifest and as a faster precomputed-spectrum pipeline. The precomputed path is validated but still requires 936,483 unique candidate spectra before full supported-query metrics can be reported; `[M+Na]+` CASMI queries remain unsupported by the local cfmid4 model directory. A second complete-query expansion is partial only (`88/233` spectra for query `35`) and is excluded from benchmark metrics until all candidates are ranked.
-- Native MS2DeepScore is blocked because the benchmark lacks a complete full-CASMI candidate spectrum library, despite the pretrained model cache and CPU environment being verified; a selected CFM-ID-generated complete-query hybrid subset is available.
+- Native CFM-ID full CASMI scoring is prepared via direct and precomputed manifests, but full supported-query metrics remain blocked until all candidate-spectrum shards and query-ranking shards complete.
+- Native MS2DeepScore is blocked because the benchmark lacks a complete full-CASMI candidate spectrum library; current CFM-ID-generated hybrid subsets must not be called native MS2DeepScore.
 - The CASMI trained neural checkpoint result is complete, but it underperforms the fixed component-score mode and should not be used to claim neural superiority.
 - A strong SOTA claim is blocked until FragAnnotor, CFM-ID, SIRIUS/CSI, ICEBERG, MassFormer, NEIMS, and MS2DeepScore are compared on a harmonized CASMI candidate set with the same preprocessing and metrics.
 - PFAS results remain an internal frozen locked-test benchmark and are not independent external validation.

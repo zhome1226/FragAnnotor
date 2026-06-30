@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import pandas as pd
 
 
@@ -74,6 +75,7 @@ def main() -> None:
     ms2 = read_json(ROOT / "results" / "native_ms2deepscore_casmi" / "native_ms2deepscore_audit.json")
     ms2_env = ms2.get("external_ms2deepscore_environment", {})
     ms2_resource = ms2.get("external_pretrained_model_cache", {})
+    expansion_complete = cfmid_complete_query_expansion.get("status") == "completed_ranked"
 
     casmi_summary = summary[summary["dataset"].eq("CASMI2022")].copy() if not summary.empty else pd.DataFrame()
     frag = casmi_summary[casmi_summary["model"].eq("FragAnnotor")]
@@ -106,12 +108,14 @@ def main() -> None:
                 f"{cfmid_precomputed_progress.get('expected_unique_candidate_spectra', 'unknown')} unique candidate spectra; "
                 f"currently cached spectra={cfmid_precomputed_progress.get('completed_candidate_spectra', 0)} and completed supported queries="
                 f"{cfmid_precomputed_progress.get('n_completed_queries', 0)}. A separate complete-query subset is available with "
-                f"{cfmid_complete_query_subset.get('summary', {}).get('n_queries_completed', 0)} selected query using its full candidate set; "
+                f"{cfmid_complete_query_subset.get('summary', {}).get('n_queries_completed', 0)} selected queries using their full candidate sets; "
                 f"subset MRR={cfmid_complete_query_subset.get('summary', {}).get('mean_reciprocal_rank', 'NA')}. "
-                f"An attempted expansion query {cfmid_complete_query_expansion.get('query_id', 'NA')} reached "
+                f"Expansion query {cfmid_complete_query_expansion.get('query_id', 'NA')} status="
+                f"{cfmid_complete_query_expansion.get('status', 'NA')} with "
                 f"{cfmid_complete_query_expansion.get('predicted_spectrum_ids', 'NA')}/"
-                f"{cfmid_complete_query_expansion.get('candidate_count', 'NA')} predicted spectra before timeout and is "
-                f"not included in completed metrics. "
+                f"{cfmid_complete_query_expansion.get('candidate_count', 'NA')} predicted spectra, "
+                f"ranked_rows={cfmid_complete_query_expansion.get('ranked_rows', 'NA')}, "
+                f"true_rank={cfmid_complete_query_expansion.get('true_rank', 'NA')}. "
                 f"Unsupported adduct counts: {cfmid_full_manifest.get('unsupported_adduct_counts', {})}."
             ),
             "required_to_close": "execute all CFM-ID precomputed candidate-spectrum shards, then all query-ranking shards, and obtain complete per-query CFM-ID candidate score tables for every supported query; add an [M+Na]+ model or report those CASMI rows as unsupported",
@@ -126,8 +130,8 @@ def main() -> None:
                 f"with MS2DeepScore {ms2_env.get('ms2deepscore_version', 'unknown')}, MatchMS {ms2_env.get('matchms_version', 'unknown')}, "
                 f"Torch {ms2_env.get('torch_version', 'unknown')}; required model files present="
                 f"{ms2_resource.get('all_required_files_present', False)}. A candidate-limited CFM-ID + MS2DeepScore "
-                "hybrid subset exists. A complete-query CFM-ID + MS2DeepScore hybrid subset is also available for the "
-                f"selected low-candidate query with n_queries={ms2_complete_query_hybrid.get('n_queries', 'NA')}, "
+                "hybrid subset exists. A complete-query CFM-ID + MS2DeepScore hybrid subset is also available for "
+                f"selected full-candidate queries with n_queries={ms2_complete_query_hybrid.get('n_queries', 'NA')}, "
                 f"candidate policy={ms2_complete_query_hybrid.get('candidate_pool_policy', 'NA')}, "
                 f"Top-5={ms2_complete_query_hybrid.get('top5_accuracy', 'NA')}, "
                 f"MRR={ms2_complete_query_hybrid.get('mean_reciprocal_rank', 'NA')}. Full CASMI candidate ranking "
@@ -205,19 +209,21 @@ def main() -> None:
                 f"Top-5={cfmid_complete_query_subset.get('summary', {}).get('top5_accuracy')}; "
                 f"MRR={cfmid_complete_query_subset.get('summary', {}).get('mean_reciprocal_rank')}."
             ),
-            "guardrail": "Describe as a full-candidate-set subset for selected low-candidate query only; do not report it as full CASMI CFM-ID.",
+            "guardrail": "Describe as a full-candidate-set subset for selected low-candidate queries only; do not report it as full CASMI CFM-ID.",
         },
         {
             "claim": "A second native CFM-ID complete-query CASMI result is available",
-            "allowed": False,
+            "allowed": expansion_complete,
             "support": (
                 f"Expansion status={cfmid_complete_query_expansion.get('status', 'missing')}; "
                 f"query_id={cfmid_complete_query_expansion.get('query_id')}; "
                 f"predicted spectra={cfmid_complete_query_expansion.get('predicted_spectrum_ids')}/"
                 f"{cfmid_complete_query_expansion.get('candidate_count')}; "
-                f"missing={cfmid_complete_query_expansion.get('missing_candidate_spectra')}."
+                f"missing={cfmid_complete_query_expansion.get('missing_candidate_spectra')}; "
+                f"ranked_rows={cfmid_complete_query_expansion.get('ranked_rows')}; "
+                f"true_rank={cfmid_complete_query_expansion.get('true_rank')}."
             ),
-            "guardrail": "Query 35 remains partial and must not be included in Top-k/MRR until all candidate spectra are available and the full candidate set is ranked.",
+            "guardrail": "Query 35 is complete-query subset evidence only; it remains far too small to serve as full CASMI CFM-ID.",
         },
         {
             "claim": "MS2DeepScore CASMI candidate-ranking benchmark is complete",
@@ -225,7 +231,7 @@ def main() -> None:
             "support": (
                 f"MS2DeepScore environment/model cache verified={ms2_env.get('status', 'unknown')}; "
                 "full candidate ranking remains blocked because CASMI structure candidates lack a complete candidate spectrum library. "
-                "A complete-query hybrid subset exists only for a selected low-candidate query and uses CFM-ID-generated candidate spectra. "
+                "A complete-query hybrid subset exists only for selected low-candidate queries and uses CFM-ID-generated candidate spectra. "
                 f"{ms2.get('benchmark_decision', '')}"
             ),
             "guardrail": "Do not substitute CFM-ID-generated spectra and call it native MS2DeepScore.",

@@ -947,20 +947,69 @@ def compact_probe_version(probe: Any, fallback: str = "") -> str:
     return fallback
 
 
+def read_json_if_exists(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
 def native_baseline_audit(env: dict[str, Any]) -> list[dict[str, Any]]:
     executables = env["executables"]
     packages = env["packages"]
     cfmid_executable = executables.get("cfmid") or executables.get("cfm_predict") or executables.get("cfm_id") or ""
+    cfmid_full_manifest = read_json_if_exists(ROOT / "results" / "cfmid_full_casmi_run_manifest_v1" / "audit_summary.json")
+    cfmid_precomputed_manifest = read_json_if_exists(ROOT / "results" / "cfmid_precomputed_full_casmi_manifest_v1" / "audit_summary.json")
+    cfmid_precomputed_progress = read_json_if_exists(ROOT / "results" / "casmi2022_cfmid_native_precomputed_full_v1" / "audit_summary.json")
     cfmid_version = "unavailable"
     cfmid_blocker = "CFM-ID executable not found in PATH; no native CASMI CFM-ID inference was run."
     if cfmid_executable:
         cfmid_version = "native_binary_smoke_passed_runtime_blocked" if NATIVE_CFMID_CASMI_AUDIT.exists() else "executable_present"
-        cfmid_blocker = (
-            "CFM-ID 4.x-compatible native binary was found and smoke-tested, but CASMI full candidate ranking remains runtime-blocked: "
-            "a 100-candidate timing run did not finish within 15 minutes, so no full native CASMI CFM-ID score table is reported."
-            if NATIVE_CFMID_CASMI_AUDIT.exists()
-            else "CFM-ID executable exists, but full native CASMI score generation has not completed; no valid native CASMI CFM-ID benchmark scores are reported."
+        if cfmid_precomputed_manifest:
+            cfmid_blocker = (
+                "CFM-ID 4.x-compatible native binary was found and smoke-tested. "
+                f"A resumable full-run manifest is prepared for {cfmid_precomputed_manifest.get('supported_queries', 'unknown')} "
+                f"supported `[M+H]+`/`[M-H]-` CASMI queries and "
+                f"{cfmid_precomputed_manifest.get('supported_candidate_rows', cfmid_full_manifest.get('total_supported_candidate_rows', 'unknown'))} candidate rows. "
+                f"The precomputed route requires {cfmid_precomputed_progress.get('expected_unique_candidate_spectra', 'unknown')} unique candidate spectra; "
+                f"current full-run cache progress is {cfmid_precomputed_progress.get('completed_candidate_spectra', 0)} candidate spectra and "
+                f"{cfmid_precomputed_progress.get('n_completed_queries', 0)} completed supported query rankings. "
+                "No full native CASMI CFM-ID metrics are reported until every required shard completes; "
+                f"unsupported adduct counts: {cfmid_full_manifest.get('unsupported_adduct_counts', {'[M+Na]+': 59})}."
+            )
+        else:
+            cfmid_blocker = (
+                "CFM-ID 4.x-compatible native binary was found and smoke-tested, but CASMI full candidate ranking remains runtime-blocked: "
+                "a 100-candidate timing run did not finish within 15 minutes, so no full native CASMI CFM-ID score table is reported."
+                if NATIVE_CFMID_CASMI_AUDIT.exists()
+                else "CFM-ID executable exists, but full native CASMI score generation has not completed; no valid native CASMI CFM-ID benchmark scores are reported."
+            )
+    ms2_audit = read_json_if_exists(ROOT / "results" / "native_ms2deepscore_casmi" / "native_ms2deepscore_audit.json")
+    ms2_external_env = ms2_audit.get("external_ms2deepscore_environment", {})
+    ms2_hybrid = ms2_audit.get("complete_query_hybrid_subset", {})
+    if ms2_external_env.get("status") == "verified":
+        ms2_executable = ms2_external_env.get("env_python", "")
+        ms2_version = (
+            f"MS2DeepScore {ms2_external_env.get('ms2deepscore_version', '')} / "
+            f"MatchMS {ms2_external_env.get('matchms_version', '')} / "
+            f"Torch {ms2_external_env.get('torch_version', '')} verified"
         )
+        ms2_blocker = (
+            ms2_audit.get("benchmark_decision")
+            or "MS2DeepScore environment is verified, but full CASMI candidate ranking lacks a complete per-candidate spectrum library."
+        )
+        if ms2_hybrid:
+            ms2_blocker += (
+                f" Complete-query CFM-ID + MS2DeepScore hybrid subset is available for "
+                f"{ms2_hybrid.get('n_rank_valid_queries', ms2_hybrid.get('n_queries', 'unknown'))} selected queries "
+                f"with MRR={ms2_hybrid.get('mean_reciprocal_rank', 'NA')}; it is not native MS2DeepScore."
+            )
+    else:
+        ms2_executable = "ms2deepscore" if packages.get("ms2deepscore", {}).get("available") else ""
+        ms2_version = packages.get("ms2deepscore", {}).get("version") or "unavailable"
+        ms2_blocker = "MS2DeepScore is a spectrum-to-spectrum similarity model; this CASMI candidate-ranking benchmark has candidate structures but no complete per-candidate reference/predicted spectrum library or configured pretrained MS2DeepScore model. No native MS2DeepScore candidate-ranking scores are reported."
     rows = [
         {
             "model": "CFM-ID",
@@ -978,10 +1027,10 @@ def native_baseline_audit(env: dict[str, Any]) -> list[dict[str, Any]]:
         },
         {
             "model": "MS2DeepScore",
-            "native_available": bool(packages.get("ms2deepscore", {}).get("available")),
-            "executable_or_package": "ms2deepscore" if packages.get("ms2deepscore", {}).get("available") else "",
-            "version": packages.get("ms2deepscore", {}).get("version") or "unavailable",
-            "blocker": "MS2DeepScore is a spectrum-to-spectrum similarity model; this CASMI candidate-ranking benchmark has candidate structures but no complete per-candidate reference/predicted spectrum library or configured pretrained MS2DeepScore model. No native MS2DeepScore candidate-ranking scores are reported.",
+            "native_available": False,
+            "executable_or_package": ms2_executable,
+            "version": ms2_version,
+            "blocker": ms2_blocker,
         },
     ]
     return rows
@@ -2044,6 +2093,24 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             )
         except Exception:
             pass
+    cfmid_complete_query_summary = results_dir / "casmi2022_cfmid_native_precomputed_complete_query_subset_v1" / "casmi2022_cfmid_native_precomputed_complete_query_subset_summary.csv"
+    cfmid_complete_query_expansion = results_dir / "casmi2022_cfmid_native_precomputed_complete_query_expansion_v1" / "audit_summary.json"
+    if cfmid_complete_query_summary.exists():
+        try:
+            subset = pd.read_csv(cfmid_complete_query_summary).iloc[0].to_dict()
+            expansion = json.loads(cfmid_complete_query_expansion.read_text(encoding="utf-8")) if cfmid_complete_query_expansion.exists() else {}
+            lines.extend(
+                [
+                    "## Native CFM-ID Complete-Query Subset",
+                    "",
+                    f"Complete-query native CFM-ID precomputed subset evidence is available at `results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/`: `{int(subset.get('n_queries_completed', 0))}` selected supported `[M+H]+` CASMI queries, full candidate sets for each selected query, Top-1 `{subset.get('top1_accuracy')}`, Top-5 `{subset.get('top5_accuracy')}`, Top-10 `{subset.get('top10_accuracy')}`, and MRR `{subset.get('mean_reciprocal_rank')}`.",
+                    f"Query 35 expansion status: `{expansion.get('status', 'unknown')}`, candidate spectra `{expansion.get('predicted_spectrum_ids', 'NA')}/{expansion.get('candidate_count', 'NA')}`, ranked rows `{expansion.get('ranked_rows', 'NA')}`, true rank `{expansion.get('true_rank', 'NA')}`.",
+                    "This is full-candidate-set evidence for selected low-candidate queries only; it is not a full CASMI CFM-ID baseline.",
+                    "",
+                ]
+            )
+        except Exception:
+            pass
     ms2_audit_path = results_dir / "native_ms2deepscore_casmi" / "native_ms2deepscore_audit.json"
     if ms2_audit_path.exists():
         try:
@@ -2054,6 +2121,21 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
                     "",
                     f"MS2DeepScore CASMI status: `{ms2_audit.get('status')}`.",
                     ms2_audit.get("benchmark_decision", ""),
+                    "",
+                ]
+            )
+        except Exception:
+            pass
+    ms2_complete_query_summary = results_dir / "casmi2022_cfmid_ms2deepscore_complete_query_hybrid_subset_v1" / "casmi2022_cfmid_ms2deepscore_complete_query_hybrid_subset_summary.csv"
+    if ms2_complete_query_summary.exists():
+        try:
+            hybrid = pd.read_csv(ms2_complete_query_summary).iloc[0].to_dict()
+            lines.extend(
+                [
+                    "## CFM-ID + MS2DeepScore Complete-Query Hybrid Subset",
+                    "",
+                    f"Complete-query CFM-ID + MS2DeepScore hybrid subset evidence is available for `{int(hybrid.get('n_rank_valid_queries', 0))}` selected queries with full candidate sets: Top-1 `{hybrid.get('top1_accuracy')}`, Top-5 `{hybrid.get('top5_accuracy')}`, Top-10 `{hybrid.get('top10_accuracy')}`, and MRR `{hybrid.get('mean_reciprocal_rank')}`.",
+                    hybrid.get("claim_guardrail", ""),
                     "",
                 ]
             )
@@ -2097,7 +2179,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "- The trained neural checkpoint CASMI result is substantially weaker than the fixed component-score mode, so it should be reported as a checkpoint audit result rather than the primary CASMI ranking policy.",
             "- CFM-ID native binary compatibility was repaired, but full CASMI candidate ranking remains runtime-blocked and is not replaced with fallback scores.",
             "- No result with `native_or_fallback=native_unavailable` should be described as a completed native baseline.",
-            "- MS2DeepScore native comparison is blocked until an appropriate pretrained model and a complete per-candidate spectrum library are available.",
+            "- MS2DeepScore native comparison is blocked until a complete full-CASMI per-candidate spectrum library is available; current MS2DeepScore evidence is a CFM-ID-generated hybrid subset.",
             "- Pairwise rank-delta statistics exclude unavailable baselines and non-finite true-rank pairs; missing true ranks are counted separately and are not replaced with sentinel ranks.",
             "- SIRIUS is used here as molecular formula plausibility evidence, not as a synthetic spectrum generator or CSI:FingerID structure predictor.",
             "",
@@ -2110,8 +2192,8 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "",
             "## Remaining Blockers",
             "",
-            "- Native CFM-ID full CASMI scoring is runtime-blocked even after finding a cfmid4-compatible binary; timing probes did not finish within 15 minutes.",
-            "- Native MS2DeepScore is blocked because the benchmark lacks a complete candidate spectrum library and configured pretrained embedding workflow.",
+            "- Native CFM-ID full CASMI scoring is prepared via direct and precomputed manifests, but full supported-query metrics remain blocked until all candidate-spectrum shards and query-ranking shards complete.",
+            "- Native MS2DeepScore is blocked because the benchmark lacks a complete full-CASMI candidate spectrum library; current CFM-ID-generated hybrid subsets must not be called native MS2DeepScore.",
             "- The CASMI trained neural checkpoint result is complete, but it underperforms the fixed component-score mode and should not be used to claim neural superiority.",
             "- A strong SOTA claim is blocked until FragAnnotor, CFM-ID, SIRIUS/CSI, ICEBERG, MassFormer, NEIMS, and MS2DeepScore are compared on a harmonized CASMI candidate set with the same preprocessing and metrics.",
             "- PFAS results remain an internal frozen locked-test benchmark and are not independent external validation.",

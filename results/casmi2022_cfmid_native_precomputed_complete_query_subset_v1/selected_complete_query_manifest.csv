@@ -1,2 +1,3 @@
-supported_index,spec_id,query_mol_id,adduct,precursor_mz,candidate_count
-11,16,1196803,[M+H]+,522.596526377514,103
+supported_index,spec_row_index,spec_id,query_mol_id,adduct,precursor_mz,candidate_count
+11,16,16,1196803,[M+H]+,522.596526377514,103
+24,35,35,1196824,[M+H]+,812.47884213126,233

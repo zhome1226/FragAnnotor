@@ -80,6 +80,59 @@ def write_candidate_smiles(path: Path, rows: list[tuple[int, str]]) -> None:
             handle.write(f"{mol_id} {smiles}\n")
 
 
+def append_msp_record(target: Path, mol_id: int, energies: dict[int, list[tuple[float, float]]]) -> None:
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open("a", encoding="utf-8") as handle:
+        if target.stat().st_size > 0:
+            handle.write("\n")
+        handle.write(f"ID: {int(mol_id)}\n")
+        for energy in [0, 1, 2]:
+            handle.write(f"Comment: Energy {energy}\n")
+            peaks = energies.get(energy, [])
+            handle.write(f"Num peaks: {len(peaks)}\n")
+            for mz, intensity in sorted(peaks):
+                handle.write(f"{float(mz):.6f} {float(intensity):.6f}\n")
+            handle.write("\n")
+
+
+def reuse_duplicate_smiles_spectra(
+    predicted_msp: Path,
+    candidate_rows: list[tuple[int, str]],
+    spectra: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Fill missing duplicate-SMILES candidate ids from existing CFM-ID spectra.
+
+    CASMI candidate lists can contain different candidate ids with identical
+    SMILES. CFM-ID spectra are deterministic for a given SMILES/adduct/model, so
+    reusing an already generated spectrum for an identical SMILES avoids
+    re-running the native predictor without fabricating non-CFM-ID evidence.
+    """
+
+    smiles_to_source: dict[str, tuple[int, dict[int, list[tuple[float, float]]]]] = {}
+    for mol_id, smiles in candidate_rows:
+        energies = spectra.get(str(int(mol_id)))
+        if energies is not None and smiles not in smiles_to_source:
+            smiles_to_source[smiles] = (int(mol_id), energies)
+
+    cloned: list[dict[str, Any]] = []
+    for mol_id, smiles in candidate_rows:
+        mol_text = str(int(mol_id))
+        if mol_text in spectra or smiles not in smiles_to_source:
+            continue
+        source_mol_id, energies = smiles_to_source[smiles]
+        append_msp_record(predicted_msp, int(mol_id), energies)
+        spectra[mol_text] = energies
+        cloned.append(
+            {
+                "candidate_mol_id": int(mol_id),
+                "source_candidate_mol_id": int(source_mol_id),
+                "smiles": smiles,
+                "reason": "identical_smiles_cfm_id_spectrum_reuse",
+            }
+        )
+    return cloned
+
+
 def append_file(target: Path, source: Path) -> None:
     if not source.exists() or source.stat().st_size == 0:
         return
@@ -151,6 +204,7 @@ def main() -> None:
     model_dir = args.model_root / adduct
     candidate_rows = read_candidate_smiles(candidate_smiles)
     existing = parse_msp(predicted_msp) if predicted_msp.exists() and predicted_msp.stat().st_size > 0 else {}
+    cloned_before = reuse_duplicate_smiles_spectra(predicted_msp, candidate_rows, existing)
     missing_rows = [(mol_id, smiles) for mol_id, smiles in candidate_rows if str(mol_id) not in existing]
 
     command_rows: list[dict[str, Any]] = []
@@ -196,6 +250,8 @@ def main() -> None:
         pd.DataFrame(command_rows).to_csv(args.outdir / "query35_chunked_resume_commands.csv", index=False)
 
     spectra = parse_msp(predicted_msp) if predicted_msp.exists() and predicted_msp.stat().st_size > 0 else {}
+    cloned_after = reuse_duplicate_smiles_spectra(predicted_msp, candidate_rows, spectra)
+    cloned_rows = cloned_before + cloned_after
     triples, triple_count = update_triples(args.work_dir, candidate_rows, spectra)
     missing_after = [(mol_id, smiles) for mol_id, smiles in candidate_rows if str(mol_id) not in spectra]
     ranked_rows: list[dict[str, Any]] = []
@@ -240,6 +296,7 @@ def main() -> None:
         "candidate_count": len(candidate_rows),
         "predicted_spectrum_ids": len(spectra),
         "missing_candidate_spectra": len(missing_after),
+        "duplicate_smiles_spectra_reused": len(cloned_rows),
         "chunks_requested_this_run": len(chunks_to_run),
         "chunk_size": args.chunk_size,
         "ranked_rows": len(ranked_rows),
@@ -249,6 +306,27 @@ def main() -> None:
         "claim_guardrail": "Only report Top-k/MRR for this query if status is completed_ranked.",
     }
     write_json(args.outdir / "chunked_resume_audit.json", audit)
+    expansion_audit = {
+        "stage": "casmi2022_cfmid_native_precomputed_complete_query_expansion_v1",
+        "purpose": "Record expansion of the complete-query native CFM-ID CASMI subset beyond the initial completed query 16 result.",
+        "query_id": audit["query_id"],
+        "query_mol_id": audit["query_mol_id"],
+        "candidate_pool_policy": "full_candidate_set_for_selected_query",
+        "candidate_count": audit["candidate_count"],
+        "predicted_spectrum_ids": audit["predicted_spectrum_ids"],
+        "missing_candidate_spectra": audit["missing_candidate_spectra"],
+        "ranked_rows": audit["ranked_rows"],
+        "true_rank": audit["true_rank"],
+        "status": audit["status"],
+        "chunk_size_last_run": audit["chunk_size"],
+        "chunks_requested_last_run": audit["chunks_requested_this_run"],
+        "duplicate_smiles_spectra_reused_last_run": audit["duplicate_smiles_spectra_reused"],
+        "rank_run": audit["rank_run"],
+        "included_in_completed_subset_metrics": audit["status"] == "completed_ranked",
+        "claim_guardrail": "Query 35 may be reported only as complete-query subset evidence; it is not a full CASMI CFM-ID baseline.",
+    }
+    write_json(args.outdir / "audit_summary.json", expansion_audit)
+    pd.DataFrame(cloned_rows).to_csv(args.outdir / "query35_duplicate_smiles_reused.csv", index=False)
     pd.DataFrame(
         [
             {
@@ -262,8 +340,11 @@ def main() -> None:
             }
         ]
     ).to_csv(args.outdir / "query35_chunked_resume_status.csv", index=False)
+    remaining_path = args.outdir / "query35_remaining_candidate_smiles.txt"
     if missing_after:
-        write_candidate_smiles(args.outdir / "query35_remaining_candidate_smiles.txt", missing_after)
+        write_candidate_smiles(remaining_path, missing_after)
+    elif remaining_path.exists():
+        remaining_path.unlink()
     print(json.dumps(audit, indent=2, sort_keys=True))
 
 
