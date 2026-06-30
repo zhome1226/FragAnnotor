@@ -1,0 +1,13 @@
+variant,n_queries,top1_accuracy,top5_accuracy,top10_accuracy,mean_reciprocal_rank
+full_current_primary_no_sirius,64,0.328125,0.71875,0.828125,0.502844039959644
+full_five_component_validation_selected,64,0.3125,0.703125,0.78125,0.4676917976757649
+only_our_spectrum_score,64,0.03125,0.328125,0.453125,0.1668739143762869
+only_cfmid_spectrum_score,64,0.328125,0.65625,0.75,0.4661268686908807
+only_fragment_formula_score,64,0.0625,0.21875,0.28125,0.1485011086449021
+only_sirius_formula_score,64,0.0,0.0,0.0,0.0190271572437437
+only_reaction_prior_score,64,0.0,0.0,0.0,0.0232429240635042
+without_our_spectrum_score,64,0.34375,0.609375,0.65625,0.4494693331939122
+without_cfmid_spectrum_score,64,0.015625,0.375,0.40625,0.1589713183110093
+without_fragment_formula_score,64,0.3125,0.6875,0.734375,0.4650339795022493
+without_sirius_formula_score,64,0.328125,0.71875,0.828125,0.502844039959644
+without_reaction_prior_score,64,0.3125,0.703125,0.78125,0.4676917976757649

@@ -1,17 +1,31 @@
 {
   "benchmark_decision": "Do not report MS2DeepScore CASMI Top-k metrics. MS2DeepScore scores spectrum pairs; the CASMI structure-candidate benchmark lacks a complete per-candidate measured or predicted spectrum library and no configured pretrained MS2DeepScore model file is present. CFM-ID predicted spectra were not substituted, because that would be a hybrid CFM-ID plus MS2DeepScore baseline rather than native MS2DeepScore.",
+  "candidate_spectrum_library_artifact_count": 9,
   "candidate_spectrum_library_artifacts_found_in_repo": [
     "baselines/__pycache__/ms2deepscore.cpython-310.pyc",
     "baselines/ms2deepscore.py",
+    "results/native_ms2deepscore_casmi/native_ms2deepscore_audit.csv",
+    "results/native_ms2deepscore_casmi/native_ms2deepscore_audit.json",
+    "results/native_ms2deepscore_casmi/native_ms2deepscore_audit.md",
     "results/predictions/casmi2022_ms2deepscore_native_predictions.csv",
-    "results/predictions/pfas_ms2deepscore_native_predictions.csv"
+    "results/predictions/pfas_ms2deepscore_native_predictions.csv",
+    "scripts/__pycache__/run_native_ms2deepscore_casmi_audit.cpython-310.pyc",
+    "scripts/run_native_ms2deepscore_casmi_audit.py"
   ],
   "environment": {
     "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
     "python": "3.10.12 (main, Mar  3 2026, 11:56:32) [GCC 11.4.0]"
   },
+  "hybrid_baseline_protocol": [
+    "Generate candidate spectra for every CASMI candidate with a clearly named generator such as CFM-ID or ICEBERG.",
+    "Load a documented pretrained MS2DeepScore model and convert both query and candidate spectra to matchms Spectrum objects.",
+    "Score query spectrum versus every generated candidate spectrum with MS2DeepScore.",
+    "Rank candidates by MS2DeepScore similarity and label the model as '<generator> + MS2DeepScore hybrid', not native MS2DeepScore.",
+    "Report generator coverage, failed candidates, adduct/ion-mode assumptions, and candidate_limit if any."
+  ],
   "matchms_installed": false,
   "matchms_version": "",
+  "official_pretrained_model_note": "MS2DeepScore documentation points to a Zenodo pretrained ms2deepscore_model.pt for MS2DeepScore >=2.6; no such configured model file is present in this repository.",
   "package_installed": false,
   "package_version": "",
   "pip_index_matchms": {
@@ -26,6 +40,13 @@
     "stderr": "WARNING: pip index is currently an experimental command. It may be removed/changed in a future release without prior warning.",
     "stdout": "ms2deepscore (2.7.2)\nAvailable versions: 2.7.2, 2.7.1, 2.7.0, 2.6.0, 2.5.5, 2.5.4, 2.5.3, 2.5.2, 2.5.1, 2.5.0, 2.4.0, 2.3.0, 2.2.0, 2.1.0, 2.0.0, 1.0.0, 0.5.0, 0.4.0, 0.3.1, 0.3.0.1, 0.3.0, 0.2.3, 0.2.2, 0.2.1, 0.2.0, 0.1.3, 0.1.2, 0.1.1, 0.1.0"
   },
+  "pretrained_model_file_count": 0,
+  "pretrained_model_files_found_in_repo": [],
   "stage": "native_ms2deepscore_casmi_audit_v1",
-  "status": "blocked_no_candidate_spectrum_library"
+  "status": "blocked_no_candidate_spectrum_library",
+  "user_space_install_attempt": {
+    "command": "python3 -m venv ... && pip install ms2deepscore==2.7.2 matchms==0.33.1",
+    "env_path": "/home/zhome/ec_structure/external_ms_models/envs/ms2deepscore_casmi",
+    "status": "timed_out_after_30_minutes_not_used_for_benchmark"
+  }
 }

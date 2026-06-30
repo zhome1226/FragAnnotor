@@ -54,6 +54,16 @@ def find_candidate_spectrum_artifacts(root: Path) -> list[str]:
     return sorted(found)
 
 
+def find_model_files(root: Path) -> list[str]:
+    patterns = ["*ms2deep*.pt", "*ms2deep*.hdf5", "*ms2deep*.h5", "*ms2deep*.keras"]
+    found: set[str] = set()
+    for pattern in patterns:
+        for path in root.rglob(pattern):
+            if path.is_file():
+                found.add(str(path.relative_to(root)))
+    return sorted(found)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Audit native MS2DeepScore CASMI feasibility.")
     parser.add_argument("--outdir", type=Path, default=ROOT / "results" / "native_ms2deepscore_casmi")
@@ -63,6 +73,7 @@ def main() -> None:
     ms2_installed = importlib.util.find_spec("ms2deepscore") is not None
     matchms_installed = importlib.util.find_spec("matchms") is not None
     artifacts = find_candidate_spectrum_artifacts(ROOT)
+    model_files = find_model_files(ROOT)
     audit = {
         "stage": "native_ms2deepscore_casmi_audit_v1",
         "status": "blocked_no_candidate_spectrum_library",
@@ -70,10 +81,25 @@ def main() -> None:
         "package_version": package_version("ms2deepscore"),
         "matchms_installed": matchms_installed,
         "matchms_version": package_version("matchms"),
+        "pretrained_model_files_found_in_repo": model_files,
+        "pretrained_model_file_count": len(model_files),
+        "official_pretrained_model_note": "MS2DeepScore documentation points to a Zenodo pretrained ms2deepscore_model.pt for MS2DeepScore >=2.6; no such configured model file is present in this repository.",
+        "user_space_install_attempt": {
+            "env_path": "/home/zhome/ec_structure/external_ms_models/envs/ms2deepscore_casmi",
+            "command": "python3 -m venv ... && pip install ms2deepscore==2.7.2 matchms==0.33.1",
+            "status": "timed_out_after_30_minutes_not_used_for_benchmark",
+        },
         "pip_index_ms2deepscore": run([sys.executable, "-m", "pip", "index", "versions", "ms2deepscore"]),
         "pip_index_matchms": run([sys.executable, "-m", "pip", "index", "versions", "matchms"]),
         "candidate_spectrum_library_artifacts_found_in_repo": artifacts[:200],
         "candidate_spectrum_library_artifact_count": len(artifacts),
+        "hybrid_baseline_protocol": [
+            "Generate candidate spectra for every CASMI candidate with a clearly named generator such as CFM-ID or ICEBERG.",
+            "Load a documented pretrained MS2DeepScore model and convert both query and candidate spectra to matchms Spectrum objects.",
+            "Score query spectrum versus every generated candidate spectrum with MS2DeepScore.",
+            "Rank candidates by MS2DeepScore similarity and label the model as '<generator> + MS2DeepScore hybrid', not native MS2DeepScore.",
+            "Report generator coverage, failed candidates, adduct/ion-mode assumptions, and candidate_limit if any.",
+        ],
         "benchmark_decision": "Do not report MS2DeepScore CASMI Top-k metrics. MS2DeepScore scores spectrum pairs; the CASMI structure-candidate benchmark lacks a complete per-candidate measured or predicted spectrum library and no configured pretrained MS2DeepScore model file is present. CFM-ID predicted spectra were not substituted, because that would be a hybrid CFM-ID plus MS2DeepScore baseline rather than native MS2DeepScore.",
         "environment": {"python": sys.version, "platform": platform.platform()},
     }
@@ -87,6 +113,7 @@ def main() -> None:
                 "package_version": audit["package_version"],
                 "matchms_installed": matchms_installed,
                 "matchms_version": audit["matchms_version"],
+                "pretrained_model_file_count": len(model_files),
                 "candidate_spectrum_library_artifact_count": len(artifacts),
                 "benchmark_decision": audit["benchmark_decision"],
             }
@@ -96,7 +123,10 @@ def main() -> None:
         "# Native MS2DeepScore CASMI Audit\n\n"
         f"Status: `{audit['status']}`\n\n"
         "MS2DeepScore is a spectrum-to-spectrum similarity model. The current CASMI2022 benchmark is a structure-candidate ranking task, and no complete per-candidate spectrum library or configured pretrained model is present.\n\n"
-        f"{audit['benchmark_decision']}\n",
+        f"{audit['benchmark_decision']}\n\n"
+        "## Hybrid Baseline Protocol\n\n"
+        + "\n".join(f"- {step}" for step in audit["hybrid_baseline_protocol"])
+        + "\n",
         encoding="utf-8",
     )
     print(json.dumps(audit, indent=2, sort_keys=True))

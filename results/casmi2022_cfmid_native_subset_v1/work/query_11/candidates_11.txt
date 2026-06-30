@@ -1,0 +1,11 @@
+1196798 CCCc1nn(C)c2c(=O)[nH]c(-c3cc(S(=O)(=O)N4CCN(CC)CC4)ccc3OCC)nc12
+48761 CC1CCN(Cc2cc3c(nc2C=O)N(C(=O)Nc2cc(CC4COC4)c(C#N)cn2)CCC3)C1=O
+48762 CC1CC(Cl)C(C)c2sc(Nc3nc(NC4CCNC4)nc(NC4CC5CCC4C5)n3)nc21
+48763 C1=Cc2c(n(-c3cccc(-n4c5c(c6ccccc64)C=CCC5)c3-c3ccccc3)c3ccccc23)CC1
+48764 NCC(=O)NC(Cc1c[nH]cn1)C(=O)CCC(=O)NC(Cc1ccc(F)cc1)C(=O)CCC(N)=O
+48765 CN(c1ccccc1)c1cc(-c2ccccc2)cc(-c2cccc(-c3cccc(-c4ccccn4)c3)c2)c1
+48766 CN(c1cccc(-c2cccc(-c3ccccn3)c2)c1)c1cc(-c2ccccc2)cc(-c2ccccc2)c1
+48767 O=C(NN=Cc1cccc(C=NNC(=O)c2ccc(NCCO)cc2)c1)c1ccc(NCCO)cc1
+48768 CC(=O)C1C(=Nc2nc(C(N)c3cc(F)cnc3N)nc(SC(C)(C)C)c2F)C2CCC1CC2
+48769 CC(=O)C1C(=Nc2nc(C(N)c3cc(F)cnc3N)nc(SC(C)(C)C)c2F)C2CCC1CC2
+48770 NCC(=O)NC(Cc1c[nH]cn1)C(=O)CCC(=O)NC(Cc1ccc(F)cc1)C(=O)CCC(N)=O

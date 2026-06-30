@@ -94,10 +94,14 @@ This is report-only inference from a frozen checkpoint, not CASMI training, weig
 CFM-ID native binary status: `passed`; full CASMI status: `runtime_blocked_full_casmi_not_reported`.
 Do not report native CFM-ID CASMI Top-k metrics until a complete per-query candidate score table is generated. Smoke/partial outputs are readiness evidence only, not benchmark results.
 
+Candidate-limited native CFM-ID subset evidence is available at `results/casmi2022_cfmid_native_subset_v1/`: 10 supported `[M+H]+` CASMI queries, `candidate_limit=10`, `first_n_plus_true` pool, Top-1 `0.7`, Top-5 `0.9`, Top-10 `1.0`, MRR `0.7658333333333334`. This subset validates the native ranking path only and is not a full CASMI CFM-ID baseline.
+
 ## Native MS2DeepScore CASMI Audit
 
 MS2DeepScore CASMI status: `blocked_no_candidate_spectrum_library`.
 Do not report MS2DeepScore CASMI Top-k metrics. MS2DeepScore scores spectrum pairs; the CASMI structure-candidate benchmark lacks a complete per-candidate measured or predicted spectrum library and no configured pretrained MS2DeepScore model file is present. CFM-ID predicted spectra were not substituted, because that would be a hybrid CFM-ID plus MS2DeepScore baseline rather than native MS2DeepScore.
+
+The documented path forward is a clearly labeled generator + MS2DeepScore hybrid baseline: generate candidate spectra for every CASMI candidate, load a documented pretrained MS2DeepScore model, score query/candidate spectrum pairs, and report coverage/failures without calling it native MS2DeepScore.
 
 ## External Public Benchmark Context
 

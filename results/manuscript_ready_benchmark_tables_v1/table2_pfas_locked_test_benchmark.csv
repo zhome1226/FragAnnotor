@@ -1,0 +1,5 @@
+dataset,model,status,native_or_fallback,n_queries,top1_accuracy,top5_accuracy,top10_accuracy,mean_reciprocal_rank,mean_top1_tanimoto,molecular_formula_accuracy,median_true_rank,median_candidate_count,notes
+PFAS,FragAnnotor,completed,precomputed_external_real_scores,64,0.328125,0.71875,0.828125,0.502844039959644,0.4616971191356442,0.34375,2.0,463.0,
+PFAS,CFM-ID,completed,precomputed_external_cfmid4_scores,64,0.328125,0.65625,0.75,0.4661268686908807,0.4478419101480884,0.34375,3.0,463.0,
+PFAS,SIRIUS,completed,precomputed_external_sirius_scores,64,0.0,0.0,0.0,0.0190271572437437,0.1167806877526642,0.0,71.0,463.0,
+PFAS,MS2DeepScore,model_unavailable_native_required,native_unavailable,64,,,,,,,,,MS2DeepScore package/model unavailable and fallback disabled.

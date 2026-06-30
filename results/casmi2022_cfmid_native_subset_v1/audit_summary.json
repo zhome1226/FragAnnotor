@@ -1,0 +1,33 @@
+{
+  "all_smiles_sha256": "60b5067b01438231ad1b607d7a4233c418ed5de0cf3e1a4ff4595e18588f6785",
+  "cand_df_sha256": "d9ae4f0c478420c364d7eafec1353b2a0f1a8824cb911095425eccd5fe2a309f",
+  "candidate_limit": 10,
+  "candidate_pool_policy": "first_n_plus_true",
+  "casmi_dir": "/home/zhome/ec_structure/github_export/FragAnnotor/data/proc/casmi_2022",
+  "cfmid": "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id",
+  "claim_guardrail": "This is a native CFM-ID subset/candidate-limited benchmark. It is not a complete CASMI2022 CFM-ID result and must not be used as full-SOTA evidence.",
+  "mean_reciprocal_rank": 0.7658333333333334,
+  "missing_candidate_smiles": 0,
+  "model_adducts": [
+    "[M+H]+",
+    "[M-H]-"
+  ],
+  "model_root": "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm-pretrained-models/cfmid4",
+  "n_queries_completed": 10,
+  "n_rank_valid_queries": 10,
+  "native_supported_queries": 170,
+  "native_unsupported_adduct_counts": {
+    "[M+Na]+": 59
+  },
+  "native_unsupported_queries": 59,
+  "query_limit": 10,
+  "query_start": 0,
+  "selected_query_count": 10,
+  "spec_df_sha256": "97db035f9cdf3ea060b42393593426315a76b72e5fa1d889073632d2a0ce607f",
+  "stage": "casmi2022_cfmid_native_subset_v1",
+  "status": "completed_subset",
+  "top10_accuracy": 1.0,
+  "top1_accuracy": 0.7,
+  "top5_accuracy": 0.9,
+  "total_casmi_queries": 229
+}

@@ -1,0 +1,14 @@
+{
+  "cfmid_subset_included_as_full_result": false,
+  "ms2deepscore_full_candidate_ranking_available": false,
+  "stage": "manuscript_ready_benchmark_tables_v1",
+  "strong_sota_claim_supported": false,
+  "tables": [
+    "table1_casmi2022_benchmark.csv",
+    "table2_pfas_locked_test_benchmark.csv",
+    "table3_pfas_ablation.csv",
+    "supplementary_native_tool_audit_and_blockers.csv",
+    "supplementary_remaining_gap_status.csv",
+    "supplementary_sota_guardrails.csv"
+  ]
+}

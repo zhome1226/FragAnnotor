@@ -1,0 +1,11 @@
+1196796 Cc1ccc(C2(c3ccc(C)c(O)c3)OC(=O)c3ccccc32)cc1O
+37335 NC(=O)C12CC3CC(C1)CC(n1c(O)cc4cnc(Cl)nc41)(C3)C2
+37336 C=C1CC=CC=CC=CC=C1C(C)=C(SCC(N)=O)SC(C)=N
+37337 CCCCCCn1c2nc(=O)[nH]c(=O)c-2nc2cc(C)c(Cl)cc21
+37338 COC1=NCC(CN2CC=NC(C=O)N2)C=C1c1cccc(Cl)c1
+37339 ClCCCc1ccc(Nc2c3ccccc3nc3ccccc23)cc1
+37340 CC(=O)C1=Cc2cc(C)cc(Cc3ccccc3)c2OC1C(F)(F)F
+37341 Cc1cc(C(CC(O)c2c[nH]c(=O)[nH]2)c2ccc(Cl)cc2)nn1C
+37342 CC(=O)N1CCC(=NNC(=S)N2CCNC(=O)C2)c2ncccc21
+37343 O=C(OC1C(O)OC(COCc2ccccc2)C1F)c1ccccc1
+37344 O=C(OC1C(O)OC(COCc2ccccc2)C1F)c1ccccc1
