@@ -14,3 +14,10 @@ results/native_sirius_casmi/sirius_project/
 results/native_sirius_casmi/sirius_project_single/
 results/native_sirius_casmi/single_inputs/
 results/logs/native_smoke/sirius4_project_formula/
+
+# Bulky CFM-ID precomputed runtime caches. Commit manifests, summaries, and
+# small smoke-test artifacts, but keep full candidate spectra/work directories
+# out of Git.
+results/casmi2022_cfmid_native_precomputed_full_v1/candidate_spectra_cache/
+results/casmi2022_cfmid_native_precomputed_full_v1/candidate_spectrum_shards/
+results/casmi2022_cfmid_native_precomputed_full_v1/work/

@@ -1,6 +1,9 @@
 {
   "cfmid_full_manifest_available": true,
   "cfmid_full_supported_completion_fraction": 0.0,
+  "cfmid_precomputed_candidate_spectrum_completion_fraction": 1.06782504327361e-05,
+  "cfmid_precomputed_manifest_available": true,
+  "cfmid_precomputed_query_completion_fraction": 0.0,
   "complete_native_cfmid_casmi_available": false,
   "ms2deepscore_environment_verified": true,
   "ms2deepscore_pretrained_files_present": true,

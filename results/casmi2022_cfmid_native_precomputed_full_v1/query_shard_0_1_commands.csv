@@ -1,0 +1,2 @@
+command,elapsed_seconds,query_id,returncode,status,stderr,stdout
+,0.0,0,,blocked_missing_candidate_spectra,,

@@ -1,0 +1,29 @@
+{
+  "adduct": "[M+H]+",
+  "candidate_limit": 10,
+  "candidate_rows": 11,
+  "cfm_id_precomputed": {
+    "command": "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id-precomputed /home/zhome/ec_structure/github_export/FragAnnotor/results/cfmid_precomputed_smoke_v1/query_spectrum.txt 0 /home/zhome/ec_structure/github_export/FragAnnotor/results/cfmid_precomputed_smoke_v1/candidate_triples_plain.txt -1 10 0.01 DotProduct /home/zhome/ec_structure/github_export/FragAnnotor/results/cfmid_precomputed_smoke_v1/ranked_precomputed.txt 0 0",
+    "elapsed_seconds": 0.015848159790039062,
+    "returncode": 0,
+    "status": "completed",
+    "stderr": "/home/zhome/ec_structure/github_export/FragAnnotor/results/cfmid_precomputed_smoke_v1/logs/cfm_id_precomputed.stderr.log",
+    "stdout": "/home/zhome/ec_structure/github_export/FragAnnotor/results/cfmid_precomputed_smoke_v1/logs/cfm_id_precomputed.stdout.log"
+  },
+  "cfm_predict": {
+    "command": "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-predict /home/zhome/ec_structure/github_export/FragAnnotor/results/cfmid_precomputed_smoke_v1/candidate_smiles.txt 0.001 /home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm-pretrained-models/cfmid4/[M+H]+/param_output.log /home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm-pretrained-models/cfmid4/[M+H]+/param_config.txt 0 /home/zhome/ec_structure/github_export/FragAnnotor/results/cfmid_precomputed_smoke_v1/candidate_spectra.msp 1 1",
+    "elapsed_seconds": 162.6114513874054,
+    "returncode": 0,
+    "status": "completed",
+    "stderr": "/home/zhome/ec_structure/github_export/FragAnnotor/results/cfmid_precomputed_smoke_v1/logs/cfm_predict.stderr.log",
+    "stdout": "/home/zhome/ec_structure/github_export/FragAnnotor/results/cfmid_precomputed_smoke_v1/logs/cfm_predict.stdout.log"
+  },
+  "claim_guardrail": "Smoke test only. This validates the precomputed CFM-ID ranking path and must not be reported as a CASMI benchmark.",
+  "predicted_spectra_ids": 11,
+  "query_id": "0",
+  "query_mol_id": 1196787,
+  "ranked_rows": 11,
+  "stage": "cfmid_precomputed_smoke_v1",
+  "status": "completed",
+  "true_rank": 1
+}

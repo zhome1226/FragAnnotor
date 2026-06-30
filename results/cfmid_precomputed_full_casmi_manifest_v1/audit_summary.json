@@ -1,0 +1,26 @@
+{
+  "candidate_shard_size": 100,
+  "candidate_spectrum_shards": 9365,
+  "completion_gate": "Report full native CFM-ID CASMI metrics only after every candidate spectrum shard and every supported query-ranking shard completes; [M+Na]+ remains unsupported unless a compatible CFM-ID model is added.",
+  "query_ranking_shards": 34,
+  "query_shard_size": 5,
+  "run_outdir": "/home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_full_v1",
+  "stage": "cfmid_precomputed_full_casmi_manifest_v1",
+  "status": "prepared_not_executed",
+  "supported_candidate_rows": 1062950,
+  "supported_queries": 170,
+  "total_casmi_queries": 229,
+  "unique_candidate_mol_ids_total_by_adduct": [
+    {
+      "adduct": "[M+H]+",
+      "candidate_reuse_factor": 1.1350446297476837,
+      "candidate_rows": 1062950,
+      "supported_queries": 170,
+      "unique_candidate_mol_ids": 936483
+    }
+  ],
+  "unsupported_adduct_counts": {
+    "[M+Na]+": 59
+  },
+  "unsupported_queries": 59
+}

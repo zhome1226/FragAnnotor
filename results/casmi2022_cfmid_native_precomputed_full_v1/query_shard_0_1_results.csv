@@ -1,0 +1,2 @@
+dataset,model,status,native_or_fallback,query_id,spectrum_id,true_candidate_id,adduct,candidate_count,ranked_rows,missing_candidate_spectra,true_rank,top1_correct,top5_correct,top10_correct,reciprocal_rank,elapsed_seconds,rank_output_file
+CASMI2022,CFM-ID,blocked_missing_candidate_spectra,native_cfmid_precomputed_full_supported_queries,0,0,CASMI_MOL_1196787,[M+H]+,1241,0,1231,,False,False,False,0.0,0.0,results/casmi2022_cfmid_native_precomputed_full_v1/work/query_0/cfmid_precomputed_ranked_0.txt

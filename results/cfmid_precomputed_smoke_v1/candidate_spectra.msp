@@ -1,0 +1,439 @@
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 1196787
+ID: 1196787
+Smiles/Inchi:COc1ccc(-c2oc3c(CC=C(C)C)c(O)cc(O)c3c(=O)c2OC2OC(C)C(OC(C)=O)C(OC3OC(CO)C(O)C(O)C3O)C2O)cc1
+Comment: Energy0
+Num peaks: 7
+313.07066 36.05
+369.13326 100.00
+501.13914 9.09
+503.15479 6.20
+557.20174 10.09
+701.24400 7.06
+719.25456 14.44
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 1196787
+ID: 1196787
+Smiles/Inchi:COc1ccc(-c2oc3c(CC=C(C)C)c(O)cc(O)c3c(=O)c2OC2OC(C)C(OC(C)=O)C(OC3OC(CO)C(O)C(O)C3O)C2O)cc1
+Comment: Energy1
+Num peaks: 17
+145.04954 14.72
+163.06010 12.80
+187.06010 8.53
+189.07575 19.66
+191.09140 7.55
+311.05501 20.55
+313.07066 23.30
+351.12270 100.00
+353.10196 15.06
+369.13326 61.03
+477.15439 9.30
+497.18061 12.20
+501.13914 11.21
+539.19117 15.67
+557.20174 15.40
+701.24400 7.29
+719.25456 26.69
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 1196787
+ID: 1196787
+Smiles/Inchi:COc1ccc(-c2oc3c(CC=C(C)C)c(O)cc(O)c3c(=O)c2OC2OC(C)C(OC(C)=O)C(OC3OC(CO)C(O)C(O)C3O)C2O)cc1
+Comment: Energy2
+Num peaks: 31
+43.01784 11.68
+45.03349 45.01
+59.04914 27.07
+73.02841 14.98
+87.04406 32.44
+103.03897 14.23
+117.05462 22.98
+119.07027 15.92
+143.03389 23.77
+147.02880 14.59
+147.06519 12.85
+161.04445 11.76
+163.06010 40.45
+189.07575 16.22
+191.09140 25.43
+293.12309 21.27
+327.08631 18.13
+351.12270 12.33
+369.13326 76.76
+399.14383 24.38
+501.13914 14.16
+557.20174 74.96
+567.18609 13.67
+569.20174 13.53
+597.19665 22.54
+599.21230 18.02
+629.22287 16.81
+631.23852 17.11
+649.24908 13.25
+651.26473 13.25
+719.25456 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 0
+ID: 0
+Smiles/Inchi:c1ccc(-c2ccc(N(c3ccc(-c4ccc5c6ccccc6n(-c6ccccc6)c5c4)cc3)c3cccc4ccccc34)c3c2sc2ccccc23)cc1
+Comment: Energy0
+Num peaks: 2
+669.23590 0.10
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 0
+ID: 0
+Smiles/Inchi:c1ccc(-c2ccc(N(c3ccc(-c4ccc5c6ccccc6n(-c6ccccc6)c5c4)cc3)c3cccc4ccccc34)c3c2sc2ccccc23)cc1
+Comment: Energy1
+Num peaks: 2
+693.23590 1.06
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 0
+ID: 0
+Smiles/Inchi:c1ccc(-c2ccc(N(c3ccc(-c4ccc5c6ccccc6n(-c6ccccc6)c5c4)cc3)c3cccc4ccccc34)c3c2sc2ccccc23)cc1
+Comment: Energy2
+Num peaks: 8
+79.05423 21.17
+115.05423 37.51
+641.20460 36.23
+655.22025 36.22
+669.23590 23.16
+691.22025 45.01
+693.23590 66.19
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 1
+ID: 1
+Smiles/Inchi:c1ccc(-c2nc(-c3ccccc3)nc(-n3c4ccccc4oc4cc5c(ccc6c5n(-c5ccccc5)c5cccc7c8ccccc8n6c75)cc43)n2)cc1
+Comment: Energy0
+Num peaks: 2
+719.25539 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 1
+ID: 1
+Smiles/Inchi:c1ccc(-c2nc(-c3ccccc3)nc(-n3c4ccccc4oc4cc5c(ccc6c5n(-c5ccccc5)c5cccc7c8ccccc8n6c75)cc43)n2)cc1
+Comment: Energy1
+Num peaks: 2
+693.23974 0.11
+719.25539 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 1
+ID: 1
+Smiles/Inchi:c1ccc(-c2nc(-c3ccccc3)nc(-n3c4ccccc4oc4cc5c(ccc6c5n(-c5ccccc5)c5cccc7c8ccccc8n6c75)cc43)n2)cc1
+Comment: Energy2
+Num peaks: 4
+667.22409 77.07
+669.23974 77.95
+693.23974 62.72
+719.25539 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 2
+ID: 2
+Smiles/Inchi:CC1(C)c2ccccc2-c2ccc(-c3c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c3O)cc21
+Comment: Energy0
+Num peaks: 2
+691.26316 1.63
+719.25807 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 2
+ID: 2
+Smiles/Inchi:CC1(C)c2ccccc2-c2ccc(-c3c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c3O)cc21
+Comment: Energy1
+Num peaks: 2
+679.22677 8.37
+719.25807 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 2
+ID: 2
+Smiles/Inchi:CC1(C)c2ccccc2-c2ccc(-c3c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c3O)cc21
+Comment: Energy2
+Num peaks: 8
+91.05423 15.17
+101.03858 15.51
+117.06988 18.97
+449.18999 14.92
+641.21112 100.00
+691.26316 14.21
+703.22677 34.33
+719.25807 18.23
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 3
+ID: 3
+Smiles/Inchi:c1ccc(-c2ccc(N(c3ccc(-c4cccc5c4c4ccccc4n5-c4ccccc4)cc3)c3cccc4ccccc34)c3c2sc2ccccc23)cc1
+Comment: Energy0
+Num peaks: 2
+669.23590 0.10
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 3
+ID: 3
+Smiles/Inchi:c1ccc(-c2ccc(N(c3ccc(-c4cccc5c4c4ccccc4n5-c4ccccc4)cc3)c3cccc4ccccc34)c3c2sc2ccccc23)cc1
+Comment: Energy1
+Num peaks: 2
+693.23590 0.91
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 3
+ID: 3
+Smiles/Inchi:c1ccc(-c2ccc(N(c3ccc(-c4cccc5c4c4ccccc4n5-c4ccccc4)cc3)c3cccc4ccccc34)c3c2sc2ccccc23)cc1
+Comment: Energy2
+Num peaks: 9
+79.05423 15.66
+115.05423 39.24
+617.20460 18.72
+641.20460 32.10
+655.22025 33.58
+669.23590 30.13
+691.22025 37.05
+693.23590 62.39
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 4
+ID: 4
+Smiles/Inchi:CC1(C)C2=CC(N(c3ccccc3)c3csc4ccsc34)CC=C2c2ccc(N(c3ccc(-c4ccccc4)cc3)c3ccc4ccccc4c3)cc21
+Comment: Energy0
+Num peaks: 2
+232.02492 16.84
+719.25492 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 4
+ID: 4
+Smiles/Inchi:CC1(C)C2=CC(N(c3ccccc3)c3csc4ccsc34)CC=C2c2ccc(N(c3ccc(-c4ccccc4)cc3)c3ccc4ccccc4c3)cc21
+Comment: Energy1
+Num peaks: 2
+488.23728 25.46
+719.25492 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 4
+ID: 4
+Smiles/Inchi:CC1(C)C2=CC(N(c3ccccc3)c3csc4ccsc34)CC=C2c2ccc(N(c3ccc(-c4ccccc4)cc3)c3ccc4ccccc4c3)cc21
+Comment: Energy2
+Num peaks: 14
+104.04948 17.63
+117.06988 15.32
+180.08078 9.99
+193.10118 13.85
+232.02492 64.27
+244.02492 13.67
+266.09643 47.78
+270.12773 13.43
+280.11208 13.56
+296.14338 100.00
+308.05622 14.47
+334.15903 13.21
+360.17468 12.43
+719.25492 42.06
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 5
+ID: 5
+Smiles/Inchi:C1=C(c2c3ccccc3c(-c3ccc4sc5c6ccccc6c6ccccc6c5c4c3)c3ccccc23)N=C(c2ccccc2)N=C(c2ccccc2)CC1
+Comment: Energy0
+Num peaks: 2
+641.20460 0.40
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 5
+ID: 5
+Smiles/Inchi:C1=C(c2c3ccccc3c(-c3ccc4sc5c6ccccc6c6ccccc6c5c4c3)c3ccccc23)N=C(c2ccccc2)N=C(c2ccccc2)CC1
+Comment: Energy1
+Num peaks: 2
+603.18895 0.58
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 5
+ID: 5
+Smiles/Inchi:C1=C(c2c3ccccc3c(-c3ccc4sc5c6ccccc6c6ccccc6c5c4c3)c3ccccc23)N=C(c2ccccc2)N=C(c2ccccc2)CC1
+Comment: Energy2
+Num peaks: 8
+79.05423 43.01
+104.04948 100.00
+106.06513 55.49
+461.13585 36.58
+691.22025 18.02
+693.23590 30.53
+702.22500 31.09
+719.25155 98.76
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 6
+ID: 6
+Smiles/Inchi:c1ccc(N(c2ccc(-c3ccccc3-n3c4ccccc4c4ccccc43)cc2)c2ccc(-c3ccc4ccccc4c3)c3sc4ccccc4c23)cc1
+Comment: Energy0
+Num peaks: 2
+693.23590 0.05
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 6
+ID: 6
+Smiles/Inchi:c1ccc(N(c2ccc(-c3ccccc3-n3c4ccccc4c4ccccc43)cc2)c2ccc(-c3ccc4ccccc4c3)c3sc4ccccc4c23)cc1
+Comment: Energy1
+Num peaks: 2
+693.23590 0.75
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 6
+ID: 6
+Smiles/Inchi:c1ccc(N(c2ccc(-c3ccccc3-n3c4ccccc4c4ccccc43)cc2)c2ccc(-c3ccc4ccccc4c3)c3sc4ccccc4c23)cc1
+Comment: Energy2
+Num peaks: 8
+104.04948 9.33
+168.08078 15.40
+180.08078 18.78
+306.12773 19.50
+667.22025 9.44
+691.22025 15.19
+693.23590 27.30
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 7
+ID: 7
+Smiles/Inchi:C1=C(c2ccccc2)c2sc3c(-c4cccc(-c5cnc6c7ccccc7c7ccccc7c6n5)c4)cc(-c4ccccc4)cc3c2CC1c1ccccc1
+Comment: Energy0
+Num peaks: 2
+641.20460 2.12
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 7
+ID: 7
+Smiles/Inchi:C1=C(c2ccccc2)c2sc3c(-c4cccc(-c5cnc6c7ccccc7c7ccccc7c6n5)c4)cc(-c4ccccc4)cc3c2CC1c1ccccc1
+Comment: Energy1
+Num peaks: 2
+641.20460 2.26
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 7
+ID: 7
+Smiles/Inchi:C1=C(c2ccccc2)c2sc3c(-c4cccc(-c5cnc6c7ccccc7c7ccccc7c6n5)c4)cc(-c4ccccc4)cc3c2CC1c1ccccc1
+Comment: Energy2
+Num peaks: 9
+79.05423 8.39
+103.05423 35.21
+513.16715 11.58
+615.18895 7.97
+641.20460 14.30
+689.20460 14.24
+691.22025 21.64
+693.23590 24.11
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 8
+ID: 8
+Smiles/Inchi:c1ccc(-c2sc3c(c(-n4c5ccccc5c5ccccc54)cc4c(-c5ccccc5)c(-c5ccccc5)n(-c5ccccc5)c43)c2-c2ccccc2)cc1
+Comment: Energy0
+Num peaks: 2
+669.23590 0.01
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 8
+ID: 8
+Smiles/Inchi:c1ccc(-c2sc3c(c(-n4c5ccccc5c5ccccc54)cc4c(-c5ccccc5)c(-c5ccccc5)n(-c5ccccc5)c43)c2-c2ccccc2)cc1
+Comment: Energy1
+Num peaks: 2
+693.23590 0.08
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 8
+ID: 8
+Smiles/Inchi:c1ccc(-c2sc3c(c(-n4c5ccccc5c5ccccc54)cc4c(-c5ccccc5)c(-c5ccccc5)n(-c5ccccc5)c43)c2-c2ccccc2)cc1
+Comment: Energy2
+Num peaks: 3
+669.23590 26.22
+693.23590 15.91
+719.25155 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 9
+ID: 9
+Smiles/Inchi:[C-]#[N+]c1ccc(CN(Cc2ccc(Oc3cc(OCCc4cccnc4)cc(C(=O)CCC(=O)O)c3)cc2)c2cccc(NS(C)(=O)=O)c2C)cc1
+Comment: Energy0
+Num peaks: 19
+92.04948 3.67
+106.06513 10.54
+122.06004 5.64
+316.11142 4.61
+358.14377 6.74
+404.14925 6.87
+422.15329 3.52
+591.23907 3.55
+593.25472 3.82
+595.27037 5.27
+639.26020 3.42
+641.27585 4.11
+645.21662 8.87
+646.23702 3.61
+673.24792 24.10
+683.23227 3.79
+692.24250 7.37
+701.24283 32.41
+719.25340 100.00
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 9
+ID: 9
+Smiles/Inchi:[C-]#[N+]c1ccc(CN(Cc2ccc(Oc3cc(OCCc4cccnc4)cc(C(=O)CCC(=O)O)c3)cc2)c2cccc(NS(C)(=O)=O)c2C)cc1
+Comment: Energy1
+Num peaks: 31
+79.05423 11.15
+85.02841 18.54
+106.06513 53.80
+108.08078 21.49
+109.06479 15.53
+236.11822 11.76
+316.11142 28.11
+348.15942 11.31
+356.12812 27.15
+358.14377 100.00
+360.15942 65.93
+362.17507 45.95
+386.13868 25.19
+388.15433 78.99
+390.16998 15.00
+404.14925 14.42
+422.15329 14.78
+568.19007 21.78
+583.27037 12.08
+595.27037 52.12
+597.28602 21.44
+625.28093 13.99
+645.21662 14.66
+659.23227 10.88
+669.21662 44.56
+671.23227 26.21
+673.24792 82.13
+683.23227 45.86
+692.24250 14.39
+701.24283 50.36
+719.25340 24.29
+
+Name: +ve in-silico MS/MS by CFM-ID 4.5.0 for 9
+ID: 9
+Smiles/Inchi:[C-]#[N+]c1ccc(CN(Cc2ccc(Oc3cc(OCCc4cccnc4)cc(C(=O)CCC(=O)O)c3)cc2)c2cccc(NS(C)(=O)=O)c2C)cc1
+Comment: Energy2
+Num peaks: 31
+77.03858 33.38
+78.00081 61.25
+80.04948 22.13
+81.06988 14.72
+91.05423 21.25
+92.04948 90.28
+106.06513 18.69
+108.08078 52.67
+118.06513 28.19
+131.06037 66.45
+184.04268 18.45
+221.10732 68.72
+236.11822 22.86
+268.09682 14.57
+299.09140 18.00
+316.11142 24.96
+334.14377 14.64
+358.14377 48.39
+360.15942 78.85
+362.17507 15.12
+539.24415 15.10
+554.17442 17.91
+556.19007 25.91
+567.23907 51.06
+568.19007 23.62
+578.24382 29.35
+580.25947 15.42
+594.20572 16.05
+690.22685 14.55
+692.24250 32.70
+719.25340 100.00

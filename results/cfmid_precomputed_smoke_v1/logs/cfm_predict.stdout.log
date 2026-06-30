@@ -1,0 +1,12 @@
+Read 11 molecules from input file.
+(1/11) Predicted Spectra for 1196787 COc1ccc(-c2oc3c(CC=C(C)C)c(O)cc(O)c3c(=O)c2OC2OC(C)C(OC(C)=O)C(OC3OC(CO)C(O)C(O)C3O)C2O)cc1
+(2/11) Predicted Spectra for 0 c1ccc(-c2ccc(N(c3ccc(-c4ccc5c6ccccc6n(-c6ccccc6)c5c4)cc3)c3cccc4ccccc34)c3c2sc2ccccc23)cc1
+(3/11) Predicted Spectra for 1 c1ccc(-c2nc(-c3ccccc3)nc(-n3c4ccccc4oc4cc5c(ccc6c5n(-c5ccccc5)c5cccc7c8ccccc8n6c75)cc43)n2)cc1
+(4/11) Predicted Spectra for 2 CC1(C)c2ccccc2-c2ccc(-c3c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c3O)cc21
+(5/11) Predicted Spectra for 3 c1ccc(-c2ccc(N(c3ccc(-c4cccc5c4c4ccccc4n5-c4ccccc4)cc3)c3cccc4ccccc34)c3c2sc2ccccc23)cc1
+(6/11) Predicted Spectra for 4 CC1(C)C2=CC(N(c3ccccc3)c3csc4ccsc34)CC=C2c2ccc(N(c3ccc(-c4ccccc4)cc3)c3ccc4ccccc4c3)cc21
+(7/11) Predicted Spectra for 5 C1=C(c2c3ccccc3c(-c3ccc4sc5c6ccccc6c6ccccc6c5c4c3)c3ccccc23)N=C(c2ccccc2)N=C(c2ccccc2)CC1
+(8/11) Predicted Spectra for 6 c1ccc(N(c2ccc(-c3ccccc3-n3c4ccccc4c4ccccc43)cc2)c2ccc(-c3ccc4ccccc4c3)c3sc4ccccc4c23)cc1
+(9/11) Predicted Spectra for 7 C1=C(c2ccccc2)c2sc3c(-c4cccc(-c5cnc6c7ccccc7c7ccccc7c6n5)c4)cc(-c4ccccc4)cc3c2CC1c1ccccc1
+(10/11) Predicted Spectra for 8 c1ccc(-c2sc3c(c(-n4c5ccccc5c5ccccc54)cc4c(-c5ccccc5)c(-c5ccccc5)n(-c5ccccc5)c43)c2-c2ccccc2)cc1
+(11/11) Predicted Spectra for 9 [C-]#[N+]c1ccc(CN(Cc2ccc(Oc3cc(OCCc4cccnc4)cc(C(=O)CCC(=O)O)c3)cc2)c2cccc(NS(C)(=O)=O)c2C)cc1
