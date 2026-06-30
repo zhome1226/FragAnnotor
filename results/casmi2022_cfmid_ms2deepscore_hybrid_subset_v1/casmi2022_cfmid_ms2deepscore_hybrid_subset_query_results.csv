@@ -1,0 +1,11 @@
+dataset,model,status,native_or_fallback,query_id,spectrum_id,true_candidate_id,candidate_limit,candidate_pool_policy,candidate_count,candidate_spectra_count,true_rank,top1_correct,top5_correct,top10_correct,reciprocal_rank,cfmid_mgf_status,cfmid_mgf_elapsed_seconds
+CASMI2022,CFM-ID + MS2DeepScore hybrid subset,completed,cfmid_generated_spectra_ms2deepscore_similarity_hybrid,0,0,CASMI_MOL_1196787,10,first_n_plus_true,11,11,1.0,True,True,True,1.0,completed_cached,0.0
+CASMI2022,CFM-ID + MS2DeepScore hybrid subset,completed,cfmid_generated_spectra_ms2deepscore_similarity_hybrid,3,3,CASMI_MOL_1196790,10,first_n_plus_true,11,11,1.0,True,True,True,1.0,completed_cached,0.0
+CASMI2022,CFM-ID + MS2DeepScore hybrid subset,completed,cfmid_generated_spectra_ms2deepscore_similarity_hybrid,4,4,CASMI_MOL_1196791,10,first_n_plus_true,11,11,1.0,True,True,True,1.0,completed_cached,0.0
+CASMI2022,CFM-ID + MS2DeepScore hybrid subset,completed,cfmid_generated_spectra_ms2deepscore_similarity_hybrid,5,5,CASMI_MOL_1196792,10,first_n_plus_true,11,11,1.0,True,True,True,1.0,completed_cached,0.0
+CASMI2022,CFM-ID + MS2DeepScore hybrid subset,completed,cfmid_generated_spectra_ms2deepscore_similarity_hybrid,6,6,CASMI_MOL_1196793,10,first_n_plus_true,11,11,3.0,False,True,True,0.3333333333333333,completed_cached,0.0
+CASMI2022,CFM-ID + MS2DeepScore hybrid subset,completed,cfmid_generated_spectra_ms2deepscore_similarity_hybrid,7,7,CASMI_MOL_1196794,10,first_n_plus_true,11,11,5.0,False,True,True,0.2,completed_cached,0.0
+CASMI2022,CFM-ID + MS2DeepScore hybrid subset,completed,cfmid_generated_spectra_ms2deepscore_similarity_hybrid,9,9,CASMI_MOL_1196796,10,first_n_plus_true,11,11,3.0,False,True,True,0.3333333333333333,completed_cached,0.0
+CASMI2022,CFM-ID + MS2DeepScore hybrid subset,completed,cfmid_generated_spectra_ms2deepscore_similarity_hybrid,10,10,CASMI_MOL_1196797,10,first_n_plus_true,11,11,10.0,False,False,True,0.1,completed_cached,0.0
+CASMI2022,CFM-ID + MS2DeepScore hybrid subset,completed,cfmid_generated_spectra_ms2deepscore_similarity_hybrid,11,11,CASMI_MOL_1196798,10,first_n_plus_true,11,11,1.0,True,True,True,1.0,completed_cached,0.0
+CASMI2022,CFM-ID + MS2DeepScore hybrid subset,completed,cfmid_generated_spectra_ms2deepscore_similarity_hybrid,12,12,CASMI_MOL_1196799,10,first_n_plus_true,11,11,6.0,False,False,True,0.16666666666666666,completed_cached,0.0

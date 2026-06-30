@@ -14,6 +14,7 @@ This package collects clean tables for manuscript drafting without changing mode
 ## Reporting Guardrails
 
 - The CFM-ID subset row is candidate-limited (`first_n_plus_true`) and is not a full CASMI CFM-ID result.
+- The CFM-ID + MS2DeepScore row is a generated-spectrum hybrid subset, not native MS2DeepScore and not a full CASMI benchmark.
 - MS2DeepScore remains blocked for full candidate ranking because no configured pretrained model and complete candidate spectrum library are available.
 - The trained neural checkpoint row is report-only and weak; do not use it as primary CASMI evidence.
 - Strong SOTA claims remain blocked until all methods are rerun on the same candidate set, preprocessing, adduct assumptions, and metrics.

@@ -41,6 +41,7 @@ def main() -> None:
     guardrail = read_csv(ROOT / "results" / "casmi_remaining_gap_and_sota_guardrail_v1" / "claim_guardrail_status.csv")
     gap = read_csv(ROOT / "results" / "casmi_remaining_gap_and_sota_guardrail_v1" / "remaining_gap_status.csv")
     cfmid_subset = read_csv(ROOT / "results" / "casmi2022_cfmid_native_subset_v1" / "casmi2022_cfmid_native_subset_summary.csv")
+    hybrid_subset = read_csv(ROOT / "results" / "casmi2022_cfmid_ms2deepscore_hybrid_subset_v1" / "casmi2022_cfmid_ms2deepscore_hybrid_subset_summary.csv")
     neural = read_csv(ROOT / "results" / "casmi2022_fragannotor_trained_neural_v1" / "casmi2022_fragannotor_trained_neural_summary.csv")
     ms2_audit = read_json(ROOT / "results" / "native_ms2deepscore_casmi" / "native_ms2deepscore_audit.json")
     cfmid_audit = read_json(ROOT / "results" / "native_cfmid_casmi" / "native_cfmid_runtime_audit.json")
@@ -76,6 +77,16 @@ def main() -> None:
         neural_row = neural.copy()
         neural_row["model"] = "FragAnnotor trained neural checkpoint"
         casmi = pd.concat([casmi, keep_existing(neural_row, metric_cols)], ignore_index=True)
+    if not hybrid_subset.empty:
+        hybrid = hybrid_subset.rename(
+            columns={
+                "n_queries_selected": "n_queries",
+                "claim_guardrail": "notes",
+            }
+        )
+        hybrid["dataset"] = "CASMI2022"
+        hybrid["model"] = "CFM-ID + MS2DeepScore hybrid subset"
+        casmi = pd.concat([casmi, keep_existing(hybrid, metric_cols)], ignore_index=True)
     casmi.to_csv(OUTDIR / "table1_casmi2022_benchmark.csv", index=False)
 
     pfas = keep_existing(summary[summary["dataset"].eq("PFAS")] if not summary.empty else summary, metric_cols)
@@ -131,6 +142,7 @@ def main() -> None:
         "## Reporting Guardrails",
         "",
         "- The CFM-ID subset row is candidate-limited (`first_n_plus_true`) and is not a full CASMI CFM-ID result.",
+        "- The CFM-ID + MS2DeepScore row is a generated-spectrum hybrid subset, not native MS2DeepScore and not a full CASMI benchmark.",
         "- MS2DeepScore remains blocked for full candidate ranking because no configured pretrained model and complete candidate spectrum library are available.",
         "- The trained neural checkpoint row is report-only and weak; do not use it as primary CASMI evidence.",
         "- Strong SOTA claims remain blocked until all methods are rerun on the same candidate set, preprocessing, adduct assumptions, and metrics.",

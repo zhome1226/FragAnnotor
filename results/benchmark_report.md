@@ -106,6 +106,8 @@ The documented path forward is a clearly labeled generator + MS2DeepScore hybrid
 The official dual-mode pretrained MS2DeepScore model from Zenodo `10.5281/zenodo.17826815` has been downloaded to external storage and recorded in `results/ms2deepscore_resource_manifest_v1/`; it is not committed to Git. The CPU environment is verified in `results/ms2deepscore_environment_verification_v1/` with MS2DeepScore `2.7.2`, MatchMS `0.33.1`, and Torch `2.4.1+cpu`. Full MS2DeepScore ranking remains blocked until a complete CASMI per-candidate spectrum library and scoring wrapper are available.
 The reproducible setup script is `scripts/setup_ms2deepscore_cpu_env.sh`; it installs CPU-only Torch before MS2DeepScore to avoid multi-GB CUDA wheel resolution.
 
+A candidate-limited `CFM-ID + MS2DeepScore` hybrid subset is available at `results/casmi2022_cfmid_ms2deepscore_hybrid_subset_v1/`: 10 supported `[M+H]+` CASMI queries, CFM-ID-generated candidate spectra, `candidate_limit=10`, `first_n_plus_true` pool, Top-1 `0.5`, Top-5 `0.8`, Top-10 `1.0`, MRR `0.6133333333333334`. This is not native MS2DeepScore and not a full CASMI benchmark.
+
 ## External Public Benchmark Context
 
 ICEBERG CASMI22 public retrieval context is available at `results/external_public_benchmarks/iceberg_casmi22_retrieval/`, covering Random, CFM-ID, NEIMS, FixedVocab, MassFormer, and ICEBERG from the local vendor notebook outputs.
