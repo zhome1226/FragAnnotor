@@ -1,0 +1,14 @@
+{
+  "all_required_files_present": true,
+  "model_file_in_git": false,
+  "native_ms2deepscore_ready": false,
+  "remaining_blockers": [
+    "Install/import ms2deepscore and matchms in a stable Python environment.",
+    "Build complete CASMI per-candidate predicted spectrum library.",
+    "Score every query-candidate spectrum pair and label generated-candidate runs as hybrid baselines."
+  ],
+  "resource_dir": "/home/zhome/ec_structure/external_ms_models/ms2deepscore",
+  "stage": "ms2deepscore_resource_manifest_v1",
+  "title": "Dual mode MS2Deepscore model (MS2DeepScore >2.6)",
+  "zenodo_record": "10.5281/zenodo.17826815"
+}

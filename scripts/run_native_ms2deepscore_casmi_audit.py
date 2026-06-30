@@ -15,6 +15,7 @@ from typing import Any
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
+EXTERNAL_MS2DEEPSCORE_DIR = Path("/home/zhome/ec_structure/external_ms_models/ms2deepscore")
 
 
 def package_version(package: str) -> str:
@@ -64,6 +65,20 @@ def find_model_files(root: Path) -> list[str]:
     return sorted(found)
 
 
+def external_model_manifest() -> dict[str, Any]:
+    expected = ["settings.json", "embedding_model_settings.json", "embedding_evaluator.pt", "ms2deepscore_model.pt"]
+    rows = []
+    for name in expected:
+        path = EXTERNAL_MS2DEEPSCORE_DIR / name
+        rows.append({"file": name, "path": str(path), "exists": path.exists(), "size_bytes": path.stat().st_size if path.exists() else 0})
+    return {
+        "resource_dir": str(EXTERNAL_MS2DEEPSCORE_DIR),
+        "files": rows,
+        "all_required_files_present": all(row["exists"] and row["size_bytes"] > 0 for row in rows),
+        "source": "Zenodo 10.5281/zenodo.17826815",
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Audit native MS2DeepScore CASMI feasibility.")
     parser.add_argument("--outdir", type=Path, default=ROOT / "results" / "native_ms2deepscore_casmi")
@@ -74,6 +89,7 @@ def main() -> None:
     matchms_installed = importlib.util.find_spec("matchms") is not None
     artifacts = find_candidate_spectrum_artifacts(ROOT)
     model_files = find_model_files(ROOT)
+    external_model = external_model_manifest()
     audit = {
         "stage": "native_ms2deepscore_casmi_audit_v1",
         "status": "blocked_no_candidate_spectrum_library",
@@ -83,7 +99,8 @@ def main() -> None:
         "matchms_version": package_version("matchms"),
         "pretrained_model_files_found_in_repo": model_files,
         "pretrained_model_file_count": len(model_files),
-        "official_pretrained_model_note": "MS2DeepScore documentation points to a Zenodo pretrained ms2deepscore_model.pt for MS2DeepScore >=2.6; no such configured model file is present in this repository.",
+        "external_pretrained_model_cache": external_model,
+        "official_pretrained_model_note": "MS2DeepScore documentation points to a Zenodo pretrained ms2deepscore_model.pt for MS2DeepScore >=2.6; the large model is cached outside Git when available and is recorded by results/ms2deepscore_resource_manifest_v1/.",
         "user_space_install_attempt": {
             "env_path": "/home/zhome/ec_structure/external_ms_models/envs/ms2deepscore_casmi",
             "command": "python3 -m venv ... && pip install ms2deepscore==2.7.2 matchms==0.33.1",

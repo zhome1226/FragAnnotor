@@ -1,0 +1,5 @@
+file,external_path,exists,size_bytes,sha256,source
+settings.json,/home/zhome/ec_structure/external_ms_models/ms2deepscore/settings.json,True,2836,f760fad9f72dcb75ae35fad2797ab2a4b3c556cbcb0dcfc1d157799b13082d65,https://zenodo.org/api/records/17826815/files/settings.json/content
+embedding_model_settings.json,/home/zhome/ec_structure/external_ms_models/ms2deepscore/embedding_model_settings.json,True,273,9d440d95666d35a21b0b68c15f262650df054fc947ce6bf2656ba032e8dc12b1,https://zenodo.org/api/records/17826815/files/embedding_model_settings.json/content
+embedding_evaluator.pt,/home/zhome/ec_structure/external_ms_models/ms2deepscore/embedding_evaluator.pt,True,791865,3e9f8c74919f6a3e42ed81a0d2d8adc81b89b157f6bca2b537e6247dc96e5e0a,https://zenodo.org/api/records/17826815/files/embedding_evaluator.pt/content
+ms2deepscore_model.pt,/home/zhome/ec_structure/external_ms_models/ms2deepscore/ms2deepscore_model.pt,True,416126840,d62426d95a0d167f638643a90ea09ccb6d7f4340be7588bc8e65a052f46cd6f0,https://zenodo.org/api/records/17826815/files/ms2deepscore_model.pt/content

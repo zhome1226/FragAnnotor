@@ -1,20 +1,54 @@
 {
   "benchmark_decision": "Do not report MS2DeepScore CASMI Top-k metrics. MS2DeepScore scores spectrum pairs; the CASMI structure-candidate benchmark lacks a complete per-candidate measured or predicted spectrum library and no configured pretrained MS2DeepScore model file is present. CFM-ID predicted spectra were not substituted, because that would be a hybrid CFM-ID plus MS2DeepScore baseline rather than native MS2DeepScore.",
-  "candidate_spectrum_library_artifact_count": 9,
+  "candidate_spectrum_library_artifact_count": 12,
   "candidate_spectrum_library_artifacts_found_in_repo": [
     "baselines/__pycache__/ms2deepscore.cpython-310.pyc",
     "baselines/ms2deepscore.py",
+    "results/ms2deepscore_resource_manifest_v1/ms2deepscore_resource_manifest.csv",
+    "results/ms2deepscore_resource_manifest_v1/ms2deepscore_resource_manifest_report.md",
     "results/native_ms2deepscore_casmi/native_ms2deepscore_audit.csv",
     "results/native_ms2deepscore_casmi/native_ms2deepscore_audit.json",
     "results/native_ms2deepscore_casmi/native_ms2deepscore_audit.md",
     "results/predictions/casmi2022_ms2deepscore_native_predictions.csv",
     "results/predictions/pfas_ms2deepscore_native_predictions.csv",
     "scripts/__pycache__/run_native_ms2deepscore_casmi_audit.cpython-310.pyc",
+    "scripts/prepare_ms2deepscore_resources.py",
     "scripts/run_native_ms2deepscore_casmi_audit.py"
   ],
   "environment": {
     "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
     "python": "3.10.12 (main, Mar  3 2026, 11:56:32) [GCC 11.4.0]"
+  },
+  "external_pretrained_model_cache": {
+    "all_required_files_present": true,
+    "files": [
+      {
+        "exists": true,
+        "file": "settings.json",
+        "path": "/home/zhome/ec_structure/external_ms_models/ms2deepscore/settings.json",
+        "size_bytes": 2836
+      },
+      {
+        "exists": true,
+        "file": "embedding_model_settings.json",
+        "path": "/home/zhome/ec_structure/external_ms_models/ms2deepscore/embedding_model_settings.json",
+        "size_bytes": 273
+      },
+      {
+        "exists": true,
+        "file": "embedding_evaluator.pt",
+        "path": "/home/zhome/ec_structure/external_ms_models/ms2deepscore/embedding_evaluator.pt",
+        "size_bytes": 791865
+      },
+      {
+        "exists": true,
+        "file": "ms2deepscore_model.pt",
+        "path": "/home/zhome/ec_structure/external_ms_models/ms2deepscore/ms2deepscore_model.pt",
+        "size_bytes": 416126840
+      }
+    ],
+    "resource_dir": "/home/zhome/ec_structure/external_ms_models/ms2deepscore",
+    "source": "Zenodo 10.5281/zenodo.17826815"
   },
   "hybrid_baseline_protocol": [
     "Generate candidate spectra for every CASMI candidate with a clearly named generator such as CFM-ID or ICEBERG.",
@@ -25,7 +59,7 @@
   ],
   "matchms_installed": false,
   "matchms_version": "",
-  "official_pretrained_model_note": "MS2DeepScore documentation points to a Zenodo pretrained ms2deepscore_model.pt for MS2DeepScore >=2.6; no such configured model file is present in this repository.",
+  "official_pretrained_model_note": "MS2DeepScore documentation points to a Zenodo pretrained ms2deepscore_model.pt for MS2DeepScore >=2.6; the large model is cached outside Git when available and is recorded by results/ms2deepscore_resource_manifest_v1/.",
   "package_installed": false,
   "package_version": "",
   "pip_index_matchms": {

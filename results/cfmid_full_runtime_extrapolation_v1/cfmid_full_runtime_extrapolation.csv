@@ -1,0 +1,3 @@
+basis,seconds_per_candidate,supported_queries,unsupported_queries,total_supported_candidate_rows,estimated_single_worker_seconds,estimated_single_worker_hours,estimated_16_worker_hours_ideal,guardrail
+mean_seconds_per_candidate_from_10_query_subset,8.437788644703952,170,59,1062950,8968947.439888066,2491.374288857796,155.71089305361224,Back-of-envelope estimate only; CFM-ID runtime varies by molecule and this does not include [M+Na]+ unsupported queries.
+median_seconds_per_candidate_from_10_query_subset,6.710492426698858,170,59,1062950,7132917.924959551,1981.3660902665417,123.83538064165886,Back-of-envelope estimate only; CFM-ID runtime varies by molecule and this does not include [M+Na]+ unsupported queries.

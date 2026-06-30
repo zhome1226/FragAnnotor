@@ -1,0 +1,12 @@
+{
+  "full_native_cfmid_completed": false,
+  "mean_seconds_per_candidate": 8.437788644703952,
+  "median_seconds_per_candidate": 6.710492426698858,
+  "stage": "cfmid_full_runtime_extrapolation_v1",
+  "subset_candidate_limit": 10,
+  "subset_pool_policy": "first_n_plus_true",
+  "subset_queries": 10,
+  "supported_queries": 170,
+  "total_supported_candidate_rows": 1062950,
+  "unsupported_queries": 59
+}
