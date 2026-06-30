@@ -1,0 +1,67 @@
+{
+  "candidate_limit": 2000,
+  "checkpoint": "/home/zhome/ec_structure/pollutant_transform_pretraining/outputs/calibration_aware_model_v1/model_runs/calibration_weighted_model/checkpoints/best_model.pt",
+  "checkpoint_sha256": "2dd47df3c5a347761c5094db2725d9266cbfd0d578c4853eb93a0899e4042adf",
+  "claim_guardrail": "Report-only CASMI inference from a frozen trained neural spectrum checkpoint. No CASMI labels were used for training, weight search, or checkpoint selection in this script.",
+  "config": {
+    "alpha_cosine": 0.5,
+    "batch_size": 16,
+    "bin_width": 1.0,
+    "dropout": 0.15,
+    "early_stopping_patience": 4,
+    "epochs": 12,
+    "fingerprint_bits": 2048,
+    "hidden_dim": 256,
+    "learning_rate": 0.001,
+    "model_name": "FingerprintMLP",
+    "morgan_radius": 2,
+    "mz_max": 1000.0,
+    "mz_min": 0.0,
+    "prediction_threshold": 0.01,
+    "random_seed": 42
+  },
+  "environment": {
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "python": "3.10.12 (main, Mar  3 2026, 11:56:32) [GCC 11.4.0]",
+    "torch": "2.3.1+cu121"
+  },
+  "input_dim": 2128,
+  "output_dim": 1001,
+  "stage": "casmi2022_fragannotor_trained_neural_v1",
+  "status": "completed",
+  "summary": {
+    "dataset": "CASMI2022",
+    "mean_reciprocal_rank": 0.017259607587748645,
+    "mean_top1_tanimoto": 0.11306586455794747,
+    "median_candidate_count": 2001.0,
+    "median_true_rank": 527.0,
+    "model": "FragAnnotor-trained-neural",
+    "molecular_formula_accuracy": 0.462882096069869,
+    "n_queries": 229,
+    "native_or_fallback": "trained_neural_checkpoint_report_only",
+    "status": "completed",
+    "top10_accuracy": 0.026200873362445413,
+    "top1_accuracy": 0.008733624454148471,
+    "top5_accuracy": 0.013100436681222707
+  },
+  "training_overlap_audit": {
+    "casmi_overlap_count_by_split": {},
+    "has_casmi_structure_overlap": false,
+    "overlap_examples": [],
+    "path": "/home/zhome/ec_structure/pollutant_transform_pretraining/outputs/calibration_aware_model_v1/model_runs/calibration_weighted_model/pairs.jsonl",
+    "status": "checked",
+    "training_pair_count_by_split": {
+      "test": 142,
+      "train": 866,
+      "validation": 128
+    }
+  },
+  "training_pairs": "/home/zhome/ec_structure/pollutant_transform_pretraining/outputs/calibration_aware_model_v1/model_runs/calibration_weighted_model/pairs.jsonl",
+  "training_pairs_sha256": "ba95bb4fbd77159c7ed54c9e8419eb9cc21215899ff64891656990f84be7f086",
+  "vocab_coverage": {
+    "queries_with_missing_collision_energy": 229,
+    "unsupported_adduct_query_counts": {
+      "[M+Na]+": 59
+    }
+  }
+}

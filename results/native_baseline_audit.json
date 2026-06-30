@@ -1,20 +1,20 @@
 [
   {
-    "blocker": "CFM-ID executable exists, but smoke tests against available pretrained model/configs abort with Invalid Feature Configuration; no valid native CASMI CFM-ID benchmark scores are reported.",
-    "executable_or_package": "/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id",
+    "blocker": "CFM-ID 4.x-compatible native binary was found and smoke-tested, but CASMI full candidate ranking remains runtime-blocked: a 100-candidate timing run did not finish within 15 minutes, so no full native CASMI CFM-ID score table is reported.",
+    "executable_or_package": "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id",
     "model": "CFM-ID",
     "native_available": false,
-    "version": "executable_present_but_smoke_failed"
+    "version": "native_binary_smoke_passed_runtime_blocked"
   },
   {
     "blocker": "",
-    "executable_or_package": "/home/zhome/opt/sirius-4.9.15-headless/bin/sirius",
+    "executable_or_package": "",
     "model": "SIRIUS",
     "native_available": true,
-    "version": "SIRIUS 4.9.15"
+    "version": "SIRIUS 4.9.15 native formula result file"
   },
   {
-    "blocker": "ms2deepscore Python package/model not available; no native MS2DeepScore inference was run.",
+    "blocker": "MS2DeepScore is a spectrum-to-spectrum similarity model; this CASMI candidate-ranking benchmark has candidate structures but no complete per-candidate reference/predicted spectrum library or configured pretrained MS2DeepScore model. No native MS2DeepScore candidate-ranking scores are reported.",
     "executable_or_package": "",
     "model": "MS2DeepScore",
     "native_available": false,

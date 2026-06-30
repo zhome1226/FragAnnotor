@@ -1,0 +1,2 @@
+dataset,model,status,native_or_fallback,n_queries,top1_accuracy,top5_accuracy,top10_accuracy,mean_reciprocal_rank,mean_top1_tanimoto,molecular_formula_accuracy,median_true_rank,median_candidate_count
+CASMI2022,FragAnnotor-trained-neural,completed,trained_neural_checkpoint_report_only,229,0.008733624454148471,0.013100436681222707,0.026200873362445413,0.017259607587748645,0.11306586455794747,0.462882096069869,527.0,2001.0

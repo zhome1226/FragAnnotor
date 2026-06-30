@@ -1,0 +1,3 @@
+9699 N=C(NCCNC(=O)OCC1CCCCC1)c1ccccc1S
+9700 Cc1ccccc1Nc1ccc2c3c(c4ccccc4c2c1)C=CCC3
+9701 CC1(C)c2ccccc2C2c3[nH]c4ccccc4c3Cc3cccc1c32

@@ -23,9 +23,9 @@
     "error_message"
   ],
   "compressed_path": "casmi2022_candidate_level_predictions.csv.gz",
-  "compressed_size_bytes": 13791512,
+  "compressed_size_bytes": 13842302,
   "format": "csv.gz",
   "reason": "Raw CSV exceeds GitHub's 100 MB single-file limit; full data are stored in the adjacent gzip CSV.",
   "rows": 644406,
-  "uncompressed_size_bytes": 229878407
+  "uncompressed_size_bytes": 229949168
 }

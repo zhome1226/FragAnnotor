@@ -1,0 +1,3 @@
+18222 CC1C2CC(C2)N(C(=O)c2nn(C)cc2-c2ncccn2)C1CNc1ccc(C(F)(F)F)cn1
+18223 Cc1ccc(-n2nccn2)c(C(=O)N2C3CC(C3)C(C)C2CNc2ccc(C(F)(F)F)cn2)n1
+18224 c1ccc2c(-c3ccc(Nc4ccc(-c5cc6ccccc6c6ccccc56)cc4)cc3)cccc2c1

@@ -1,0 +1,6 @@
+{
+  "artifact": "casmi2022_fragannotor_trained_neural_predictions.csv.gz",
+  "note": "Large candidate-level prediction table is gzip-compressed.",
+  "rows": 408249,
+  "sha256": "886790dcf4d3301b85e24f7f366c493f335415ae612dceae37a23b0a19ebc28d"
+}

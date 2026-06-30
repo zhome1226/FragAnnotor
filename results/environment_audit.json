@@ -6,18 +6,18 @@
   },
   "cwd": "/home/zhome/ec_structure/github_export/FragAnnotor",
   "executables": {
-    "cfm_id": "/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id",
-    "cfm_predict": "/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-predict",
-    "cfmid": "/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id",
+    "cfm_id": "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id",
+    "cfm_predict": "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-predict",
+    "cfmid": "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id",
     "git": "/usr/bin/git",
-    "java": "/usr/bin/java",
+    "java": null,
     "python": "/usr/bin/python3",
-    "sirius": "/home/zhome/opt/sirius-4.9.15-headless/bin/sirius"
+    "sirius": null
   },
   "git": {
     "branch": "main",
-    "commit": "02deb8f9168423175a5feb068eaa0c004f07b9d4",
-    "status_short": "M docs/BENCHMARK_REPORT.md\n M results/README.md\n M results/benchmark_predictions.csv\n M results/benchmark_predictions.csv.gz\n M results/benchmark_report.md\n M results/benchmark_results.csv\n M results/benchmark_results.json\n M results/casmi2022_candidate_level_predictions.csv\n M results/casmi2022_candidate_level_predictions.csv.gz\n M results/casmi2022_native_benchmark_summary.csv\n M results/casmi2022_native_benchmark_summary.json\n M results/casmi2022_query_level_results.csv\n M results/casmi_fragannotor_adapter/casmi_fragannotor_adapter_audit.json\n M results/environment_audit.json\n M results/predictions/casmi2022_fragannotor_predictions.csv\n M results/predictions/casmi2022_fragannotor_predictions.csv.gz\n M results/query_level/casmi2022_query_level_comparison.csv\n M results/sota_comparison_summary.csv\n M results/sota_comparison_summary.json\n M scripts/run_benchmark.py\n?? results/casmi2022_fragannotor_formal_components/\n?? results/external_public_benchmarks/"
+    "commit": "87be37ccc546d8a699e73c11c4a50074d0f96fed",
+    "status_short": "M docs/BENCHMARK_REPORT.md\n M results/README.md\n M results/ablation/fragannotor_ablation_query_level.csv\n M results/ablation/fragannotor_ablation_summary.csv\n M results/ablation/fragannotor_ablation_summary.json\n M results/benchmark_predictions.csv\n M results/benchmark_predictions.csv.gz\n M results/benchmark_report.md\n M results/benchmark_results.csv\n M results/benchmark_results.json\n M results/case_studies/pfas_selected_cases.csv\n M results/casmi2022_candidate_level_predictions.csv\n M results/casmi2022_candidate_level_predictions.csv.gz\n M results/casmi2022_fragannotor_formal_components/casmi2022_fragannotor_formal_component_matrix.csv.gz\n M results/casmi2022_native_benchmark_summary.csv\n M results/casmi2022_native_benchmark_summary.json\n M results/casmi2022_query_level_results.csv\n M results/config.yaml\n M results/environment_audit.json\n M results/external_public_model_audit/fiora_external_model_audit.csv\n M results/external_public_model_audit/fiora_external_model_audit.json\n M results/external_public_model_audit/fiora_smoke.log\n M results/figures/ablation_mrr.png\n M results/figures/ablation_top10_accuracy.png\n M results/figures/bar_plot_topk_accuracy.png\n M results/figures/case_structures/case_frag_improves_over_sirius_cfmid_top1.png\n M results/figures/case_structures/case_frag_improves_over_sirius_fragannotor_top1.png\n M results/figures/case_structures/case_frag_improves_over_sirius_true.png\n M results/figures/comparison_table.png\n M results/figures/pfas_case_rank_comparison.png\n M results/figures/pfas_case_study_examples.png\n M results/figures/sota_mrr_comparison.png\n M results/figures/sota_rank_delta_boxplot.png\n M results/figures/sota_topk_accuracy_grouped_bar.png\n M results/native_baseline_audit.csv\n M results/native_baseline_audit.json\n M results/predictions/casmi2022_cfmid_native_predictions.csv\n M results/predictions/casmi2022_fragannotor_predictions.csv.gz\n M results/predictions/casmi2022_ms2deepscore_native_predictions.csv\n M results/predictions/pfas_fragannotor_predictions.csv\n M results/predictions/pfas_sirius_native_predictions.csv\n M results/query_level/casmi2022_query_level_comparison.csv\n M results/query_level/pfas_query_level_comparison.csv\n M results/query_level/pfas_top10_candidates_by_model.csv\n M results/sota_bootstrap_confidence_intervals.csv\n M results/sota_comparison_summary.csv\n M results/sota_comparison_summary.json\n M results/sota_pairwise_rank_comparison.csv\n M scripts/run_benchmark.py\n?? results/casmi2022_fragannotor_trained_neural_v1/\n?? results/casmi_missing_native_and_neural_completion_report.md\n?? results/logs/native_smoke/cfmid_repair/\n?? results/native_cfmid_casmi/\n?? results/native_ms2deepscore_casmi/\n?? scripts/run_casmi_fragannotor_neural.py"
   },
   "os": "posix",
   "packages": {
@@ -51,49 +51,33 @@
     },
     "yaml": {
       "available": true,
-      "version": "5.4.1"
+      "version": "6.0.3"
     }
   },
-  "platform": "Linux-6.8.0-48-generic-x86_64-with-glibc2.35",
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
   "python_executable": "/usr/bin/python3",
   "python_version": "3.10.12 (main, Mar  3 2026, 11:56:32) [GCC 11.4.0]",
   "versions": {
     "cfm_predict": {
       "command": [
-        "/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-predict",
+        "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-predict",
         "--help"
       ],
-      "returncode": -6,
-      "stderr": "terminate called after throwing an instance of 'FileException'\n  what():  Could not find file: param_config.txt",
-      "stdout": "Could not find file: param_config.txt\nCould not find file: param_config.txt"
+      "returncode": 1,
+      "stderr": "",
+      "stdout": "Could not find file: param_config.txt"
     },
     "cfmid": {
       "command": [
-        "/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id",
+        "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id",
         "--version"
       ],
       "returncode": 1,
       "stderr": "",
-      "stdout": "Usage: cfm-id.exe <spectrum_file> <id> <candidate_file> <num_highest> <ppm_mass_tol> <abs_mass_tol> <prob_thresh_for_prune> <param_filename> <config_filename> <score_type> <apply_postprocessing> <output_filename> <output_msp_or_mgf>\n\n\n\nspectrum_file:\nThe filename where the input spectra can be found. This can be a .msp file in which the desired spectrum is listed under a corresponding id (next arg). Or it could be a single file with a list of peaks 'mass intensity' delimited by lines, with either 'low','med' and 'high' lines beginning spectra of different energy levels, or 'energy0', 'energy1', etc. e.g.\nenergy0\n65.02 40.0\n86.11 60.0\nenergy1\n65.02 100.0 ... etc\n\nid:\nAn identifier for the target molecule (Used to retrieve input spectrum from msp (if used). Otherwise not used but printed to output, in case of multiple concatenated results)\n\ncandidate_file:\nThe filename where the input list of candidate structures can be found - line separated 'id smiles_or_inchi' pairs.\n\nnum_highest (opt):\nThe number of (ranked) candidates to return or -1 for all (if not given, returns all in ranked order)\n\nppm_mass_tol (opt):\nThe mass tolerance in ppm to use when matching peaks within the dot product comparison - will use higher resulting tolerance of ppm and abs (if not given defaults to 10ppm)\n\nabs_mass_tol (opt):\nThe mass tolerance in abs Da to use when matching peaks within the dot product comparison - will use higher resulting tolerance of ppm and abs ( if not given defaults to 0.01Da)\n\nprob_thresh_for_prune (opt):\nThe probabiltiy threshold at which to prune unlikely fragmnetations (default 0.001)\n\nparam_filename (opt):\nThe filename where the parameters of a trained cfm model can be found (if not given, assumes param_output.log in current directory)\n\nconfig_filename (opt):\nThe filename where the configuration parameters of the cfm model can be found (if not given, assumes param_config.txt in current directory)\n\nscore_type (opt):\nThe type of scoring function to use when comparing spectra. Options: Jaccard (default for ESI-MS/MS), DotProduct (default for EI-MS)\n\napply_postprocessing (opt):\nWhether or not to post-process predicted spectra to take the top 80% of energy (at least 5 peaks), or the highest 30 peaks (whichever comes first) (0 = OFF (default for EI-MS), 1 = ON (default for ESI-MS/MS)).\n\noutput_filename (opt):\nThe filename of the output file to write to (if not given, prints to stdout)\n\noutput_msp_or_mgf (opt):\nThe filename for an output msp or mgf file to record predicted candidate spectra (if not given, doesn't save predicted spectra)"
+      "stdout": "CFM-ID Version:  4.5.0\nUsage: cfm-id.exe <spectrum_file> <id> <candidate_file> <num_highest> <ppm_mass_tol> <abs_mass_tol> <prob_thresh_for_prune> <param_filename> <config_filename> <score_type> <apply_postprocessing> <output_filename> <output_msp_or_mgf>\n\n\n\nspectrum_file:\nThe filename where the input spectra can be found. This can be a .msp file in which the desired spectrum is listed under a corresponding id (next arg). Or it could be a single file with a list of peaks 'mass intensity' delimited by lines, with either 'low','med' and 'high' lines beginning spectra of different energy levels, or 'energy0', 'energy1', etc. e.g.\nenergy0\n65.02 40.0\n86.11 60.0\nenergy1\n65.02 100.0 ... etc\n\nid:\nAn identifier for the target molecule (Used to retrieve input spectrum from msp (if used). Otherwise not used but printed to output, in case of multiple concatenated results)\n\ncandidate_file:\nThe filename where the input list of candidate structures can be found - line separated 'id smiles_or_inchi' pairs.\n\nnum_highest (opt):\nThe number of (ranked) candidates to return or -1 for all (if not given, returns all in ranked order)\n\nppm_mass_tol (opt):\nThe mass tolerance in ppm to use when matching peaks within the dot product comparison - will use higher resulting tolerance of ppm and abs (if not given defaults to 10ppm)\n\nabs_mass_tol (opt):\nThe mass tolerance in abs Da to use when matching peaks within the dot product comparison - will use higher resulting tolerance of ppm and abs ( if not given defaults to 0.01Da)\n\nprob_thresh_for_prune (opt):\nThe probabiltiy threshold at which to prune unlikely fragmnetations (default 0.001)\n\nparam_filename (opt):\nThe filename where the parameters of a trained cfm model can be found (if not given, assumes param_output.log in current directory)\n\nconfig_filename (opt):\nThe filename where the configuration parameters of the cfm model can be found (if not given, assumes param_config.txt in current directory)\n\nscore_type (opt):\nThe type of scoring function to use when comparing spectra. Options: Dice (default for ESI-MS/MS), DotProduct (default for EI-MS)\n\napply_postprocessing (opt):\nWhether or not to post-process predicted spectra to take the top 80% of energy (at least 5 peaks), or the highest 30 peaks (whichever comes first) (0 = OFF (default for EI-MS), 1 = ON (default for ESI-MS/MS)).\n\noutput_filename (opt):\nThe filename of the output file to write to (if not given, prints to stdout)\n\noutput_msp_or_mgf (opt):\nThe filename for an output msp or mgf file to record predicted candidate spectra (if not given, doesn't save predicted spectra)"
     },
-    "java": {
-      "command": [
-        "java",
-        "-version"
-      ],
-      "returncode": 0,
-      "stderr": "openjdk version \"11.0.30\" 2026-01-20\nOpenJDK Runtime Environment (build 11.0.30+7-post-Ubuntu-1ubuntu122.04)\nOpenJDK 64-Bit Server VM (build 11.0.30+7-post-Ubuntu-1ubuntu122.04, mixed mode, sharing)",
-      "stdout": ""
-    },
-    "sirius": {
-      "command": [
-        "/home/zhome/opt/sirius-4.9.15-headless/bin/sirius",
-        "--version"
-      ],
-      "returncode": 0,
-      "stderr": "Jun 30, 2026 8:38:21 AM org.apache.commons.beanutils.FluentPropertyBeanIntrospector introspect\nINFO: Error when creating PropertyDescriptor for public final void org.apache.commons.configuration2.AbstractConfiguration.setProperty(java.lang.String,java.lang.Object)! Ignoring this property.\nINFO    08:38:22 - Sirius Workspace Successfull initialized at: /home/zhome/.sirius-4.9\nINFO    08:38:22 - You run SIRIUS 4.9.15\nINFO    08:38:22 - Sirius was compiled with the following ILP solvers: GLPK-v1.7.0 (included), Gurobi-v9.1.1, CPLEX-v12.7.1, COIN-OR-v1.17.3\nINFO    08:38:22 - Treebuilder priorities loaded from 'sirius.properties' are: [GUROBI, CPLEX, CLP, GLPK]\nINFO    08:38:22 - CPU check done. 96 cores that handle 192 threads were found.\nINFO    08:38:22 - Bug reporter initialized.\nINFO    08:38:22 - Web API initialized.\nINFO    08:38:22 - Running with following arguments: [--version]\nINFO    08:38:22 - Job manager successful initialized with 96 CPU thread(s) and 3 IO thread(s).\nINFO    08:38:22 - CLI shut down hook: SIRIUS is cleaning up threads and shuts down...",
-      "stdout": "SIRIUS 4.9.15\nSIRIUS lib: 4.6.1\nCSI:FingerID lib: 1.6.0"
-    }
+    "java": null,
+    "sirius": null
   },
   "virtual_env": ""
 }

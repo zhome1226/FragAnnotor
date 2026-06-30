@@ -4,9 +4,9 @@
   "model": "FIORA",
   "native_or_fallback": "external_public_model_probe",
   "output_mgf": "results/external_public_model_audit/fiora_smoke_output.mgf",
-  "reason": "FIORA can generate spectra on the server, but the current benchmark lacks a validated CASMI candidate-level spectral similarity wrapper; it is recorded as an optional public model readiness audit, not as a main four-model result.",
-  "status": "smoke_passed_not_integrated_as_ranker",
-  "stderr": "",
-  "stdout": "\n-----Model-----\nFIORA OS v1.0.0\n---------------\n\nDisclaimer: No prediction software is perfect. Use with caution.\nFinished prediction. Exported MS/MS spectra to /home/zhome/ec_structure/github_export/FragAnnotor/results/external_public_model_audit/fiora_smoke_output.mgf.\n",
+  "reason": "FIORA smoke command returned 1; no candidate-ranking benchmark was generated.",
+  "status": "smoke_failed",
+  "stderr": "Traceback (most recent call last):\n  File \"/usr/lib/python3.10/runpy.py\", line 196, in _run_module_as_main\n    return _run_code(code, main_globals, None,\n  File \"/usr/lib/python3.10/runpy.py\", line 86, in _run_code\n    exec(code, run_globals)\n  File \"/home/zhome/ec_structure/external_ms_models/vendor/fiora/fiora/cli/predict.py\", line 16, in <module>\n    from fiora.GNN.FioraModel import FioraModel\n  File \"/home/zhome/ec_structure/external_ms_models/vendor/fiora/fiora/GNN/FioraModel.py\", line 6, in <module>\n    import dill\nModuleNotFoundError: No module named 'dill'\n",
+  "stdout": "",
   "vendor_path": "/home/zhome/ec_structure/external_ms_models/vendor/fiora"
 }

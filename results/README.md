@@ -15,6 +15,9 @@
 - `casmi_fragannotor_adapter/`: legacy CASMI adapter components and guardrail audit.
 - `external_public_model_audit/`: optional public-model readiness probes such as FIORA smoke execution.
 - `casmi2022_fragannotor_formal_components/`: audited fixed component-score CASMI2022 FragAnnotor package.
+- `casmi2022_fragannotor_trained_neural_v1/`: frozen trained neural FragAnnotor checkpoint CASMI2022 inference report.
+- `native_cfmid_casmi/`: native CFM-ID binary repair and runtime-blocker audit.
+- `native_ms2deepscore_casmi/`: MS2DeepScore candidate-spectrum-library blocker audit.
 - `external_public_benchmarks/iceberg_casmi22_retrieval/`: imported public ICEBERG CASMI22 retrieval benchmark context with provenance.
 - `stratified/`: PFAS subclass and difficulty-stratified summaries.
 - `figures/`: matplotlib-only publication-draft plots.

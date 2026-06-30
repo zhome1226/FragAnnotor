@@ -1,0 +1,31 @@
+{
+  "benchmark_decision": "Do not report MS2DeepScore CASMI Top-k metrics. MS2DeepScore scores spectrum pairs; the CASMI structure-candidate benchmark lacks a complete per-candidate measured or predicted spectrum library and no configured pretrained MS2DeepScore model file is present. CFM-ID predicted spectra were not substituted, because that would be a hybrid CFM-ID plus MS2DeepScore baseline rather than native MS2DeepScore.",
+  "candidate_spectrum_library_artifacts_found_in_repo": [
+    "baselines/__pycache__/ms2deepscore.cpython-310.pyc",
+    "baselines/ms2deepscore.py",
+    "results/predictions/casmi2022_ms2deepscore_native_predictions.csv",
+    "results/predictions/pfas_ms2deepscore_native_predictions.csv"
+  ],
+  "environment": {
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "python": "3.10.12 (main, Mar  3 2026, 11:56:32) [GCC 11.4.0]"
+  },
+  "matchms_installed": false,
+  "matchms_version": "",
+  "package_installed": false,
+  "package_version": "",
+  "pip_index_matchms": {
+    "command": "/usr/bin/python3 -m pip index versions matchms",
+    "returncode": 0,
+    "stderr": "WARNING: pip index is currently an experimental command. It may be removed/changed in a future release without prior warning.",
+    "stdout": "matchms (0.33.1)\nAvailable versions: 0.33.1, 0.33.0, 0.32.0, 0.31.0, 0.30.2, 0.30.1, 0.30.0, 0.29.0, 0.28.2, 0.28.1, 0.27.0, 0.26.4, 0.26.3, 0.26.2, 0.26.1, 0.26.0, 0.25.0, 0.24.4, 0.24.3, 0.24.2, 0.24.1, 0.24.0, 0.23.1, 0.22.0, 0.21.2, 0.21.1, 0.21.0, 0.20.0, 0.19.0, 0.18.0, 0.17.0, 0.16.0, 0.15.0, 0.14.0, 0.13.0, 0.12.0, 0.11.0, 0.10.0, 0.9.2, 0.9.1, 0.9.0, 0.8.2, 0.8.1, 0.8.0, 0.7.0, 0.6.2, 0.6.1, 0.6.0"
+  },
+  "pip_index_ms2deepscore": {
+    "command": "/usr/bin/python3 -m pip index versions ms2deepscore",
+    "returncode": 0,
+    "stderr": "WARNING: pip index is currently an experimental command. It may be removed/changed in a future release without prior warning.",
+    "stdout": "ms2deepscore (2.7.2)\nAvailable versions: 2.7.2, 2.7.1, 2.7.0, 2.6.0, 2.5.5, 2.5.4, 2.5.3, 2.5.2, 2.5.1, 2.5.0, 2.4.0, 2.3.0, 2.2.0, 2.1.0, 2.0.0, 1.0.0, 0.5.0, 0.4.0, 0.3.1, 0.3.0.1, 0.3.0, 0.2.3, 0.2.2, 0.2.1, 0.2.0, 0.1.3, 0.1.2, 0.1.1, 0.1.0"
+  },
+  "stage": "native_ms2deepscore_casmi_audit_v1",
+  "status": "blocked_no_candidate_spectrum_library"
+}

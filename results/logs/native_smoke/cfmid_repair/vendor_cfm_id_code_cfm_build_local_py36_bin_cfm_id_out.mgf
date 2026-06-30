@@ -1,0 +1,76 @@
+BEGIN IONS
+PEPMASS=719.2515461
+CHARGE=1+
+TITLE=0;Energy0;[M+H]+In-silico MS/MS by CFM-ID 4.5.0;c1ccc(-c2ccc(N(c3ccc(-c4ccc5c6ccccc6n(-c6ccccc6)c5c4)cc3)c3cccc4ccccc34)c3c2sc2ccccc23)cc1;
+669.23590 0.10
+719.25155 100.00
+END IONS
+BEGIN IONS
+PEPMASS=719.2515460880
+CHARGE=1+
+TITLE=0;Energy1;[M+H]+In-silico MS/MS by CFM-ID 4.5.0;c1ccc(-c2ccc(N(c3ccc(-c4ccc5c6ccccc6n(-c6ccccc6)c5c4)cc3)c3cccc4ccccc34)c3c2sc2ccccc23)cc1;
+693.23590 1.06
+719.25155 100.00
+END IONS
+BEGIN IONS
+PEPMASS=719.2515460880
+CHARGE=1+
+TITLE=0;Energy2;[M+H]+In-silico MS/MS by CFM-ID 4.5.0;c1ccc(-c2ccc(N(c3ccc(-c4ccc5c6ccccc6n(-c6ccccc6)c5c4)cc3)c3cccc4ccccc34)c3c2sc2ccccc23)cc1;
+79.05423 21.17
+115.05423 37.51
+641.20460 36.23
+655.22025 36.22
+669.23590 23.16
+691.22025 45.01
+693.23590 66.19
+719.25155 100.00
+END IONS
+BEGIN IONS
+PEPMASS=719.2553855800
+CHARGE=1+
+TITLE=1;Energy0;[M+H]+In-silico MS/MS by CFM-ID 4.5.0;c1ccc(-c2nc(-c3ccccc3)nc(-n3c4ccccc4oc4cc5c(ccc6c5n(-c5ccccc5)c5cccc7c8ccccc8n6c75)cc43)n2)cc1;
+719.25539 100.00
+END IONS
+BEGIN IONS
+PEPMASS=719.2553855800
+CHARGE=1+
+TITLE=1;Energy1;[M+H]+In-silico MS/MS by CFM-ID 4.5.0;c1ccc(-c2nc(-c3ccccc3)nc(-n3c4ccccc4oc4cc5c(ccc6c5n(-c5ccccc5)c5cccc7c8ccccc8n6c75)cc43)n2)cc1;
+693.23974 0.11
+719.25539 100.00
+END IONS
+BEGIN IONS
+PEPMASS=719.2553855800
+CHARGE=1+
+TITLE=1;Energy2;[M+H]+In-silico MS/MS by CFM-ID 4.5.0;c1ccc(-c2nc(-c3ccccc3)nc(-n3c4ccccc4oc4cc5c(ccc6c5n(-c5ccccc5)c5cccc7c8ccccc8n6c75)cc43)n2)cc1;
+667.22409 77.07
+669.23974 77.95
+693.23974 62.72
+719.25539 100.00
+END IONS
+BEGIN IONS
+PEPMASS=719.2580709480
+CHARGE=1+
+TITLE=2;Energy0;[M+H]+In-silico MS/MS by CFM-ID 4.5.0;CC1(C)c2ccccc2-c2ccc(-c3c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c3O)cc21;
+691.26316 1.63
+719.25807 100.00
+END IONS
+BEGIN IONS
+PEPMASS=719.2580709480
+CHARGE=1+
+TITLE=2;Energy1;[M+H]+In-silico MS/MS by CFM-ID 4.5.0;CC1(C)c2ccccc2-c2ccc(-c3c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c3O)cc21;
+679.22677 8.37
+719.25807 100.00
+END IONS
+BEGIN IONS
+PEPMASS=719.2580709480
+CHARGE=1+
+TITLE=2;Energy2;[M+H]+In-silico MS/MS by CFM-ID 4.5.0;CC1(C)c2ccccc2-c2ccc(-c3c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c(O)c(-c4ccc5ccc6cccc7ccc4c5c67)c3O)cc21;
+91.05423 15.17
+101.03858 15.51
+117.06988 18.97
+449.18999 14.92
+641.21112 100.00
+691.26316 14.21
+703.22677 34.33
+719.25807 18.23
+END IONS

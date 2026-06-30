@@ -66,6 +66,11 @@ PFAS_DECOY = TP_REPO / "outputs" / "pfas_decoy_threshold_calibration_v1"
 PFAS_EXTERNAL_GAP = TP_REPO / "outputs" / "pfas_external_validation_data_gap_and_acquisition_v1"
 NATIVE_SIRIUS_CASMI_CANDIDATES = ROOT / "results" / "native_sirius_casmi" / "casmi2022_sirius_formula_candidates.csv"
 NATIVE_SIRIUS_CASMI_AUDIT = ROOT / "results" / "native_sirius_casmi" / "casmi2022_sirius_formula_audit.json"
+NATIVE_CFMID_CASMI_AUDIT = ROOT / "results" / "native_cfmid_casmi" / "native_cfmid_runtime_audit.json"
+TRAINED_NEURAL_CASMI_DIR = ROOT / "results" / "casmi2022_fragannotor_trained_neural_v1"
+TRAINED_NEURAL_CASMI_SUMMARY = TRAINED_NEURAL_CASMI_DIR / "casmi2022_fragannotor_trained_neural_summary.csv"
+TRAINED_NEURAL_CASMI_QUERY = TRAINED_NEURAL_CASMI_DIR / "casmi2022_fragannotor_trained_neural_query_results.csv"
+TRAINED_NEURAL_CASMI_AUDIT = TRAINED_NEURAL_CASMI_DIR / "trained_neural_claim_audit.json"
 FIORA_VENDOR_CANDIDATES = [
     ROOT.parent / "external_ms_models" / "vendor" / "fiora",
     ROOT.parent.parent / "external_ms_models" / "vendor" / "fiora",
@@ -865,10 +870,25 @@ def load_pfas_records(feature_matrix_path: Path, score_matrix_path: Path | None)
 
 
 def environment_audit() -> dict[str, Any]:
+    cfmid_candidates = [
+        shutil.which("cfmid"),
+        shutil.which("cfm-id"),
+        "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id",
+        "/home/zhome/ec_structure/external_ms_models/envs/cfm_build_py36/bin/cfm-id",
+        "/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id",
+    ]
+    cfm_predict_candidates = [
+        shutil.which("cfm-predict"),
+        "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-predict",
+        "/home/zhome/ec_structure/external_ms_models/envs/cfm_build_py36/bin/cfm-predict",
+        "/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-predict",
+    ]
+    cfmid_path = next((str(Path(p)) for p in cfmid_candidates if p and Path(p).exists()), None)
+    cfm_predict_path = next((str(Path(p)) for p in cfm_predict_candidates if p and Path(p).exists()), None)
     executables = {
-        "cfmid": shutil.which("cfmid") or ("/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id" if Path("/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id").exists() else None),
-        "cfm_predict": shutil.which("cfm-predict") or ("/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-predict" if Path("/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-predict").exists() else None),
-        "cfm_id": shutil.which("cfm-id") or ("/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id" if Path("/data/zhome/ec_structure_external_ms_models/envs/cfm_py36/bin/cfm-id").exists() else None),
+        "cfmid": cfmid_path,
+        "cfm_predict": cfm_predict_path,
+        "cfm_id": cfmid_path,
         "sirius": shutil.which("sirius") or ("/home/zhome/opt/sirius-4.9.15-headless/bin/sirius" if Path("/home/zhome/opt/sirius-4.9.15-headless/bin/sirius").exists() else None),
         "java": shutil.which("java"),
         "git": shutil.which("git"),
@@ -931,27 +951,37 @@ def native_baseline_audit(env: dict[str, Any]) -> list[dict[str, Any]]:
     executables = env["executables"]
     packages = env["packages"]
     cfmid_executable = executables.get("cfmid") or executables.get("cfm_predict") or executables.get("cfm_id") or ""
+    cfmid_version = "unavailable"
+    cfmid_blocker = "CFM-ID executable not found in PATH; no native CASMI CFM-ID inference was run."
+    if cfmid_executable:
+        cfmid_version = "native_binary_smoke_passed_runtime_blocked" if NATIVE_CFMID_CASMI_AUDIT.exists() else "executable_present"
+        cfmid_blocker = (
+            "CFM-ID 4.x-compatible native binary was found and smoke-tested, but CASMI full candidate ranking remains runtime-blocked: "
+            "a 100-candidate timing run did not finish within 15 minutes, so no full native CASMI CFM-ID score table is reported."
+            if NATIVE_CFMID_CASMI_AUDIT.exists()
+            else "CFM-ID executable exists, but full native CASMI score generation has not completed; no valid native CASMI CFM-ID benchmark scores are reported."
+        )
     rows = [
         {
             "model": "CFM-ID",
             "native_available": False,
             "executable_or_package": cfmid_executable,
-            "version": "executable_present_but_smoke_failed" if cfmid_executable else "unavailable",
-            "blocker": "CFM-ID executable exists, but smoke tests against available pretrained model/configs abort with Invalid Feature Configuration; no valid native CASMI CFM-ID benchmark scores are reported." if cfmid_executable else "CFM-ID executable not found in PATH; no native CASMI CFM-ID inference was run.",
+            "version": cfmid_version,
+            "blocker": cfmid_blocker,
         },
         {
             "model": "SIRIUS",
-            "native_available": bool(executables.get("sirius")),
+            "native_available": bool(executables.get("sirius") or NATIVE_SIRIUS_CASMI_CANDIDATES.exists()),
             "executable_or_package": executables.get("sirius") or "",
-            "version": compact_probe_version(env["versions"].get("sirius"), "SIRIUS version unavailable"),
-            "blocker": "" if (executables.get("sirius") and NATIVE_SIRIUS_CASMI_CANDIDATES.exists()) else ("SIRIUS executable found; CASMI formula scores not generated yet." if executables.get("sirius") else "SIRIUS executable not found in PATH; no native CASMI SIRIUS inference was run."),
+            "version": compact_probe_version(env["versions"].get("sirius"), "SIRIUS 4.9.15 native formula result file") if NATIVE_SIRIUS_CASMI_CANDIDATES.exists() else compact_probe_version(env["versions"].get("sirius"), "SIRIUS version unavailable"),
+            "blocker": "" if NATIVE_SIRIUS_CASMI_CANDIDATES.exists() else ("SIRIUS executable found; CASMI formula scores not generated yet." if executables.get("sirius") else "SIRIUS executable not found in PATH; no native CASMI SIRIUS inference was run."),
         },
         {
             "model": "MS2DeepScore",
             "native_available": bool(packages.get("ms2deepscore", {}).get("available")),
             "executable_or_package": "ms2deepscore" if packages.get("ms2deepscore", {}).get("available") else "",
             "version": packages.get("ms2deepscore", {}).get("version") or "unavailable",
-            "blocker": "" if packages.get("ms2deepscore", {}).get("available") else "ms2deepscore Python package/model not available; no native MS2DeepScore inference was run.",
+            "blocker": "MS2DeepScore is a spectrum-to-spectrum similarity model; this CASMI candidate-ranking benchmark has candidate structures but no complete per-candidate reference/predicted spectrum library or configured pretrained MS2DeepScore model. No native MS2DeepScore candidate-ranking scores are reported.",
         },
     ]
     return rows
@@ -1018,13 +1048,13 @@ def model_availability(dataset: str, model: str, native_baselines: bool, allow_f
                 return True, "formal_fixed_component_score_mode", "CASMI FragAnnotor formal fixed component-score mode using experimental peaks, candidate formulas, precursor mass consistency, common fragment/neutral-loss formula plausibility, and native SIRIUS formula scores; no CASMI training or weight search."
             return False, "native_unavailable", "CASMI FragAnnotor adapter requires native SIRIUS formula scores; run scripts/run_native_sirius_casmi.py first."
         if model == "CFM-ID":
-            return False, "native_unavailable", "CFM-ID native CASMI execution/export parser is unavailable in this repository run; fallback disabled."
+            return False, "native_runtime_blocked", "CFM-ID native CASMI execution is runtime-blocked in this repository run: a compatible CFM-ID 4.x binary was found and smoke-tested, but 100 candidates did not finish within 15 minutes and no complete CASMI CFM-ID score table is available."
         if model == "SIRIUS":
             if NATIVE_SIRIUS_CASMI_CANDIDATES.exists():
                 return True, "native_sirius", "SIRIUS 4.9.15 native formula scores from results/native_sirius_casmi."
             return False, "native_unavailable", "SIRIUS native CASMI formula score file missing; run scripts/run_native_sirius_casmi.py first."
         if model == "MS2DeepScore":
-            return False, "native_unavailable", "MS2DeepScore native CASMI model/embedding workflow is unavailable in this repository run; fallback disabled."
+            return False, "native_unavailable", "MS2DeepScore native CASMI candidate-ranking workflow is unavailable: the package/model may be installable, but this structure-candidate benchmark lacks a complete candidate spectrum library or configured pretrained MS2DeepScore embedding workflow."
         return False, "native_unavailable", "Model is unavailable for CASMI with fallback disabled."
     return False, "dataset_unavailable", "Dataset unavailable."
 
@@ -1106,7 +1136,9 @@ def tool_version_for_model(model: str, env: dict[str, Any], dataset: str) -> str
         return version or "unavailable"
     if model == "CFM-ID":
         executable = safe_str(env["executables"].get("cfmid") or env["executables"].get("cfm_predict") or env["executables"].get("cfm_id"))
-        return "executable_present_but_smoke_failed" if executable else "unavailable"
+        if executable and NATIVE_CFMID_CASMI_AUDIT.exists():
+            return "CFM-ID 4.x native binary smoke passed; CASMI runtime blocked"
+        return "executable_present_full_scores_missing" if executable else "unavailable"
     if model == "SIRIUS" and dataset == "CASMI2022" and NATIVE_SIRIUS_CASMI_AUDIT.exists():
         return "SIRIUS 4.9.15 native formula"
     if model == "SIRIUS":
@@ -1247,7 +1279,7 @@ def write_summary_files(summary: pd.DataFrame, query_df: pd.DataFrame, predictio
             "interpretation": {
                 "native_claim_guardrail": "Rows with native_or_fallback=native_unavailable are not native benchmark results.",
                 "pfas_score_note": "PFAS CFM-ID and SIRIUS columns are real precomputed external expert scores from the companion PFAS workflow.",
-                "casmi_note": "CASMI native SIRIUS formula-only baseline scores and FragAnnotor formal fixed component scores were generated; native CFM-ID and MS2DeepScore structure-ranking outputs remain unavailable with fallback disabled.",
+                "casmi_note": "CASMI native SIRIUS formula-only baseline scores, FragAnnotor formal fixed component scores, and a frozen trained-neural checkpoint report were generated. Native CFM-ID full ranking is runtime-blocked and MS2DeepScore lacks a complete candidate spectrum library with fallback disabled.",
             },
         },
     )
@@ -1918,7 +1950,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
     lines.extend(["", "## Main Results", "", markdown_table(summary), ""])
     lines.extend(["## Native CASMI2022 Results", "", markdown_table(summary[summary["dataset"].eq("CASMI2022")]), ""])
     lines.extend([
-        "CASMI2022 includes one completed native baseline in this run: SIRIUS 4.9.15 formula-only ranking. FragAnnotor is reported separately as a formal fixed formula/fragment component-score CASMI mode using real experimental peaks, candidate formulas, precursor/adduct mass consistency, common fragment/neutral-loss plausibility, and native SIRIUS formula scores. It is not labeled as a trained native CASMI model. CFM-ID and MS2DeepScore remain unavailable under `--allow-fallback false`.",
+        "CASMI2022 includes one completed native baseline in this run: SIRIUS 4.9.15 formula-only ranking. FragAnnotor is reported separately as a formal fixed formula/fragment component-score CASMI mode using real experimental peaks, candidate formulas, precursor/adduct mass consistency, common fragment/neutral-loss plausibility, and native SIRIUS formula scores. A separate trained neural checkpoint report is included when available. CFM-ID and MS2DeepScore remain unavailable as completed full native CASMI candidate-ranking baselines under `--allow-fallback false`.",
         "",
         "## Preliminary Fallback CASMI Results",
         "",
@@ -1960,6 +1992,57 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             ])
         except Exception:
             pass
+    neural_summary_path = TRAINED_NEURAL_CASMI_SUMMARY
+    neural_audit_path = TRAINED_NEURAL_CASMI_AUDIT
+    if neural_summary_path.exists():
+        try:
+            neural = pd.read_csv(neural_summary_path)
+            row = neural.iloc[0].to_dict()
+            overlap = "unknown"
+            if neural_audit_path.exists():
+                audit = json.loads(neural_audit_path.read_text(encoding="utf-8"))
+                overlap = audit.get("training_overlap_audit", {}).get("has_casmi_structure_overlap", "unknown")
+            lines.extend(
+                [
+                    "## CASMI Trained Neural FragAnnotor Checkpoint",
+                    "",
+                    f"Frozen trained neural CASMI inference is available at `results/casmi2022_fragannotor_trained_neural_v1/` with Top-1 `{row.get('top1_accuracy')}`, Top-5 `{row.get('top5_accuracy')}`, Top-10 `{row.get('top10_accuracy')}`, and MRR `{row.get('mean_reciprocal_rank')}`.",
+                    f"Training-pair canonical SMILES overlap with CASMI test structures: `{overlap}`.",
+                    "This is report-only inference from a frozen checkpoint, not CASMI training, weight search, or checkpoint selection.",
+                    "",
+                ]
+            )
+        except Exception:
+            pass
+    if NATIVE_CFMID_CASMI_AUDIT.exists():
+        try:
+            cfmid_audit = json.loads(NATIVE_CFMID_CASMI_AUDIT.read_text(encoding="utf-8"))
+            lines.extend(
+                [
+                    "## Native CFM-ID CASMI Runtime Audit",
+                    "",
+                    f"CFM-ID native binary status: `{cfmid_audit.get('native_binary_smoke_status')}`; full CASMI status: `{cfmid_audit.get('status')}`.",
+                    cfmid_audit.get("benchmark_decision", ""),
+                    "",
+                ]
+            )
+        except Exception:
+            pass
+    ms2_audit_path = results_dir / "native_ms2deepscore_casmi" / "native_ms2deepscore_audit.json"
+    if ms2_audit_path.exists():
+        try:
+            ms2_audit = json.loads(ms2_audit_path.read_text(encoding="utf-8"))
+            lines.extend(
+                [
+                    "## Native MS2DeepScore CASMI Audit",
+                    "",
+                    f"MS2DeepScore CASMI status: `{ms2_audit.get('status')}`.",
+                    ms2_audit.get("benchmark_decision", ""),
+                    "",
+                ]
+            )
+        except Exception:
+            pass
     external_path = results_dir / "external_public_benchmarks" / "iceberg_casmi22_retrieval" / "external_benchmark_audit.json"
     if external_path.exists():
         try:
@@ -1994,9 +2077,11 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "## Interpretation",
             "",
             "- PFAS locked-test ranking supports the selected primary FragAnnotor policy within the frozen PFAS benchmark.",
-            "- CASMI2022 native SIRIUS formula-only ranking completed; CASMI FragAnnotor is available as an audited fixed formula/fragment component-score mode, while CFM-ID and MS2DeepScore native structure-ranking outputs remain blocked and are not replaced with fallback scores.",
+            "- CASMI2022 native SIRIUS formula-only ranking completed; CASMI FragAnnotor is available as an audited fixed formula/fragment component-score mode and as a separate frozen trained-neural checkpoint report.",
+            "- The trained neural checkpoint CASMI result is substantially weaker than the fixed component-score mode, so it should be reported as a checkpoint audit result rather than the primary CASMI ranking policy.",
+            "- CFM-ID native binary compatibility was repaired, but full CASMI candidate ranking remains runtime-blocked and is not replaced with fallback scores.",
             "- No result with `native_or_fallback=native_unavailable` should be described as a completed native baseline.",
-            "- MS2DeepScore native comparison is blocked until the package and an appropriate pretrained model/embedding workflow are available.",
+            "- MS2DeepScore native comparison is blocked until an appropriate pretrained model and a complete per-candidate spectrum library are available.",
             "- SIRIUS is used here as molecular formula plausibility evidence, not as a synthetic spectrum generator or CSI:FingerID structure predictor.",
             "",
             "## Manuscript Readiness",
@@ -2008,9 +2093,9 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "",
             "## Remaining Blockers",
             "",
-            "- Native CFM-ID CASMI scoring is blocked by `Invalid Feature Configuration` in available pretrained model/config smoke tests.",
-            "- Native MS2DeepScore is blocked because the package and a compatible pretrained model/embedding workflow are unavailable.",
-            "- CASMI FragAnnotor is currently a formal fixed component-score mode, not a trained native CASMI neural model.",
+            "- Native CFM-ID full CASMI scoring is runtime-blocked even after finding a cfmid4-compatible binary; timing probes did not finish within 15 minutes.",
+            "- Native MS2DeepScore is blocked because the benchmark lacks a complete candidate spectrum library and configured pretrained embedding workflow.",
+            "- The CASMI trained neural checkpoint result is complete, but it underperforms the fixed component-score mode and should not be used to claim neural superiority.",
             "- PFAS results remain an internal frozen locked-test benchmark and are not independent external validation.",
             "",
             "## Exact Reproduction Command",
@@ -2021,7 +2106,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "",
             "## Known Limitations",
             "",
-            "- CASMI native benchmark execution is incomplete: SIRIUS formula-only scores and FragAnnotor fixed component scores are available, but CFM-ID smoke tests fail with model/config incompatibility and MS2DeepScore has no configured package/model.",
+            "- CASMI native benchmark execution is incomplete: SIRIUS formula-only scores, FragAnnotor fixed component scores, and a frozen trained neural checkpoint report are available, but CFM-ID full candidate ranking is runtime-blocked and MS2DeepScore has no complete candidate spectrum library.",
             "- PFAS results depend on the frozen candidate matrix generated in the transformation-product workflow.",
             "- The benchmark does not establish deployment-ready thresholds or universal LC-MS/MS prediction performance.",
         ]
@@ -2046,6 +2131,9 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
         "- `casmi_fragannotor_adapter/`: legacy CASMI adapter components and guardrail audit.",
         "- `external_public_model_audit/`: optional public-model readiness probes such as FIORA smoke execution.",
         "- `casmi2022_fragannotor_formal_components/`: audited fixed component-score CASMI2022 FragAnnotor package.",
+        "- `casmi2022_fragannotor_trained_neural_v1/`: frozen trained neural FragAnnotor checkpoint CASMI2022 inference report.",
+        "- `native_cfmid_casmi/`: native CFM-ID binary repair and runtime-blocker audit.",
+        "- `native_ms2deepscore_casmi/`: MS2DeepScore candidate-spectrum-library blocker audit.",
         "- `external_public_benchmarks/iceberg_casmi22_retrieval/`: imported public ICEBERG CASMI22 retrieval benchmark context with provenance.",
         "- `stratified/`: PFAS subclass and difficulty-stratified summaries.",
         "- `figures/`: matplotlib-only publication-draft plots.",
