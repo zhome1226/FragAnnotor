@@ -1,4 +1,5 @@
 {
+  "cfmid_complete_query_expansion_partial_available": true,
   "cfmid_full_manifest_available": true,
   "cfmid_precomputed_candidate_spectrum_completion_fraction": 1.06782504327361e-05,
   "cfmid_precomputed_manifest_available": true,

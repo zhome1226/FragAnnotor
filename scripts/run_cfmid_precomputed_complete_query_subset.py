@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import shutil
 import subprocess
 import time
 from pathlib import Path
@@ -64,14 +65,15 @@ def build_supported_query_table(casmi_dir: Path, model_root: Path) -> pd.DataFra
     spec = pd.read_pickle(casmi_dir / "spec_df.pkl")
     cand = pd.read_pickle(casmi_dir / "cand_df.pkl")
     model_adducts = {p.name for p in model_root.iterdir() if p.is_dir()}
-    supported = spec[spec["prec_type"].astype(str).isin(model_adducts)].reset_index(drop=True).copy()
+    supported = spec[spec["prec_type"].astype(str).isin(model_adducts)].copy()
     counts = cand.groupby("query_mol_id")["candidate_mol_id"].size()
     rows = []
-    for supported_index, row in supported.iterrows():
+    for supported_order, (spec_row_index, row) in enumerate(supported.iterrows()):
         query_mol_id = int(row["mol_id"])
         rows.append(
             {
-                "supported_index": int(supported_index),
+                "supported_index": int(supported_order),
+                "spec_row_index": int(spec_row_index),
                 "spec_id": str(row["spec_id"]),
                 "query_mol_id": query_mol_id,
                 "adduct": str(row["prec_type"]),
@@ -80,6 +82,29 @@ def build_supported_query_table(casmi_dir: Path, model_root: Path) -> pd.DataFra
             }
         )
     return pd.DataFrame(rows).sort_values(["candidate_count", "supported_index"]).reset_index(drop=True)
+
+
+def write_candidate_smiles(path: Path, candidate_ids: list[int], id_to_smiles: dict[int, str]) -> list[int]:
+    missing_smiles = []
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        for candidate_id in candidate_ids:
+            smiles = id_to_smiles.get(int(candidate_id))
+            if smiles:
+                handle.write(f"{int(candidate_id)} {smiles}\n")
+            else:
+                missing_smiles.append(int(candidate_id))
+    return missing_smiles
+
+
+def append_msp(target: Path, source: Path) -> None:
+    if not source.exists() or source.stat().st_size == 0:
+        return
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open("ab") as out, source.open("rb") as inp:
+        if target.stat().st_size > 0:
+            out.write(b"\n")
+        shutil.copyfileobj(inp, out)
 
 
 def main() -> None:
@@ -136,19 +161,18 @@ def main() -> None:
         work_dir.mkdir(parents=True, exist_ok=True)
 
         candidate_smiles = work_dir / "candidate_smiles.txt"
-        missing_smiles = []
-        with candidate_smiles.open("w", encoding="utf-8") as handle:
-            for candidate_id in candidate_ids:
-                smiles = id_to_smiles.get(int(candidate_id))
-                if smiles:
-                    handle.write(f"{int(candidate_id)} {smiles}\n")
-                else:
-                    missing_smiles.append(int(candidate_id))
+        missing_smiles = write_candidate_smiles(candidate_smiles, candidate_ids, id_to_smiles)
 
         predicted_msp = work_dir / "candidate_spectra.msp"
         model_dir = args.model_root / adduct
         predict_run: dict[str, Any]
-        if args.resume and predicted_msp.exists() and predicted_msp.stat().st_size > 0:
+        existing_spectra = parse_msp(predicted_msp) if predicted_msp.exists() and predicted_msp.stat().st_size > 0 else {}
+        missing_for_prediction = [
+            int(candidate_id)
+            for candidate_id in candidate_ids
+            if str(int(candidate_id)) not in existing_spectra and id_to_smiles.get(int(candidate_id))
+        ]
+        if args.resume and predicted_msp.exists() and predicted_msp.stat().st_size > 0 and not missing_for_prediction:
             prev_elapsed = float(previous_by_query.get(spec_id, {}).get("cfm_predict_seconds", 0.0) or 0.0)
             predict_run = {
                 "command": "",
@@ -159,14 +183,21 @@ def main() -> None:
                 "stderr": "",
             }
         else:
+            predict_input = candidate_smiles
+            predict_output = predicted_msp
+            if args.resume and existing_spectra and missing_for_prediction:
+                predict_input = work_dir / "candidate_smiles_missing.txt"
+                missing_input_smiles = write_candidate_smiles(predict_input, missing_for_prediction, id_to_smiles)
+                missing_smiles.extend(missing_input_smiles)
+                predict_output = work_dir / "candidate_spectra_missing.msp"
             predict_cmd = [
                 str(args.cfm_bin_dir / "cfm-predict"),
-                str(candidate_smiles),
+                str(predict_input),
                 "0.001",
                 str(model_dir / "param_output.log"),
                 str(model_dir / "param_config.txt"),
                 "0",
-                str(predicted_msp),
+                str(predict_output),
                 "1",
                 "1",
             ]
@@ -176,6 +207,8 @@ def main() -> None:
                 work_dir / "logs" / "cfm_predict.stderr.log",
                 args.timeout_seconds,
             )
+            if predict_output != predicted_msp and predict_output.exists() and predict_output.stat().st_size > 0:
+                append_msp(predicted_msp, predict_output)
         command_rows.append({"query_id": spec_id, "phase": "cfm_predict", **predict_run})
 
         spectra = parse_msp(predicted_msp) if predicted_msp.exists() else {}

@@ -1,4 +1,5 @@
 {
+  "cfmid_complete_query_expansion_partial_available": true,
   "cfmid_complete_query_subset_available": true,
   "cfmid_full_manifest_available": true,
   "cfmid_full_supported_completion_fraction": 0.0,

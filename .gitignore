@@ -21,3 +21,4 @@ results/logs/native_smoke/sirius4_project_formula/
 results/casmi2022_cfmid_native_precomputed_full_v1/candidate_spectra_cache/
 results/casmi2022_cfmid_native_precomputed_full_v1/candidate_spectrum_shards/
 results/casmi2022_cfmid_native_precomputed_full_v1/work/
+results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_*/

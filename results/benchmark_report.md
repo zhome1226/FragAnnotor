@@ -102,6 +102,8 @@ A faster native route using precomputed candidate spectra is now validated at `r
 
 A complete-query native CFM-ID precomputed subset is available at `results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/`. It selected the smallest supported CASMI query (`spec_id=16`) and used the full candidate set for that query (`103/103` candidates predicted and ranked). The true structure ranked 5th, giving subset Top-1 `0.0`, Top-5 `1.0`, Top-10 `1.0`, and MRR `0.2`. This is stronger than the earlier candidate-limited smoke because no candidate limit was applied for the selected query, but it is still a one-query subset and not a full CASMI CFM-ID baseline.
 
+A second complete-query CFM-ID expansion attempt is recorded at `results/casmi2022_cfmid_native_precomputed_complete_query_expansion_v1/`. Query `35` has 233 candidates; the attempted run generated 64/233 candidate spectra before timeout/WSL recovery and has 169 candidate spectra still missing, so it is not included in Top-k/MRR metrics. The CFM-ID complete-query script now detects partial MSP caches and writes a resume input for only missing candidates instead of treating a partial MSP as complete.
+
 ## Native MS2DeepScore CASMI Audit
 
 MS2DeepScore CASMI status: `blocked_full_casmi_no_candidate_spectrum_library`.
@@ -146,7 +148,7 @@ These public CASMI22 retrieval results are external context. They should not be 
 
 ## Remaining Blockers
 
-- Native CFM-ID full CASMI scoring is prepared both as a direct 34-shard query manifest and as a faster precomputed-spectrum pipeline. The precomputed path is validated but still requires 936,483 unique candidate spectra before full supported-query metrics can be reported; `[M+Na]+` CASMI queries remain unsupported by the local cfmid4 model directory.
+- Native CFM-ID full CASMI scoring is prepared both as a direct 34-shard query manifest and as a faster precomputed-spectrum pipeline. The precomputed path is validated but still requires 936,483 unique candidate spectra before full supported-query metrics can be reported; `[M+Na]+` CASMI queries remain unsupported by the local cfmid4 model directory. A second complete-query expansion is partial only (`64/233` spectra for query `35`) and is excluded from benchmark metrics until all candidates are ranked.
 - Native MS2DeepScore is blocked because the benchmark lacks a complete full-CASMI candidate spectrum library, despite the pretrained model cache and CPU environment being verified; a selected CFM-ID-generated complete-query hybrid subset is available.
 - The CASMI trained neural checkpoint result is complete, but it underperforms the fixed component-score mode and should not be used to claim neural superiority.
 - A strong SOTA claim is blocked until FragAnnotor, CFM-ID, SIRIUS/CSI, ICEBERG, MassFormer, NEIMS, and MS2DeepScore are compared on a harmonized CASMI candidate set with the same preprocessing and metrics.

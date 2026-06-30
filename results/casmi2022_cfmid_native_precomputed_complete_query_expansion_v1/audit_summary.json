@@ -1,0 +1,16 @@
+{
+  "candidate_count": 233,
+  "candidate_pool_policy": "full_candidate_set_for_selected_query",
+  "claim_guardrail": "Do not report query 35 as completed CFM-ID ranking until all 233 candidate spectra are predicted and cfm-id-precomputed ranks the full candidate set.",
+  "missing_candidate_spectra": 169,
+  "not_included_in_completed_subset_metrics": true,
+  "observed_runtime": "The first 30-minute run reached 64/233 CFM-ID predicted candidate spectra before the local command timeout/WSL recovery. A follow-up 5-second resume smoke confirmed 169 missing candidates are detected rather than treating the partial MSP as complete.",
+  "predicted_spectrum_ids": 64,
+  "purpose": "Record attempted expansion of the complete-query native CFM-ID CASMI subset beyond the completed query 16 result.",
+  "query_id": "35",
+  "ranked_rows": 0,
+  "resume_command": "python3 scripts/run_cfmid_precomputed_complete_query_subset.py --max-queries 2 --max-candidates 250 --resume --timeout-seconds 14400",
+  "stage": "casmi2022_cfmid_native_precomputed_complete_query_expansion_v1",
+  "status": "partial_timeout_not_metric_benchmark",
+  "true_rank_available": false
+}
