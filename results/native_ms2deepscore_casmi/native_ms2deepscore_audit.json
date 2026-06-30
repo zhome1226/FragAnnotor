@@ -1,9 +1,11 @@
 {
-  "benchmark_decision": "Do not report MS2DeepScore CASMI Top-k metrics. MS2DeepScore scores spectrum pairs; the CASMI structure-candidate benchmark lacks a complete per-candidate measured or predicted spectrum library and no configured pretrained MS2DeepScore model file is present. CFM-ID predicted spectra were not substituted, because that would be a hybrid CFM-ID plus MS2DeepScore baseline rather than native MS2DeepScore.",
-  "candidate_spectrum_library_artifact_count": 12,
+  "benchmark_decision": "Do not report MS2DeepScore CASMI Top-k metrics yet. MS2DeepScore scores spectrum pairs; the pretrained model and CPU environment are now externally available/verified, but the CASMI structure-candidate benchmark still lacks a complete per-candidate measured or predicted spectrum library and a query-candidate scoring wrapper. CFM-ID predicted spectra must be labeled as a CFM-ID plus MS2DeepScore hybrid baseline rather than native MS2DeepScore.",
+  "candidate_spectrum_library_artifact_count": 16,
   "candidate_spectrum_library_artifacts_found_in_repo": [
     "baselines/__pycache__/ms2deepscore.cpython-310.pyc",
     "baselines/ms2deepscore.py",
+    "results/ms2deepscore_environment_verification_v1/ms2deepscore_environment_verification.csv",
+    "results/ms2deepscore_environment_verification_v1/ms2deepscore_environment_verification_report.md",
     "results/ms2deepscore_resource_manifest_v1/ms2deepscore_resource_manifest.csv",
     "results/ms2deepscore_resource_manifest_v1/ms2deepscore_resource_manifest_report.md",
     "results/native_ms2deepscore_casmi/native_ms2deepscore_audit.csv",
@@ -11,13 +13,27 @@
     "results/native_ms2deepscore_casmi/native_ms2deepscore_audit.md",
     "results/predictions/casmi2022_ms2deepscore_native_predictions.csv",
     "results/predictions/pfas_ms2deepscore_native_predictions.csv",
+    "scripts/__pycache__/prepare_ms2deepscore_resources.cpython-310.pyc",
     "scripts/__pycache__/run_native_ms2deepscore_casmi_audit.cpython-310.pyc",
     "scripts/prepare_ms2deepscore_resources.py",
-    "scripts/run_native_ms2deepscore_casmi_audit.py"
+    "scripts/run_native_ms2deepscore_casmi_audit.py",
+    "scripts/verify_ms2deepscore_environment.py"
   ],
   "environment": {
     "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
     "python": "3.10.12 (main, Mar  3 2026, 11:56:32) [GCC 11.4.0]"
+  },
+  "external_ms2deepscore_environment": {
+    "command": "/home/zhome/ec_structure/external_ms_models/envs/ms2deepscore_casmi/bin/python -c import importlib.metadata as md, json, torch; print(json.dumps({'ms2deepscore_version': md.version('ms2deepscore'), 'matchms_version': md.version('matchms'), 'torch_version': torch.__version__, 'torch_cuda_available': torch.cuda.is_available()}))",
+    "env_python": "/home/zhome/ec_structure/external_ms_models/envs/ms2deepscore_casmi/bin/python",
+    "matchms_version": "0.33.1",
+    "ms2deepscore_version": "2.7.2",
+    "returncode": 0,
+    "status": "verified",
+    "stderr": "",
+    "stdout": "{\"ms2deepscore_version\": \"2.7.2\", \"matchms_version\": \"0.33.1\", \"torch_version\": \"2.4.1+cpu\", \"torch_cuda_available\": false}",
+    "torch_cuda_available": false,
+    "torch_version": "2.4.1+cpu"
   },
   "external_pretrained_model_cache": {
     "all_required_files_present": true,

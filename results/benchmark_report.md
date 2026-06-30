@@ -100,10 +100,11 @@ Runtime extrapolation is recorded in `results/cfmid_full_runtime_extrapolation_v
 ## Native MS2DeepScore CASMI Audit
 
 MS2DeepScore CASMI status: `blocked_no_candidate_spectrum_library`.
-Do not report MS2DeepScore CASMI Top-k metrics. MS2DeepScore scores spectrum pairs; the CASMI structure-candidate benchmark lacks a complete per-candidate measured or predicted spectrum library and no configured pretrained MS2DeepScore model file is present. CFM-ID predicted spectra were not substituted, because that would be a hybrid CFM-ID plus MS2DeepScore baseline rather than native MS2DeepScore.
+Do not report MS2DeepScore CASMI Top-k metrics yet. MS2DeepScore scores spectrum pairs; the pretrained model and CPU environment are now externally available/verified, but the CASMI structure-candidate benchmark still lacks a complete per-candidate measured or predicted spectrum library and a query-candidate scoring wrapper. CFM-ID predicted spectra must be labeled as a CFM-ID plus MS2DeepScore hybrid baseline rather than native MS2DeepScore.
 
 The documented path forward is a clearly labeled generator + MS2DeepScore hybrid baseline: generate candidate spectra for every CASMI candidate, load a documented pretrained MS2DeepScore model, score query/candidate spectrum pairs, and report coverage/failures without calling it native MS2DeepScore.
-The official dual-mode pretrained MS2DeepScore model from Zenodo `10.5281/zenodo.17826815` has been downloaded to external storage and recorded in `results/ms2deepscore_resource_manifest_v1/`; it is not committed to Git. Full MS2DeepScore ranking remains blocked until a stable importable environment and complete CASMI per-candidate spectrum library are available.
+The official dual-mode pretrained MS2DeepScore model from Zenodo `10.5281/zenodo.17826815` has been downloaded to external storage and recorded in `results/ms2deepscore_resource_manifest_v1/`; it is not committed to Git. The CPU environment is verified in `results/ms2deepscore_environment_verification_v1/` with MS2DeepScore `2.7.2`, MatchMS `0.33.1`, and Torch `2.4.1+cpu`. Full MS2DeepScore ranking remains blocked until a complete CASMI per-candidate spectrum library and scoring wrapper are available.
+The reproducible setup script is `scripts/setup_ms2deepscore_cpu_env.sh`; it installs CPU-only Torch before MS2DeepScore to avoid multi-GB CUDA wheel resolution.
 
 ## External Public Benchmark Context
 

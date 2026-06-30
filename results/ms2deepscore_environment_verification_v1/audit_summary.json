@@ -1,0 +1,22 @@
+{
+  "candidate_spectrum_library_ready": false,
+  "command": "/home/zhome/ec_structure/external_ms_models/envs/ms2deepscore_casmi/bin/python -c <probe>",
+  "elapsed_seconds_total": 6.837307453155518,
+  "env_python": "/home/zhome/ec_structure/external_ms_models/envs/ms2deepscore_casmi/bin/python",
+  "full_casmi_ms2deepscore_ranking_ready": false,
+  "matchms_version": "0.33.1",
+  "model_class": "SiameseSpectralModel",
+  "model_exists": true,
+  "model_load_seconds": 0.6165404319763184,
+  "model_path": "/home/zhome/ec_structure/external_ms_models/ms2deepscore/ms2deepscore_model.pt",
+  "model_size_bytes": 416126840,
+  "ms2deepscore_version": "2.7.2",
+  "remaining_blocker": "complete CASMI per-candidate spectrum library and query-candidate scoring wrapper are still required",
+  "returncode": 0,
+  "stage": "ms2deepscore_environment_verification_v1",
+  "status": "verified",
+  "stderr": "",
+  "stdout": "{\"matchms_version\": \"0.33.1\", \"model_class\": \"SiameseSpectralModel\", \"model_load_seconds\": 0.6165404319763184, \"model_path\": \"/home/zhome/ec_structure/external_ms_models/ms2deepscore/ms2deepscore_model.pt\", \"ms2deepscore_version\": \"2.7.2\", \"torch_cuda_available\": false, \"torch_version\": \"2.4.1+cpu\"}",
+  "torch_cuda_available": false,
+  "torch_version": "2.4.1+cpu"
+}

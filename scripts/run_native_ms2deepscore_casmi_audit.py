@@ -16,6 +16,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_MS2DEEPSCORE_DIR = Path("/home/zhome/ec_structure/external_ms_models/ms2deepscore")
+MS2DEEPSCORE_ENV_PYTHON = Path("/home/zhome/ec_structure/external_ms_models/envs/ms2deepscore_casmi/bin/python")
 
 
 def package_version(package: str) -> str:
@@ -79,6 +80,28 @@ def external_model_manifest() -> dict[str, Any]:
     }
 
 
+def external_environment_probe() -> dict[str, Any]:
+    if not MS2DEEPSCORE_ENV_PYTHON.exists():
+        return {"env_python": str(MS2DEEPSCORE_ENV_PYTHON), "status": "missing"}
+    cmd = [
+        str(MS2DEEPSCORE_ENV_PYTHON),
+        "-c",
+        "import importlib.metadata as md, json, torch; "
+        "print(json.dumps({'ms2deepscore_version': md.version('ms2deepscore'), "
+        "'matchms_version': md.version('matchms'), 'torch_version': torch.__version__, "
+        "'torch_cuda_available': torch.cuda.is_available()}))",
+    ]
+    result = run(cmd, timeout=120)
+    out = {"env_python": str(MS2DEEPSCORE_ENV_PYTHON), "status": "failed", **result}
+    if result.get("returncode") == 0 and result.get("stdout"):
+        try:
+            out.update(json.loads(str(result["stdout"]).splitlines()[-1]))
+            out["status"] = "verified"
+        except Exception:
+            pass
+    return out
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Audit native MS2DeepScore CASMI feasibility.")
     parser.add_argument("--outdir", type=Path, default=ROOT / "results" / "native_ms2deepscore_casmi")
@@ -90,6 +113,7 @@ def main() -> None:
     artifacts = find_candidate_spectrum_artifacts(ROOT)
     model_files = find_model_files(ROOT)
     external_model = external_model_manifest()
+    external_env = external_environment_probe()
     audit = {
         "stage": "native_ms2deepscore_casmi_audit_v1",
         "status": "blocked_no_candidate_spectrum_library",
@@ -100,6 +124,7 @@ def main() -> None:
         "pretrained_model_files_found_in_repo": model_files,
         "pretrained_model_file_count": len(model_files),
         "external_pretrained_model_cache": external_model,
+        "external_ms2deepscore_environment": external_env,
         "official_pretrained_model_note": "MS2DeepScore documentation points to a Zenodo pretrained ms2deepscore_model.pt for MS2DeepScore >=2.6; the large model is cached outside Git when available and is recorded by results/ms2deepscore_resource_manifest_v1/.",
         "user_space_install_attempt": {
             "env_path": "/home/zhome/ec_structure/external_ms_models/envs/ms2deepscore_casmi",
@@ -117,7 +142,7 @@ def main() -> None:
             "Rank candidates by MS2DeepScore similarity and label the model as '<generator> + MS2DeepScore hybrid', not native MS2DeepScore.",
             "Report generator coverage, failed candidates, adduct/ion-mode assumptions, and candidate_limit if any.",
         ],
-        "benchmark_decision": "Do not report MS2DeepScore CASMI Top-k metrics. MS2DeepScore scores spectrum pairs; the CASMI structure-candidate benchmark lacks a complete per-candidate measured or predicted spectrum library and no configured pretrained MS2DeepScore model file is present. CFM-ID predicted spectra were not substituted, because that would be a hybrid CFM-ID plus MS2DeepScore baseline rather than native MS2DeepScore.",
+        "benchmark_decision": "Do not report MS2DeepScore CASMI Top-k metrics yet. MS2DeepScore scores spectrum pairs; the pretrained model and CPU environment are now externally available/verified, but the CASMI structure-candidate benchmark still lacks a complete per-candidate measured or predicted spectrum library and a query-candidate scoring wrapper. CFM-ID predicted spectra must be labeled as a CFM-ID plus MS2DeepScore hybrid baseline rather than native MS2DeepScore.",
         "environment": {"python": sys.version, "platform": platform.platform()},
     }
     write_json(args.outdir / "native_ms2deepscore_audit.json", audit)
@@ -130,7 +155,11 @@ def main() -> None:
                 "package_version": audit["package_version"],
                 "matchms_installed": matchms_installed,
                 "matchms_version": audit["matchms_version"],
+                "external_environment_status": external_env.get("status"),
+                "external_ms2deepscore_version": external_env.get("ms2deepscore_version", ""),
+                "external_matchms_version": external_env.get("matchms_version", ""),
                 "pretrained_model_file_count": len(model_files),
+                "external_model_cache_present": external_model.get("all_required_files_present"),
                 "candidate_spectrum_library_artifact_count": len(artifacts),
                 "benchmark_decision": audit["benchmark_decision"],
             }
