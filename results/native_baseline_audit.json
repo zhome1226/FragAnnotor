@@ -1,6 +1,6 @@
 [
   {
-    "blocker": "CFM-ID 4.x-compatible native binary was found and smoke-tested. A resumable full-run manifest is prepared for 170 supported `[M+H]+`/`[M-H]-` CASMI queries and 1062950 candidate rows. The precomputed route requires 936483 unique candidate spectra; current full-run cache progress is 1906 candidate spectra and 5 completed supported query rankings. No full native CASMI CFM-ID metrics are reported until every required shard completes; unsupported adduct counts: {'[M+Na]+': 59}.",
+    "blocker": "CFM-ID 4.x-compatible native binary was found and smoke-tested. A resumable full-run manifest is prepared for 170 supported `[M+H]+`/`[M-H]-` CASMI queries and 1062950 candidate rows. The precomputed route requires 936483 unique candidate spectra; current full-run cache progress is 3971 candidate spectra and 7 completed supported query rankings. No full native CASMI CFM-ID metrics are reported until every required shard completes; unsupported adduct counts: {'[M+Na]+': 59}.",
     "executable_or_package": "/home/zhome/ec_structure/external_ms_models/vendor/cfm-id-code/cfm/build_local_py36/bin/cfm-id",
     "model": "CFM-ID",
     "native_available": false,
@@ -14,7 +14,7 @@
     "version": "SIRIUS 4.9.15 native formula result file"
   },
   {
-    "blocker": "Do not report full-CASMI native MS2DeepScore Top-k metrics yet. MS2DeepScore scores spectrum pairs; the pretrained model and CPU environment are externally available/verified, and a CFM-ID-generated complete-query hybrid subset is available when cached candidate spectra exist. The full CASMI structure-candidate benchmark still lacks a complete per-candidate measured or predicted spectrum library. CFM-ID predicted spectra must be labeled as a CFM-ID plus MS2DeepScore hybrid baseline rather than native MS2DeepScore. Complete-query CFM-ID + MS2DeepScore hybrid subset is available for 5 selected queries with MRR=0.14472166331321262; it is not native MS2DeepScore.",
+    "blocker": "Do not report full-CASMI native MS2DeepScore Top-k metrics yet. MS2DeepScore scores spectrum pairs; the pretrained model and CPU environment are externally available/verified, and a CFM-ID-generated complete-query hybrid subset is available when cached candidate spectra exist. The full CASMI structure-candidate benchmark still lacks a complete per-candidate measured or predicted spectrum library. CFM-ID predicted spectra must be labeled as a CFM-ID plus MS2DeepScore hybrid baseline rather than native MS2DeepScore. Complete-query CFM-ID + MS2DeepScore hybrid subset is available for 7 selected queries with MRR=0.1042333970845776; it is not native MS2DeepScore.",
     "executable_or_package": "/home/zhome/ec_structure/external_ms_models/envs/ms2deepscore_casmi/bin/python",
     "model": "MS2DeepScore",
     "native_available": false,

@@ -1,17 +1,19 @@
 {
-  "candidate_spectrum_rows": 1896,
+  "candidate_spectrum_rows": 3961,
   "claim_guardrail": "This imports selected complete-query CFM-ID spectra into the full-run cache only; it does not complete full CASMI CFM-ID scoring.",
-  "imported_or_cached_candidate_spectra": 1896,
+  "imported_or_cached_candidate_spectra": 3961,
   "source_queries": [
     "145",
     "16",
     "34",
     "35",
+    "39",
+    "53",
     "78"
   ],
   "source_subset_dir": "/home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1",
   "stage": "cfmid_complete_query_subset_cache_import_v1",
   "status": "completed",
   "target_full_outdir": "/home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_full_v1",
-  "unique_imported_or_cached_candidate_spectra": 1896
+  "unique_imported_or_cached_candidate_spectra": 3961
 }

@@ -2,6 +2,6 @@
 
 This imports selected complete-query CFM-ID spectra into the full-run cache only; it does not complete full CASMI CFM-ID scoring.
 
-- Source queries: `['145', '16', '34', '35', '78']`
-- Imported/cached candidate spectra rows: `1896`
-- Unique candidate spectra: `1896`
+- Source queries: `['145', '16', '34', '35', '39', '53', '78']`
+- Imported/cached candidate spectra rows: `3961`
+- Unique candidate spectra: `3961`
