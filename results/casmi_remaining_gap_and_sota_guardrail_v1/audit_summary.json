@@ -1,0 +1,14 @@
+{
+  "complete_native_cfmid_casmi_available": false,
+  "native_ms2deepscore_casmi_available": false,
+  "outputs": [
+    "remaining_gap_status.csv",
+    "claim_guardrail_status.csv",
+    "rank_delta_validity_audit.csv",
+    "casmi_remaining_gap_and_sota_guardrail_report.md"
+  ],
+  "rank_delta_outlier_fixed": true,
+  "stage": "casmi_remaining_gap_and_sota_guardrail_v1",
+  "strong_sota_claim_supported": false,
+  "trained_neural_casmi_effective_primary": false
+}

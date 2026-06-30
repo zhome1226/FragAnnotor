@@ -1362,10 +1362,14 @@ def query_level_wide(query_df: pd.DataFrame, records: list[QueryRecord]) -> pd.D
         row["FragAnnotor top-1 score"] = frag.get("top1_score", np.nan)
         row["top-1 Tanimoto similarity"] = frag.get("top1_tanimoto", np.nan)
         frag_rank = safe_float(frag.get("true_rank"), default=np.nan)
+        frag_completed = frag.get("status", "") == "completed"
         for baseline in ["CFM-ID", "SIRIUS", "MS2DeepScore"]:
-            base_rank = safe_float(by_model.get(baseline, {}).get("true_rank"), default=np.nan)
-            row[f"whether FragAnnotor beats {baseline}"] = bool(not pd.isna(frag_rank) and not pd.isna(base_rank) and frag_rank < base_rank)
-            row[f"rank improvement over {baseline}"] = np.nan if pd.isna(frag_rank) or pd.isna(base_rank) else base_rank - frag_rank
+            baseline_row = by_model.get(baseline, {})
+            base_rank = safe_float(baseline_row.get("true_rank"), default=np.nan)
+            base_completed = baseline_row.get("status", "") == "completed"
+            rank_pair_valid = frag_completed and base_completed and np.isfinite(frag_rank) and np.isfinite(base_rank)
+            row[f"whether FragAnnotor beats {baseline}"] = bool(rank_pair_valid and frag_rank < base_rank)
+            row[f"rank improvement over {baseline}"] = np.nan if not rank_pair_valid else base_rank - frag_rank
         row["failure category if applicable"] = failure_category(frag_rank)
         rows.append(row)
     return pd.DataFrame(rows)
@@ -1524,23 +1528,30 @@ def write_sota_outputs(summary: pd.DataFrame, query_df: pd.DataFrame, results_di
             merged = frag.merge(base, on="query_id", suffixes=("_frag", "_base"))
             completed = merged[(merged["status_frag"].eq("completed")) & (merged["status_base"].eq("completed"))].copy()
             if completed.empty:
-                pair_rows.append({"dataset": dataset, "baseline": baseline, "status": "comparison_unavailable"})
+                pair_rows.append({"dataset": dataset, "baseline": baseline, "status": "comparison_unavailable", "n_completed_queries": 0, "n_rank_valid_queries": 0, "n_missing_rank_pairs": 0})
                 ci_rows.append({"dataset": dataset, "baseline": baseline, "metric": "top10_accuracy_difference", "ci95_low": np.nan, "ci95_high": np.nan, "status": "comparison_unavailable"})
                 ci_rows.append({"dataset": dataset, "baseline": baseline, "metric": "mrr_difference", "ci95_low": np.nan, "ci95_high": np.nan, "status": "comparison_unavailable"})
                 continue
-            frag_rank = pd.to_numeric(completed["true_rank_frag"], errors="coerce").fillna(1e9)
-            base_rank = pd.to_numeric(completed["true_rank_base"], errors="coerce").fillna(1e9)
+            frag_rank_all = pd.to_numeric(completed["true_rank_frag"], errors="coerce")
+            base_rank_all = pd.to_numeric(completed["true_rank_base"], errors="coerce")
+            rank_valid = completed[frag_rank_all.notna() & base_rank_all.notna()].copy()
+            frag_rank = pd.to_numeric(rank_valid["true_rank_frag"], errors="coerce")
+            base_rank = pd.to_numeric(rank_valid["true_rank_base"], errors="coerce")
+            rank_delta = base_rank - frag_rank
             pair_rows.append(
                 {
                     "dataset": dataset,
                     "baseline": baseline,
-                    "status": "completed",
+                    "status": "completed" if not rank_valid.empty else "comparison_unavailable_no_finite_rank_pairs",
                     "n_queries": int(len(completed)),
-                    "fragannotor_better": int((frag_rank < base_rank).sum()),
-                    "baseline_better": int((base_rank < frag_rank).sum()),
-                    "ties": int((base_rank == frag_rank).sum()),
-                    "mean_rank_delta_baseline_minus_fragannotor": float((base_rank - frag_rank).mean()),
-                    "median_rank_delta_baseline_minus_fragannotor": float((base_rank - frag_rank).median()),
+                    "n_completed_queries": int(len(completed)),
+                    "n_rank_valid_queries": int(len(rank_valid)),
+                    "n_missing_rank_pairs": int(len(completed) - len(rank_valid)),
+                    "fragannotor_better": int((frag_rank < base_rank).sum()) if not rank_valid.empty else np.nan,
+                    "baseline_better": int((base_rank < frag_rank).sum()) if not rank_valid.empty else np.nan,
+                    "ties": int((base_rank == frag_rank).sum()) if not rank_valid.empty else np.nan,
+                    "mean_rank_delta_baseline_minus_fragannotor": np.nan if rank_valid.empty else float(rank_delta.mean()),
+                    "median_rank_delta_baseline_minus_fragannotor": np.nan if rank_valid.empty else float(rank_delta.median()),
                 }
             )
             top10_frag = completed["top10_correct_frag"].astype(float).to_numpy()
@@ -1833,15 +1844,20 @@ def write_all_figures(summary: pd.DataFrame, query_df: pd.DataFrame, ablation: p
             plt.close()
 
     rank_delta = []
+    rank_delta_labels = []
     frag = query_df[(query_df["model"].eq("FragAnnotor")) & (query_df["status"].eq("completed"))]
     for baseline in ["CFM-ID", "SIRIUS"]:
         base = query_df[(query_df["model"].eq(baseline)) & (query_df["status"].eq("completed"))]
         merged = frag.merge(base, on=["dataset", "query_id"], suffixes=("_frag", "_base"))
         if not merged.empty:
-            rank_delta.append(pd.to_numeric(merged["true_rank_base"], errors="coerce") - pd.to_numeric(merged["true_rank_frag"], errors="coerce"))
+            delta = pd.to_numeric(merged["true_rank_base"], errors="coerce") - pd.to_numeric(merged["true_rank_frag"], errors="coerce")
+            delta = delta[np.isfinite(delta)]
+            if not delta.empty:
+                rank_delta.append(delta)
+                rank_delta_labels.append(baseline)
     if rank_delta:
         plt.figure(figsize=(6, 4))
-        plt.boxplot([x.dropna().to_numpy() for x in rank_delta], tick_labels=["CFM-ID", "SIRIUS"][: len(rank_delta)])
+        plt.boxplot([x.to_numpy() for x in rank_delta], tick_labels=rank_delta_labels)
         plt.ylabel("Baseline rank - FragAnnotor rank")
         plt.title("Rank delta distribution")
         plt.tight_layout()
@@ -2082,6 +2098,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "- CFM-ID native binary compatibility was repaired, but full CASMI candidate ranking remains runtime-blocked and is not replaced with fallback scores.",
             "- No result with `native_or_fallback=native_unavailable` should be described as a completed native baseline.",
             "- MS2DeepScore native comparison is blocked until an appropriate pretrained model and a complete per-candidate spectrum library are available.",
+            "- Pairwise rank-delta statistics exclude unavailable baselines and non-finite true-rank pairs; missing true ranks are counted separately and are not replaced with sentinel ranks.",
             "- SIRIUS is used here as molecular formula plausibility evidence, not as a synthetic spectrum generator or CSI:FingerID structure predictor.",
             "",
             "## Manuscript Readiness",
@@ -2096,6 +2113,7 @@ def write_docs(summary: pd.DataFrame, dataset_status: dict[str, Any], env: dict[
             "- Native CFM-ID full CASMI scoring is runtime-blocked even after finding a cfmid4-compatible binary; timing probes did not finish within 15 minutes.",
             "- Native MS2DeepScore is blocked because the benchmark lacks a complete candidate spectrum library and configured pretrained embedding workflow.",
             "- The CASMI trained neural checkpoint result is complete, but it underperforms the fixed component-score mode and should not be used to claim neural superiority.",
+            "- A strong SOTA claim is blocked until FragAnnotor, CFM-ID, SIRIUS/CSI, ICEBERG, MassFormer, NEIMS, and MS2DeepScore are compared on a harmonized CASMI candidate set with the same preprocessing and metrics.",
             "- PFAS results remain an internal frozen locked-test benchmark and are not independent external validation.",
             "",
             "## Exact Reproduction Command",

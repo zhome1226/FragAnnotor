@@ -118,6 +118,7 @@ These public CASMI22 retrieval results are external context. They should not be 
 - CFM-ID native binary compatibility was repaired, but full CASMI candidate ranking remains runtime-blocked and is not replaced with fallback scores.
 - No result with `native_or_fallback=native_unavailable` should be described as a completed native baseline.
 - MS2DeepScore native comparison is blocked until an appropriate pretrained model and a complete per-candidate spectrum library are available.
+- Pairwise rank-delta statistics exclude unavailable baselines and non-finite true-rank pairs; missing true ranks are counted separately and are not replaced with sentinel ranks.
 - SIRIUS is used here as molecular formula plausibility evidence, not as a synthetic spectrum generator or CSI:FingerID structure predictor.
 
 ## Manuscript Readiness
@@ -132,6 +133,7 @@ These public CASMI22 retrieval results are external context. They should not be 
 - Native CFM-ID full CASMI scoring is runtime-blocked even after finding a cfmid4-compatible binary; timing probes did not finish within 15 minutes.
 - Native MS2DeepScore is blocked because the benchmark lacks a complete candidate spectrum library and configured pretrained embedding workflow.
 - The CASMI trained neural checkpoint result is complete, but it underperforms the fixed component-score mode and should not be used to claim neural superiority.
+- A strong SOTA claim is blocked until FragAnnotor, CFM-ID, SIRIUS/CSI, ICEBERG, MassFormer, NEIMS, and MS2DeepScore are compared on a harmonized CASMI candidate set with the same preprocessing and metrics.
 - PFAS results remain an internal frozen locked-test benchmark and are not independent external validation.
 
 ## Exact Reproduction Command
