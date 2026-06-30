@@ -4,7 +4,7 @@ This package collects clean tables for manuscript drafting without changing mode
 
 ## Included Tables
 
-- `table1_casmi2022_benchmark.csv`: CASMI2022 main rows plus explicitly labeled CFM-ID direct full-run manifest, CFM-ID precomputed full-progress, CFM-ID subset, trained neural checkpoint audit, and CFM-ID + MS2DeepScore hybrid subset rows.
+- `table1_casmi2022_benchmark.csv`: CASMI2022 main rows plus explicitly labeled CFM-ID direct full-run manifest, CFM-ID precomputed full-progress, CFM-ID complete-query subset, CFM-ID candidate-limited subset, trained neural checkpoint audit, and CFM-ID + MS2DeepScore hybrid subset rows.
 - `table2_pfas_locked_test_benchmark.csv`: PFAS locked-test benchmark rows.
 - `table3_pfas_ablation.csv`: PFAS no-SIRIUS/full-fusion ablations where available.
 - `supplementary_native_tool_audit_and_blockers.csv`: native tool status and blockers.
@@ -16,6 +16,7 @@ This package collects clean tables for manuscript drafting without changing mode
 - The CFM-ID subset row is candidate-limited (`first_n_plus_true`) and is not a full CASMI CFM-ID result.
 - The CFM-ID full-run manifest row is a completion gate, not a completed benchmark metric row; report full CFM-ID metrics only after all supported query outputs are complete.
 - The CFM-ID precomputed full-progress row is also a completion gate; it validates candidate-spectrum caching and fast `cfm-id-precomputed` ranking but is not a full metric row until all candidate spectra and supported queries complete.
+- The CFM-ID complete-query subset row uses the full candidate set for the selected low-candidate query, but it covers only that selected query and is not a full CASMI CFM-ID baseline.
 - The CFM-ID + MS2DeepScore row is a generated-spectrum hybrid subset, not native MS2DeepScore and not a full CASMI benchmark.
 - MS2DeepScore has a verified pretrained model cache and CPU environment, but remains blocked for full candidate ranking because no complete CASMI per-candidate spectrum library is available.
 - The trained neural checkpoint row is report-only and weak; do not use it as primary CASMI evidence.

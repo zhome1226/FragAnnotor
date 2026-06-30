@@ -41,6 +41,12 @@ def main() -> None:
     guardrail = read_csv(ROOT / "results" / "casmi_remaining_gap_and_sota_guardrail_v1" / "claim_guardrail_status.csv")
     gap = read_csv(ROOT / "results" / "casmi_remaining_gap_and_sota_guardrail_v1" / "remaining_gap_status.csv")
     cfmid_subset = read_csv(ROOT / "results" / "casmi2022_cfmid_native_subset_v1" / "casmi2022_cfmid_native_subset_summary.csv")
+    cfmid_complete_query_subset = read_csv(
+        ROOT
+        / "results"
+        / "casmi2022_cfmid_native_precomputed_complete_query_subset_v1"
+        / "casmi2022_cfmid_native_precomputed_complete_query_subset_summary.csv"
+    )
     cfmid_full = read_csv(ROOT / "results" / "casmi2022_cfmid_native_full_supported_v1" / "casmi2022_cfmid_native_full_supported_summary.csv")
     cfmid_full_manifest = read_json(ROOT / "results" / "cfmid_full_casmi_run_manifest_v1" / "audit_summary.json")
     cfmid_precomputed = read_csv(ROOT / "results" / "casmi2022_cfmid_native_precomputed_full_v1" / "casmi2022_cfmid_native_precomputed_full_summary.csv")
@@ -80,6 +86,11 @@ def main() -> None:
         precomputed["dataset"] = "CASMI2022"
         precomputed["model"] = "CFM-ID precomputed full progress"
         casmi = pd.concat([casmi, keep_existing(precomputed, metric_cols)], ignore_index=True)
+    if not cfmid_complete_query_subset.empty:
+        complete_subset = cfmid_complete_query_subset.rename(columns={"claim_guardrail": "notes"})
+        complete_subset["dataset"] = "CASMI2022"
+        complete_subset["model"] = "CFM-ID complete-query subset"
+        casmi = pd.concat([casmi, keep_existing(complete_subset, metric_cols)], ignore_index=True)
     if not cfmid_subset.empty:
         subset = cfmid_subset.rename(
             columns={
@@ -124,6 +135,9 @@ def main() -> None:
                 "version": cfmid_audit.get("native_binary_smoke_status", ""),
                 "blocker": cfmid_audit.get("benchmark_decision", ""),
                 "subset_status": "completed_candidate_limited_subset" if not cfmid_subset.empty else "",
+                "complete_query_subset_status": "completed_full_candidate_set_for_selected_query"
+                if not cfmid_complete_query_subset.empty
+                else "",
                 "full_run_manifest": (
                     f"{cfmid_full_manifest.get('supported_queries', 'unknown')} supported queries; "
                     f"{cfmid_full_manifest.get('total_supported_candidate_rows', 'unknown')} candidate rows; "
@@ -165,7 +179,7 @@ def main() -> None:
         "",
         "## Included Tables",
         "",
-        "- `table1_casmi2022_benchmark.csv`: CASMI2022 main rows plus explicitly labeled CFM-ID direct full-run manifest, CFM-ID precomputed full-progress, CFM-ID subset, trained neural checkpoint audit, and CFM-ID + MS2DeepScore hybrid subset rows.",
+        "- `table1_casmi2022_benchmark.csv`: CASMI2022 main rows plus explicitly labeled CFM-ID direct full-run manifest, CFM-ID precomputed full-progress, CFM-ID complete-query subset, CFM-ID candidate-limited subset, trained neural checkpoint audit, and CFM-ID + MS2DeepScore hybrid subset rows.",
         "- `table2_pfas_locked_test_benchmark.csv`: PFAS locked-test benchmark rows.",
         "- `table3_pfas_ablation.csv`: PFAS no-SIRIUS/full-fusion ablations where available.",
         "- `supplementary_native_tool_audit_and_blockers.csv`: native tool status and blockers.",
@@ -177,6 +191,7 @@ def main() -> None:
         "- The CFM-ID subset row is candidate-limited (`first_n_plus_true`) and is not a full CASMI CFM-ID result.",
         "- The CFM-ID full-run manifest row is a completion gate, not a completed benchmark metric row; report full CFM-ID metrics only after all supported query outputs are complete.",
         "- The CFM-ID precomputed full-progress row is also a completion gate; it validates candidate-spectrum caching and fast `cfm-id-precomputed` ranking but is not a full metric row until all candidate spectra and supported queries complete.",
+        "- The CFM-ID complete-query subset row uses the full candidate set for the selected low-candidate query, but it covers only that selected query and is not a full CASMI CFM-ID baseline.",
         "- The CFM-ID + MS2DeepScore row is a generated-spectrum hybrid subset, not native MS2DeepScore and not a full CASMI benchmark.",
         "- MS2DeepScore has a verified pretrained model cache and CPU environment, but remains blocked for full candidate ranking because no complete CASMI per-candidate spectrum library is available.",
         "- The trained neural checkpoint row is report-only and weak; do not use it as primary CASMI evidence.",

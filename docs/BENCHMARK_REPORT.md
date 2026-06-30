@@ -100,6 +100,8 @@ The resumable full-run manifest is prepared at `results/cfmid_full_casmi_run_man
 
 A faster native route using precomputed candidate spectra is now validated at `results/cfmid_precomputed_smoke_v1/`: `cfm-predict` generated 11 candidate spectra in about 163 seconds, and `cfm-id-precomputed` ranked them in about 0.016 seconds. The full precomputed manifest is prepared at `results/cfmid_precomputed_full_casmi_manifest_v1/` and current progress is summarized at `results/casmi2022_cfmid_native_precomputed_full_v1/`. This route still requires 936,483 unique `[M+H]+` candidate spectra for the 170 supported CASMI queries; current progress is 10 cached candidate spectra and 0 completed supported query rankings. It remains a long-running candidate-spectrum generation task and must not be reported as full CFM-ID metrics until completion.
 
+A complete-query native CFM-ID precomputed subset is available at `results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/`. It selected the smallest supported CASMI query (`spec_id=16`) and used the full candidate set for that query (`103/103` candidates predicted and ranked). The true structure ranked 5th, giving subset Top-1 `0.0`, Top-5 `1.0`, Top-10 `1.0`, and MRR `0.2`. This is stronger than the earlier candidate-limited smoke because no candidate limit was applied for the selected query, but it is still a one-query subset and not a full CASMI CFM-ID baseline.
+
 ## Native MS2DeepScore CASMI Audit
 
 MS2DeepScore CASMI status: `blocked_no_candidate_spectrum_library`.

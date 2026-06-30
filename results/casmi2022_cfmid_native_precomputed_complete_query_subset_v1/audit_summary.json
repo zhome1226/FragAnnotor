@@ -1,0 +1,52 @@
+{
+  "selected_queries": [
+    {
+      "adduct": "[M+H]+",
+      "candidate_count": 103,
+      "cfm_id_precomputed_seconds": 0.06393051147460938,
+      "cfm_predict_seconds": 844.0681047439575,
+      "dataset": "CASMI2022",
+      "missing_candidate_spectra": 0,
+      "missing_smiles": 0,
+      "model": "CFM-ID",
+      "native_or_fallback": "native_cfmid_precomputed_complete_query_subset",
+      "predicted_spectrum_ids": 103,
+      "query_id": "16",
+      "query_mol_id": 1196803,
+      "rank_output_file": "/home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_16/cfmid_precomputed_ranked_16.txt",
+      "ranked_rows": 103,
+      "reciprocal_rank": 0.2,
+      "spectrum_id": "16",
+      "status": "completed",
+      "top10_correct": true,
+      "top1_correct": false,
+      "top5_correct": true,
+      "true_candidate_id": "CASMI_MOL_1196803",
+      "true_rank": 5.0
+    }
+  ],
+  "selection": {
+    "max_candidates": 250,
+    "max_queries": 1,
+    "query_spec_id": ""
+  },
+  "stage": "casmi2022_cfmid_native_precomputed_complete_query_subset_v1",
+  "status": "completed_subset",
+  "summary": {
+    "candidate_limit": -1,
+    "candidate_pool_policy": "full_candidate_set_for_each_selected_query",
+    "claim_guardrail": "Complete-query CFM-ID subset only. Each selected query uses its full candidate set, but this is not a full CASMI CFM-ID baseline.",
+    "dataset": "CASMI2022",
+    "mean_reciprocal_rank": 0.2,
+    "median_candidate_count": 103.0,
+    "median_true_rank": 5.0,
+    "model": "CFM-ID complete-query subset",
+    "n_queries": 1,
+    "n_queries_completed": 1,
+    "native_or_fallback": "native_cfmid_precomputed_complete_query_subset",
+    "status": "completed_subset",
+    "top10_accuracy": 1.0,
+    "top1_accuracy": 0.0,
+    "top5_accuracy": 1.0
+  }
+}
