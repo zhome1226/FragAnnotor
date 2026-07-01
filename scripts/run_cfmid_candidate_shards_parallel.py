@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures as futures
+import os
 import subprocess
 import time
 from pathlib import Path
@@ -32,6 +33,23 @@ def refresh_audit() -> None:
 
 def run_one(row: dict[str, Any], timeout_seconds: int) -> dict[str, Any]:
     started = time.time()
+    shard_id = int(row["shard_id"])
+    slug = str(row["adduct"]).replace("[", "").replace("]", "").replace("+", "plus").replace("-", "minus")
+    lock_dir = RUN_OUTDIR / "candidate_spectrum_shards" / slug / f"shard_{int(row['candidate_start'])}_{int(row['candidate_limit'])}.lock"
+    try:
+        lock_dir.mkdir(parents=True, exist_ok=False)
+        (lock_dir / "pid.txt").write_text(str(os.getpid()), encoding="utf-8")
+    except FileExistsError:
+        return {
+            "shard_id": shard_id,
+            "adduct": str(row["adduct"]),
+            "candidate_start": int(row["candidate_start"]),
+            "candidate_limit": int(row["candidate_limit"]),
+            "command": "",
+            "status": "skipped_locked",
+            "returncode": None,
+            "elapsed_seconds": time.time() - started,
+        }
     cmd = [
         "python3",
         "scripts/run_cfmid_precomputed_candidate_shard.py",
@@ -54,8 +72,15 @@ def run_one(row: dict[str, Any], timeout_seconds: int) -> dict[str, Any]:
     except subprocess.TimeoutExpired:
         status = "timeout"
         returncode = None
+    finally:
+        try:
+            for path in lock_dir.iterdir():
+                path.unlink()
+            lock_dir.rmdir()
+        except FileNotFoundError:
+            pass
     return {
-        "shard_id": int(row["shard_id"]),
+        "shard_id": shard_id,
         "adduct": str(row["adduct"]),
         "candidate_start": int(row["candidate_start"]),
         "candidate_limit": int(row["candidate_limit"]),
