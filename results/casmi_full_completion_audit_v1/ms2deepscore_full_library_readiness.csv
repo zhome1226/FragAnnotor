@@ -1,5 +1,5 @@
 gate,ready,evidence,required_next_step
 MS2DeepScore package and pretrained model,True,env_status=verified; ms2deepscore=2.7.2; matchms=0.33.1; model_files_present=True,none for environment; keep model cache outside Git
-full CFM-ID-generated candidate spectrum library for hybrid MS2DeepScore,False,51831/936483 candidate spectra available,complete remaining CFM-ID candidate-spectrum shards before full hybrid scoring
+full CFM-ID-generated candidate spectrum library for hybrid MS2DeepScore,False,58431/936483 candidate spectra available,complete remaining CFM-ID candidate-spectrum shards before full hybrid scoring
 full supported-query CFM-ID cache/ranking for hybrid input coverage,False,9/170 supported CFM-ID query rankings complete,rank all 170 supported queries after candidate spectra are complete
 native MS2DeepScore measured/predicted candidate spectrum library independent of CFM-ID,False,No complete independent CASMI candidate spectrum library is present in the repository.,Provide measured spectra or a non-CFM-ID generator for every CASMI candidate; otherwise label the benchmark as CFM-ID + MS2DeepScore hybrid.
