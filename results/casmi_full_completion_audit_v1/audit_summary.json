@@ -1,6 +1,6 @@
 {
   "cfmid_candidate_spectra_complete": false,
-  "cfmid_completed_candidate_spectra": 16431,
+  "cfmid_completed_candidate_spectra": 17531,
   "cfmid_completed_queries": 9,
   "cfmid_expected_candidate_spectra": 936483,
   "cfmid_supported_queries": 170,
@@ -21,7 +21,7 @@
     "harmonized_sota_rerun_manifest.csv",
     "casmi_full_completion_runbook.md"
   ],
-  "remaining_candidate_spectrum_shards": 9209,
+  "remaining_candidate_spectrum_shards": 9198,
   "remaining_supported_queries": 161,
   "stage": "casmi_full_completion_audit_v1",
   "unsupported_mna_queries": 59
