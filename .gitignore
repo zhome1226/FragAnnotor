@@ -26,3 +26,5 @@ results/casmi_full_completion_audit_v1/*.pid
 results/casmi_full_completion_audit_v1/*.windows_pid
 results/casmi_full_completion_audit_v1/*.log_path
 results/casmi_full_completion_audit_v1/logs/
+results/casmi_full_completion_audit_v1/last_cfmid_candidate_parallel_batch_run.csv
+scripts/_missing_parallel_launcher.sh
