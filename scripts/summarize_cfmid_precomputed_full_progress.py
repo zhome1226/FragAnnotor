@@ -72,6 +72,28 @@ def completed_candidate_count(candidate_status: pd.DataFrame) -> tuple[int, int]
     return int(completed["candidate_key"].nunique()), int(failed["candidate_key"].nunique())
 
 
+def cached_candidate_count() -> int:
+    """Count real cached CFM-ID candidate spectra.
+
+    Some cache files are produced by long-running shard jobs whose status CSVs
+    are intentionally ignored by Git. Counting the cache directory keeps the
+    progress summary aligned with the actual resumable execution state.
+    """
+
+    cache_root = RUN_OUTDIR / "candidate_spectra_cache"
+    if not cache_root.exists():
+        return 0
+    keys: set[str] = set()
+    for slug_dir in cache_root.iterdir():
+        if not slug_dir.is_dir():
+            continue
+        for path in slug_dir.glob("*.txt"):
+            if path.stat().st_size <= 0:
+                continue
+            keys.add(f"{slug_dir.name}:{path.stem}")
+    return len(keys)
+
+
 def main() -> None:
     RUN_OUTDIR.mkdir(parents=True, exist_ok=True)
     query_manifest = pd.read_csv(MANIFEST_DIR / "cfmid_precomputed_supported_query_manifest.csv")
@@ -88,7 +110,8 @@ def main() -> None:
     query_results = read_csvs("query_shard_*_results.csv")
     predictions = read_csvs("query_shard_*_predictions.csv")
 
-    candidate_completed, candidate_failed = completed_candidate_count(candidate_status)
+    candidate_completed_from_status, candidate_failed = completed_candidate_count(candidate_status)
+    candidate_completed = max(candidate_completed_from_status, cached_candidate_count())
     query_completed = 0
     if not query_results.empty:
         query_completed = int(query_results["status"].astype(str).isin(["completed", "completed_cached"]).sum())

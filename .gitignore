@@ -22,3 +22,7 @@ results/casmi2022_cfmid_native_precomputed_full_v1/candidate_spectra_cache/
 results/casmi2022_cfmid_native_precomputed_full_v1/candidate_spectrum_shards/
 results/casmi2022_cfmid_native_precomputed_full_v1/work/
 results/casmi2022_cfmid_native_precomputed_complete_query_subset_v1/work/query_*/
+results/casmi_full_completion_audit_v1/*.pid
+results/casmi_full_completion_audit_v1/*.windows_pid
+results/casmi_full_completion_audit_v1/*.log_path
+results/casmi_full_completion_audit_v1/logs/
