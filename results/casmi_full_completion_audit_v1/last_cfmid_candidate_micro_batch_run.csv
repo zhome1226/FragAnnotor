@@ -1,0 +1,2 @@
+adduct,candidate_start,candidate_limit,cache_count_before,cache_count_after,new_cached_candidates,command,status,returncode,elapsed_seconds
+[M+H]+,16,20,6447,6467,20,python3 scripts/run_cfmid_precomputed_candidate_shard.py --outdir /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_full_v1 --adduct [M+H]+ --candidate-start 16 --candidate-limit 20 --timeout-seconds 3600 --resume,completed,0,284.2623927593231
