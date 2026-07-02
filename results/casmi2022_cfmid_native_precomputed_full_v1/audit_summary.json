@@ -1,7 +1,7 @@
 {
-  "candidate_spectrum_completion_fraction": 0.06538399522468641,
+  "candidate_spectrum_completion_fraction": 0.0662382552593053,
   "claim_guardrail": "Do not report full native CFM-ID CASMI metrics until status is completed_full_supported; [M+Na]+ CASMI queries remain unsupported by the local cfmid4 model directory.",
-  "completed_candidate_spectra": 61231,
+  "completed_candidate_spectra": 62031,
   "dataset": "CASMI2022",
   "expected_unique_candidate_spectra": 936483,
   "failed_candidate_spectra": 0,
