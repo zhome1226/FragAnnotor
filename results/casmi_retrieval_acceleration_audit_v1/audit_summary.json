@@ -1,0 +1,35 @@
+{
+  "branch_purpose": "Evaluate matchms-style preprocessing, leakage/metric consistency, and first-stage retrieval acceleration potential without changing model weights.",
+  "candidate_rows": 408249,
+  "casmi_dir": "\\\\wsl$\\Ubuntu\\home\\zhome\\ec_structure\\github_export\\FragAnnotor\\data\\proc\\casmi_2022",
+  "component_matrix": "\\\\wsl$\\Ubuntu\\home\\zhome\\ec_structure\\github_export\\FragAnnotor_opt_matchms\\results\\casmi2022_fragannotor_formal_components\\casmi2022_fragannotor_formal_component_matrix.csv.gz",
+  "component_matrix_rows": 408249,
+  "guardrail": "Use this as a first-stage retrieval/gating audit only. Do not claim full native CFM-ID or MS2DeepScore results from gated reranking.",
+  "matchms_required": false,
+  "mean_candidate_count": 1782.7467248908297,
+  "outputs": [
+    "score_policy_metrics.csv",
+    "query_level_gate_audit.csv",
+    "topk_gate_retention.csv",
+    "union_gate_retention.csv",
+    "union_gate_query_level_audit.csv",
+    "spectrum_cleaning_audit.csv",
+    "cfmid_second_stage_workload_projection.csv",
+    "casmi_retrieval_acceleration_report.md"
+  ],
+  "python": "3.12.13",
+  "queries": 229,
+  "rdkit_available": false,
+  "stage": "casmi_retrieval_acceleration_audit_v1",
+  "status": "completed",
+  "topk_values": [
+    10,
+    25,
+    50,
+    100,
+    200,
+    500,
+    1000
+  ],
+  "unique_candidate_ids": 367136
+}

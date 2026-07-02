@@ -1,0 +1,8 @@
+top_k_gate,supported_queries,full_supported_candidate_rows,projected_gated_candidate_rows,projected_candidate_row_reduction_fraction,note
+10,170,1062950,1700,0.9984006773601769,Projection assumes the first-stage gate can be computed for the full supported candidate set; it is not a native CFM-ID metric.
+25,170,1062950,4250,0.9960016934004422,Projection assumes the first-stage gate can be computed for the full supported candidate set; it is not a native CFM-ID metric.
+50,170,1062950,8500,0.9920033868008843,Projection assumes the first-stage gate can be computed for the full supported candidate set; it is not a native CFM-ID metric.
+100,170,1062950,17000,0.9840067736017687,Projection assumes the first-stage gate can be computed for the full supported candidate set; it is not a native CFM-ID metric.
+200,170,1062950,33903,0.9681048026718095,Projection assumes the first-stage gate can be computed for the full supported candidate set; it is not a native CFM-ID metric.
+500,170,1062950,83653,0.9213010960063973,Projection assumes the first-stage gate can be computed for the full supported candidate set; it is not a native CFM-ID metric.
+1000,170,1062950,162330,0.8472835034573593,Projection assumes the first-stage gate can be computed for the full supported candidate set; it is not a native CFM-ID metric.
