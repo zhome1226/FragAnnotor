@@ -56,7 +56,7 @@ Next not-completed candidate-spectrum shards:
 |       5143 | [M+H]+   |            514300 |               100 | not_started    | python3 scripts/run_cfmid_precomputed_candidate_shard.py --outdir /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_full_v1 --adduct '[M+H]+' --candidate-start 514300 --candidate-limit 100 --resume |
 |       5144 | [M+H]+   |            514400 |               100 | not_started    | python3 scripts/run_cfmid_precomputed_candidate_shard.py --outdir /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_full_v1 --adduct '[M+H]+' --candidate-start 514400 --candidate-limit 100 --resume |
 |       5145 | [M+H]+   |            514500 |               100 | not_started    | python3 scripts/run_cfmid_precomputed_candidate_shard.py --outdir /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_full_v1 --adduct '[M+H]+' --candidate-start 514500 --candidate-limit 100 --resume |
-|       5146 | [M+H]+   |            514600 |               100 | not_started    | python3 scripts/run_cfmid_precomputed_candidate_shard.py --outdir /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_full_v1 --adduct '[M+H]+' --candidate-start 514600 --candidate-limit 100 --resume |
+|       5167 | [M+H]+   |            516700 |               100 | not_started    | python3 scripts/run_cfmid_precomputed_candidate_shard.py --outdir /home/zhome/ec_structure/github_export/FragAnnotor/results/casmi2022_cfmid_native_precomputed_full_v1 --adduct '[M+H]+' --candidate-start 516700 --candidate-limit 100 --resume |
 
 ## [M+Na]+ Queries
 
