@@ -4,6 +4,6 @@ Do not report full native CFM-ID CASMI metrics until status is completed_full_su
 
 - Status: `incomplete_full_supported`
 - Candidate spectra: `936483/936483` completed
-- Supported query rankings: `9/170` completed
+- Supported query rankings: `19/170` completed
 - Query-ranking shard count: `34`
 - Candidate-spectrum shard count: `9365`
