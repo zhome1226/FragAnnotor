@@ -94,6 +94,40 @@ def cached_candidate_count() -> int:
     return len(keys)
 
 
+def canonical_supported_query_results(
+    query_manifest: pd.DataFrame, query_results: pd.DataFrame
+) -> pd.DataFrame:
+    """Return one best available result row per supported query."""
+
+    if query_results.empty or "query_id" not in query_results.columns:
+        return pd.DataFrame()
+    if "query_id" in query_manifest.columns:
+        manifest_query_col = "query_id"
+    elif "spec_id" in query_manifest.columns:
+        manifest_query_col = "spec_id"
+    else:
+        manifest_query_col = "query_mol_id"
+    supported_ids = set(query_manifest[manifest_query_col].astype(str)) if manifest_query_col in query_manifest.columns else set()
+    if not supported_ids:
+        return pd.DataFrame()
+
+    results = query_results.copy()
+    results["_source_order"] = np.arange(len(results))
+    results["_query_id_key"] = results["query_id"].astype(str)
+    results = results[results["_query_id_key"].isin(supported_ids)].copy()
+    if results.empty:
+        return results.drop(columns=["_source_order", "_query_id_key"], errors="ignore")
+
+    completed_statuses = {"completed", "completed_cached"}
+    results["_status_priority"] = results["status"].astype(str).isin(completed_statuses).astype(int)
+    canonical = (
+        results.sort_values(["_query_id_key", "_status_priority", "_source_order"])
+        .drop_duplicates(subset=["_query_id_key"], keep="last")
+        .drop(columns=["_source_order", "_query_id_key", "_status_priority"], errors="ignore")
+    )
+    return canonical
+
+
 def main() -> None:
     RUN_OUTDIR.mkdir(parents=True, exist_ok=True)
     query_manifest = pd.read_csv(MANIFEST_DIR / "cfmid_precomputed_supported_query_manifest.csv")
@@ -112,18 +146,23 @@ def main() -> None:
 
     candidate_completed_from_status, candidate_failed = completed_candidate_count(candidate_status)
     candidate_completed = max(candidate_completed_from_status, cached_candidate_count())
+    canonical_query_results = canonical_supported_query_results(query_manifest, query_results)
     query_completed = 0
-    if not query_results.empty:
-        query_completed = int(query_results["status"].astype(str).isin(["completed", "completed_cached"]).sum())
+    if not canonical_query_results.empty:
+        query_completed = int(
+            canonical_query_results["status"].astype(str).isin(["completed", "completed_cached"]).sum()
+        )
 
     expected_candidate_count = int(candidate_shards["candidate_count"].sum())
     expected_query_count = int(len(query_manifest))
-    all_candidates_done = candidate_completed == expected_candidate_count and expected_candidate_count > 0
-    all_queries_done = query_completed == expected_query_count and expected_query_count > 0
+    all_candidates_done = candidate_completed >= expected_candidate_count and expected_candidate_count > 0
+    all_queries_done = query_completed >= expected_query_count and expected_query_count > 0
     all_complete = all_candidates_done and all_queries_done
 
-    if not query_results.empty:
-        query_results.to_csv(RUN_OUTDIR / "casmi2022_cfmid_native_precomputed_full_query_results.csv", index=False)
+    if not canonical_query_results.empty:
+        canonical_query_results.to_csv(
+            RUN_OUTDIR / "casmi2022_cfmid_native_precomputed_full_query_results.csv", index=False
+        )
     else:
         pd.DataFrame(
             columns=[
@@ -142,7 +181,13 @@ def main() -> None:
     if not predictions.empty:
         predictions.to_csv(RUN_OUTDIR / "casmi2022_cfmid_native_precomputed_full_predictions.csv", index=False)
 
-    completed = query_results[query_results["status"].astype(str).isin(["completed", "completed_cached"])].copy() if not query_results.empty else pd.DataFrame()
+    completed = (
+        canonical_query_results[
+            canonical_query_results["status"].astype(str).isin(["completed", "completed_cached"])
+        ].copy()
+        if not canonical_query_results.empty
+        else pd.DataFrame()
+    )
     summary = {
         "dataset": "CASMI2022",
         "model": "CFM-ID",
@@ -150,11 +195,15 @@ def main() -> None:
         "native_or_fallback": "native_cfmid_precomputed_full_supported_queries",
         "n_supported_queries": expected_query_count,
         "n_completed_queries": query_completed,
-        "query_completion_fraction": float(query_completed / expected_query_count) if expected_query_count else 0.0,
+        "query_completion_fraction": min(float(query_completed / expected_query_count), 1.0)
+        if expected_query_count
+        else 0.0,
         "expected_unique_candidate_spectra": expected_candidate_count,
         "completed_candidate_spectra": candidate_completed,
         "failed_candidate_spectra": candidate_failed,
-        "candidate_spectrum_completion_fraction": float(candidate_completed / expected_candidate_count) if expected_candidate_count else 0.0,
+        "candidate_spectrum_completion_fraction": min(float(candidate_completed / expected_candidate_count), 1.0)
+        if expected_candidate_count
+        else 0.0,
         "top1_accuracy": float(completed["top1_correct"].mean()) if all_complete else np.nan,
         "top5_accuracy": float(completed["top5_correct"].mean()) if all_complete else np.nan,
         "top10_accuracy": float(completed["top10_correct"].mean()) if all_complete else np.nan,

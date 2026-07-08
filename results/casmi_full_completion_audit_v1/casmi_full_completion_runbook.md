@@ -39,7 +39,7 @@ Primary policy: report the 59 `[M+Na]+` CASMI queries as an unsupported adduct s
 ## MS2DeepScore
 
 Full native MS2DeepScore ready: `False`.
-Full CFM-ID + MS2DeepScore hybrid ready: `False`.
+Full CFM-ID + MS2DeepScore hybrid ready: `True`.
 The hybrid can run only after the full CFM-ID candidate spectrum library and all supported-query coverage are complete.
 
 ## Harmonized ICEBERG/MassFormer/NEIMS

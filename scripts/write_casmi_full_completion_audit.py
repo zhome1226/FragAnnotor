@@ -249,8 +249,8 @@ def ms2deepscore_readiness(
     candidate_done = int(cfmid_summary.get("completed_candidate_spectra", 0) or 0)
     supported_queries = int(cfmid_summary.get("n_supported_queries", 0) or 0)
     completed_queries = int(cfmid_summary.get("n_completed_queries", 0) or 0)
-    full_cfmid_library_ready = candidate_total > 0 and candidate_done == candidate_total
-    full_query_cache_ready = supported_queries > 0 and completed_queries == supported_queries
+    full_cfmid_library_ready = candidate_total > 0 and candidate_done >= candidate_total
+    full_query_cache_ready = supported_queries > 0 and completed_queries >= supported_queries
     rows = [
         {
             "gate": "MS2DeepScore package and pretrained model",
@@ -421,24 +421,35 @@ def main() -> None:
 
     remaining_shards = shard_df[~shard_df["status"].eq("completed")].copy() if not shard_df.empty else pd.DataFrame()
     remaining_queries = query_df[~query_df["completed"]].copy() if not query_df.empty else pd.DataFrame()
+    candidate_total = int(cfmid_summary.get("expected_unique_candidate_spectra", 0) or 0)
+    candidate_done = int(cfmid_summary.get("completed_candidate_spectra", 0) or 0)
+    supported_queries = int(cfmid_summary.get("n_supported_queries", 0) or 0)
+    completed_queries = int(cfmid_summary.get("n_completed_queries", 0) or 0)
+    cfmid_candidate_complete = (
+        candidate_total > 0 and candidate_done >= candidate_total and len(remaining_shards) == 0
+    )
+    cfmid_supported_queries_complete = (
+        supported_queries > 0 and completed_queries >= supported_queries and len(remaining_queries) == 0
+    )
+    cfmid_full_supported_complete = cfmid_candidate_complete and cfmid_supported_queries_complete
     full_status_rows = [
         {
             "requirement": "CFM-ID complete all 170 supported CASMI queries",
-            "status": "incomplete",
-            "current_evidence": f"{cfmid_summary.get('n_completed_queries', 0)}/{cfmid_summary.get('n_supported_queries', 0)} supported queries complete",
+            "status": "completed_full_supported" if cfmid_full_supported_complete else "incomplete",
+            "current_evidence": f"{completed_queries}/{supported_queries} supported queries complete",
             "completion_gate": "all 170 supported query rows completed after full candidate spectra exist",
-            "next_action": "run remaining CFM-ID candidate-spectrum shards, then query-ranking shards",
+            "next_action": "none for supported CFM-ID; run final summary" if cfmid_full_supported_complete else "run remaining CFM-ID candidate-spectrum shards, then query-ranking shards",
         },
         {
             "requirement": "Generate 936,483 CFM-ID candidate spectra or faster precomputed method",
-            "status": "incomplete_precomputed_method_prepared",
+            "status": "completed" if cfmid_candidate_complete else "incomplete_precomputed_method_prepared",
             "current_evidence": (
-                f"{cfmid_summary.get('completed_candidate_spectra', 0)}/"
-                f"{cfmid_summary.get('expected_unique_candidate_spectra', manifest_audit.get('candidate_spectrum_shards', 0))} "
+                f"{candidate_done}/"
+                f"{candidate_total or manifest_audit.get('candidate_spectrum_shards', 0)} "
                 "unique candidate spectra complete; precomputed shard method exists"
             ),
             "completion_gate": "candidate_spectrum_completion_fraction == 1.0",
-            "next_action": "run remaining candidate-spectrum shards with resume enabled",
+            "next_action": "none for CFM-ID candidate spectra" if cfmid_candidate_complete else "run remaining candidate-spectrum shards with resume enabled",
         },
         {
             "requirement": "Strategy for 59 unsupported [M+Na]+ CASMI queries",
@@ -449,7 +460,9 @@ def main() -> None:
         },
         {
             "requirement": "MS2DeepScore full CASMI candidate spectrum library",
-            "status": "blocked_until_candidate_library_complete",
+            "status": "cfmid_hybrid_library_ready_native_library_missing"
+            if ms2_ready["full_casmi_cfmid_ms2deepscore_hybrid_ready"]
+            else "blocked_until_candidate_library_complete",
             "current_evidence": (
                 f"MS2DeepScore env verified, but hybrid library coverage is "
                 f"{ms2_ready['completed_candidate_spectra']}/{ms2_ready['expected_candidate_spectra']}"
@@ -480,8 +493,8 @@ def main() -> None:
     audit = {
         "stage": "casmi_full_completion_audit_v1",
         "full_objective_complete": False,
-        "cfmid_supported_queries_complete": False,
-        "cfmid_candidate_spectra_complete": False,
+        "cfmid_supported_queries_complete": bool(cfmid_supported_queries_complete),
+        "cfmid_candidate_spectra_complete": bool(cfmid_candidate_complete),
         "mna_strategy_defined": True,
         "ms2deepscore_full_native_ready": ms2_ready["full_casmi_native_ms2deepscore_ready"],
         "ms2deepscore_full_hybrid_ready": ms2_ready["full_casmi_cfmid_ms2deepscore_hybrid_ready"],

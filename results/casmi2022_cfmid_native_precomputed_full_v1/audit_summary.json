@@ -5,14 +5,14 @@
   "dataset": "CASMI2022",
   "expected_unique_candidate_spectra": 936483,
   "failed_candidate_spectra": 0,
-  "mean_reciprocal_rank": null,
+  "mean_reciprocal_rank": 0.09439189623426979,
   "model": "CFM-ID",
-  "n_completed_queries": 19,
+  "n_completed_queries": 170,
   "n_supported_queries": 170,
   "native_or_fallback": "native_cfmid_precomputed_full_supported_queries",
-  "query_completion_fraction": 0.11176470588235295,
-  "status": "incomplete_full_supported",
-  "top10_accuracy": null,
-  "top1_accuracy": null,
-  "top5_accuracy": null
+  "query_completion_fraction": 1.0,
+  "status": "completed_full_supported",
+  "top10_accuracy": 0.17647058823529413,
+  "top1_accuracy": 0.052941176470588235,
+  "top5_accuracy": 0.13529411764705881
 }

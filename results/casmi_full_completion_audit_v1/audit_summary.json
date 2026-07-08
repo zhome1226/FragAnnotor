@@ -1,14 +1,14 @@
 {
-  "cfmid_candidate_spectra_complete": false,
+  "cfmid_candidate_spectra_complete": true,
   "cfmid_completed_candidate_spectra": 936483,
-  "cfmid_completed_queries": 19,
+  "cfmid_completed_queries": 170,
   "cfmid_expected_candidate_spectra": 936483,
   "cfmid_supported_queries": 170,
-  "cfmid_supported_queries_complete": false,
+  "cfmid_supported_queries_complete": true,
   "full_objective_complete": false,
   "harmonized_sota_reruns_complete": false,
   "mna_strategy_defined": true,
-  "ms2deepscore_full_hybrid_ready": false,
+  "ms2deepscore_full_hybrid_ready": true,
   "ms2deepscore_full_native_ready": false,
   "outputs": [
     "full_completion_status.csv",
@@ -22,7 +22,7 @@
     "casmi_full_completion_runbook.md"
   ],
   "remaining_candidate_spectrum_shards": 0,
-  "remaining_supported_queries": 151,
+  "remaining_supported_queries": 0,
   "stage": "casmi_full_completion_audit_v1",
   "unsupported_mna_queries": 59
 }
