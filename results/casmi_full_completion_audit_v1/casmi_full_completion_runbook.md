@@ -65,9 +65,9 @@ Primary policy: report the 59 `[M+Na]+` CASMI queries as an unsupported adduct s
 ## MS2DeepScore
 
 Full native MS2DeepScore ready: `False`.
-Full CFM-ID + MS2DeepScore hybrid ready: `False`.
+Full CFM-ID + MS2DeepScore hybrid ready: `True`.
 Full CFM-ID + MS2DeepScore hybrid inputs ready: `True`.
-Full CFM-ID + MS2DeepScore hybrid scoring progress: `112/170`.
+Full CFM-ID + MS2DeepScore hybrid scoring progress: `170/170`.
 The hybrid is complete only after the merged full-supported hybrid audit reports `completed_full_supported_hybrid`.
 
 ## Harmonized ICEBERG/MassFormer/NEIMS
