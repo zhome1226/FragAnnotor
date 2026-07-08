@@ -6,17 +6,17 @@ No ICEBERG/MassFormer/NEIMS direct harmonized CASMI rerun is marked complete by 
 
 ### ICEBERG
 
-- `current_status`: `wrapper_smoke_passed_full_candidate_rerun_not_started`
+- `current_status`: `direct_rerun_partial_harmonized_candidate_rerun`
 - `smoke_status`: `predicted_spectrum`
 - `smoke_predicted_peak_count`: `100`
-- `required_next_step`: Implement and run a resumable batch/shard ICEBERG candidate-set predictor; do not use per-candidate smoke output as ranking evidence.
+- `required_next_step`: Continue the resumable ICEBERG candidate-set query shards until all supported queries complete.
 
 ### MassFormer
 
-- `current_status`: `wrapper_smoke_passed_full_candidate_rerun_not_started`
-- `smoke_status`: `predicted_spectrum`
-- `smoke_predicted_peak_count`: `95`
-- `required_next_step`: Implement and run a resumable batch/shard MassFormer candidate-set predictor; do not use smoke output as ranking evidence.
+- `current_status`: `direct_rerun_partial_harmonized_candidate_rerun`
+- `smoke_status`: `command_failed`
+- `smoke_predicted_peak_count`: `0`
+- `required_next_step`: Continue the resumable MassFormer candidate-set query shards until all supported queries complete.
 
 ### NEIMS
 

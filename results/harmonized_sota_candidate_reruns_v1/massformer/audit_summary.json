@@ -1,0 +1,32 @@
+{
+  "candidate_limit": -1,
+  "candidate_pool_policy": "full_query_candidate_set",
+  "claim_guardrail": "This is a harmonized direct rerun only when candidate_limit == -1 and status == completed_harmonized_candidate_rerun.",
+  "dataset": "CASMI2022",
+  "formula_accuracy": 1.0,
+  "mean_reciprocal_rank": 0.025336252736940852,
+  "mean_top1_tanimoto": 0.1126102750389206,
+  "model": "massformer",
+  "n_expected_queries": 170,
+  "n_queries_completed": 2,
+  "n_rank_valid_queries": 2,
+  "query_results": "casmi2022_massformer_harmonized_query_results.csv",
+  "score_name": "binned_cosine_1Da",
+  "shard_query_files": [
+    "results/harmonized_sota_candidate_reruns_v1/massformer/shard_011_020/casmi2022_massformer_harmonized_query_results.csv",
+    "results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_query_results.csv"
+  ],
+  "shard_top_prediction_files": [
+    "results/harmonized_sota_candidate_reruns_v1/massformer/shard_011_020/casmi2022_massformer_harmonized_top_predictions.csv",
+    "results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_top_predictions.csv"
+  ],
+  "stage": "harmonized_sota_candidate_reruns_v1",
+  "status": "partial_harmonized_candidate_rerun",
+  "top10_accuracy": 0.0,
+  "top1_accuracy": 0.0,
+  "top5_accuracy": 0.0,
+  "top_predictions": "casmi2022_massformer_harmonized_top_predictions.csv",
+  "top_predictions_per_query_stored": 100,
+  "total_candidate_rows_scored": 1344,
+  "total_failed_predictions": 0
+}

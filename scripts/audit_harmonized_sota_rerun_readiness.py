@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CASMI_DIR = ROOT / "data" / "proc" / "casmi_2022"
 EXTERNAL_ROOT = Path("/home/zhome/ec_structure/external_ms_models")
 OUTDIR = ROOT / "results" / "harmonized_sota_rerun_audit_v1"
+DIRECT_RERUN_DIR = ROOT / "results" / "harmonized_sota_candidate_reruns_v1"
 
 
 def json_safe(value: Any) -> Any:
@@ -71,6 +72,15 @@ def run_json(cmd: list[str], timeout: int) -> dict[str, Any]:
     }
 
 
+def read_json(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+
+
 def casmi_manifest() -> dict[str, Any]:
     spec = pd.read_pickle(CASMI_DIR / "spec_df.pkl")
     cand = pd.read_pickle(CASMI_DIR / "cand_df.pkl")
@@ -117,6 +127,17 @@ def build_rows(manifest: dict[str, Any], smoke: dict[str, dict[str, Any]]) -> li
     rows = []
     iceberg_result = smoke.get("ICEBERG", {})
     iceberg_ok = smoke_status(iceberg_result) == "predicted_spectrum" and peak_count(iceberg_result) > 0
+    iceberg_direct = read_json(DIRECT_RERUN_DIR / "iceberg" / "audit_summary.json")
+    iceberg_direct_complete = iceberg_direct.get("status") == "completed_harmonized_candidate_rerun"
+    iceberg_current_status = (
+        "completed_harmonized_candidate_rerun"
+        if iceberg_direct_complete
+        else (
+            f"direct_rerun_{iceberg_direct.get('status')}"
+            if iceberg_direct
+            else "wrapper_smoke_passed_full_candidate_rerun_not_started" if iceberg_ok else "wrapper_smoke_failed"
+        )
+    )
     rows.append(
         {
             "model": "ICEBERG",
@@ -129,18 +150,39 @@ def build_rows(manifest: dict[str, Any], smoke: dict[str, dict[str, Any]]) -> li
             "smoke_status": smoke_status(iceberg_result),
             "smoke_predicted_peak_count": peak_count(iceberg_result),
             "smoke_error_message": smoke_error(iceberg_result),
+            "direct_rerun_status": iceberg_direct.get("status", "not_started"),
+            "direct_rerun_rank_valid_queries": iceberg_direct.get("n_rank_valid_queries", 0),
+            "direct_rerun_expected_queries": iceberg_direct.get("n_expected_queries", 0),
+            "direct_rerun_candidate_limit": iceberg_direct.get("candidate_limit", ""),
             "harmonized_candidate_set": "data/proc/casmi_2022/spec_df.pkl + cand_df.pkl + all_smiles.txt",
             **manifest,
-            "current_status": "wrapper_smoke_passed_full_candidate_rerun_not_started" if iceberg_ok else "wrapper_smoke_failed",
-            "claim_status": "blocked_until_harmonized_rerun_completes",
+            "current_status": iceberg_current_status,
+            "claim_status": "direct_harmonized_rerun_complete" if iceberg_direct_complete else "blocked_until_harmonized_rerun_completes",
             "required_outputs": "candidate-level predictions plus query-level Top-1/Top-5/Top-10/MRR/Tanimoto/formula metrics on the same CASMI candidate set",
-            "required_next_step": "Implement and run a resumable batch/shard ICEBERG candidate-set predictor; do not use per-candidate smoke output as ranking evidence.",
-            "harmonized_rerun_complete": False,
+            "required_next_step": (
+                "No further ICEBERG rerun step required before final summarization."
+                if iceberg_direct_complete
+                else "Continue the resumable ICEBERG candidate-set query shards until all supported queries complete."
+                if iceberg_direct
+                else "Implement and run a resumable batch/shard ICEBERG candidate-set predictor; do not use per-candidate smoke output as ranking evidence."
+            ),
+            "harmonized_rerun_complete": bool(iceberg_direct_complete),
         }
     )
 
     massformer_result = smoke.get("MassFormer", {})
     massformer_ok = smoke_status(massformer_result) == "predicted_spectrum" and peak_count(massformer_result) > 0
+    massformer_direct = read_json(DIRECT_RERUN_DIR / "massformer" / "audit_summary.json")
+    massformer_direct_complete = massformer_direct.get("status") == "completed_harmonized_candidate_rerun"
+    massformer_current_status = (
+        "completed_harmonized_candidate_rerun"
+        if massformer_direct_complete
+        else (
+            f"direct_rerun_{massformer_direct.get('status')}"
+            if massformer_direct
+            else "wrapper_smoke_passed_full_candidate_rerun_not_started" if massformer_ok else "wrapper_runs_but_no_positive_intensity_peaks"
+        )
+    )
     rows.append(
         {
             "model": "MassFormer",
@@ -153,17 +195,25 @@ def build_rows(manifest: dict[str, Any], smoke: dict[str, dict[str, Any]]) -> li
             "smoke_status": smoke_status(massformer_result),
             "smoke_predicted_peak_count": peak_count(massformer_result),
             "smoke_error_message": smoke_error(massformer_result),
+            "direct_rerun_status": massformer_direct.get("status", "not_started"),
+            "direct_rerun_rank_valid_queries": massformer_direct.get("n_rank_valid_queries", 0),
+            "direct_rerun_expected_queries": massformer_direct.get("n_expected_queries", 0),
+            "direct_rerun_candidate_limit": massformer_direct.get("candidate_limit", ""),
             "harmonized_candidate_set": "data/proc/casmi_2022/spec_df.pkl + cand_df.pkl + all_smiles.txt",
             **manifest,
-            "current_status": "wrapper_smoke_passed_full_candidate_rerun_not_started" if massformer_ok else "wrapper_runs_but_no_positive_intensity_peaks",
-            "claim_status": "blocked_until_harmonized_rerun_completes",
+            "current_status": massformer_current_status,
+            "claim_status": "direct_harmonized_rerun_complete" if massformer_direct_complete else "blocked_until_harmonized_rerun_completes",
             "required_outputs": "candidate-level predictions plus query-level Top-1/Top-5/Top-10/MRR/Tanimoto/formula metrics on the same CASMI candidate set",
             "required_next_step": (
-                "Implement and run a resumable batch/shard MassFormer candidate-set predictor; do not use smoke output as ranking evidence."
+                "No further MassFormer rerun step required before final summarization."
+                if massformer_direct_complete
+                else "Continue the resumable MassFormer candidate-set query shards until all supported queries complete."
+                if massformer_direct
+                else "Implement and run a resumable batch/shard MassFormer candidate-set predictor; do not use smoke output as ranking evidence."
                 if massformer_ok
                 else "Locate a validated MassFormer checkpoint/config that emits positive-intensity spectra before any harmonized ranking run."
             ),
-            "harmonized_rerun_complete": False,
+            "harmonized_rerun_complete": bool(massformer_direct_complete),
         }
     )
 
@@ -179,6 +229,10 @@ def build_rows(manifest: dict[str, Any], smoke: dict[str, dict[str, Any]]) -> li
             "smoke_status": "not_run_no_validated_wrapper",
             "smoke_predicted_peak_count": 0,
             "smoke_error_message": "NEIMS/FFN source and configs exist, but no validated FragAnnotor-compatible NEIMS wrapper/checkpoint was found.",
+            "direct_rerun_status": "not_started",
+            "direct_rerun_rank_valid_queries": 0,
+            "direct_rerun_expected_queries": 0,
+            "direct_rerun_candidate_limit": "",
             "neims_predict_script": str(neims_predict),
             "neims_predict_script_exists": neims_predict.exists(),
             "neims_config_count": len(neims_configs),
@@ -205,7 +259,7 @@ def main() -> None:
     args.outdir.mkdir(parents=True, exist_ok=True)
     manifest = casmi_manifest()
     smoke_root = EXTERNAL_ROOT / "outputs" / "harmonized_sota_rerun_smoke"
-    smoke: dict[str, dict[str, Any]] = {}
+    smoke: dict[str, dict[str, Any]] = read_json(args.outdir / "wrapper_smoke_results.json") if args.skip_smoke else {}
     if not args.skip_smoke:
         smoke_smiles = str(manifest["smoke_query_smiles"])
         smoke_precursor_mz = str(manifest["smoke_query_precursor_mz"])
