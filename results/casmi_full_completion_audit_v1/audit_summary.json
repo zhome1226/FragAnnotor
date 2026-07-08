@@ -8,7 +8,11 @@
   "full_objective_complete": false,
   "harmonized_sota_reruns_complete": false,
   "mna_strategy_defined": true,
-  "ms2deepscore_full_hybrid_ready": true,
+  "ms2deepscore_full_hybrid_expected_queries": 170,
+  "ms2deepscore_full_hybrid_inputs_ready": true,
+  "ms2deepscore_full_hybrid_rank_valid_queries": 112,
+  "ms2deepscore_full_hybrid_ready": false,
+  "ms2deepscore_full_hybrid_status": "partial_full_supported_hybrid",
   "ms2deepscore_full_native_ready": false,
   "outputs": [
     "full_completion_status.csv",

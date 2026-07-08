@@ -23,6 +23,12 @@ COMPLETE_QUERY_HYBRID_AUDIT = (
     / "casmi2022_cfmid_ms2deepscore_complete_query_hybrid_subset_v1"
     / "audit_summary.json"
 )
+FULL_SUPPORTED_HYBRID_AUDIT = (
+    ROOT
+    / "results"
+    / "casmi2022_cfmid_ms2deepscore_full_supported_hybrid_v1"
+    / "audit_summary.json"
+)
 
 
 def package_version(package: str) -> str:
@@ -127,9 +133,17 @@ def main() -> None:
     external_model = external_model_manifest()
     external_env = external_environment_probe()
     complete_query_hybrid = read_json(COMPLETE_QUERY_HYBRID_AUDIT)
+    full_supported_hybrid = read_json(FULL_SUPPORTED_HYBRID_AUDIT)
+    full_hybrid_status = str(full_supported_hybrid.get("status", ""))
+    if full_hybrid_status == "completed_full_supported_hybrid":
+        status = "blocked_native_library_missing_full_cfmid_hybrid_complete"
+    elif full_supported_hybrid:
+        status = "blocked_native_library_missing_cfmid_hybrid_partial"
+    else:
+        status = "blocked_full_casmi_no_candidate_spectrum_library"
     audit = {
         "stage": "native_ms2deepscore_casmi_audit_v1",
-        "status": "blocked_full_casmi_no_candidate_spectrum_library",
+        "status": status,
         "package_installed": ms2_installed,
         "package_version": package_version("ms2deepscore"),
         "matchms_installed": matchms_installed,
@@ -156,7 +170,8 @@ def main() -> None:
             "Report generator coverage, failed candidates, adduct/ion-mode assumptions, and candidate_limit if any.",
         ],
         "complete_query_hybrid_subset": complete_query_hybrid,
-        "benchmark_decision": "Do not report full-CASMI native MS2DeepScore Top-k metrics yet. MS2DeepScore scores spectrum pairs; the pretrained model and CPU environment are externally available/verified, and a CFM-ID-generated complete-query hybrid subset is available when cached candidate spectra exist. The full CASMI structure-candidate benchmark still lacks a complete per-candidate measured or predicted spectrum library. CFM-ID predicted spectra must be labeled as a CFM-ID plus MS2DeepScore hybrid baseline rather than native MS2DeepScore.",
+        "full_supported_cfmid_hybrid": full_supported_hybrid,
+        "benchmark_decision": "Do not report full-CASMI native MS2DeepScore Top-k metrics. MS2DeepScore scores spectrum pairs; the pretrained model and CPU environment are externally available/verified, and CFM-ID-generated hybrid outputs are valid only when labeled as CFM-ID plus MS2DeepScore. The native CASMI structure-candidate benchmark still lacks a complete per-candidate measured or non-CFM-ID predicted spectrum library independent of CFM-ID.",
         "environment": {"python": sys.version, "platform": platform.platform()},
     }
     write_json(args.outdir / "native_ms2deepscore_audit.json", audit)
@@ -176,6 +191,9 @@ def main() -> None:
                 "external_model_cache_present": external_model.get("all_required_files_present"),
                 "candidate_spectrum_library_artifact_count": len(artifacts),
                 "complete_query_hybrid_subset_available": bool(complete_query_hybrid),
+                "full_supported_cfmid_hybrid_status": full_hybrid_status,
+                "full_supported_cfmid_hybrid_completed_queries": full_supported_hybrid.get("n_rank_valid_queries", ""),
+                "full_supported_cfmid_hybrid_supported_queries": full_supported_hybrid.get("n_supported_queries", ""),
                 "benchmark_decision": audit["benchmark_decision"],
             }
         ]
@@ -183,7 +201,8 @@ def main() -> None:
     (args.outdir / "native_ms2deepscore_audit.md").write_text(
         "# Native MS2DeepScore CASMI Audit\n\n"
         f"Status: `{audit['status']}`\n\n"
-        "MS2DeepScore is a spectrum-to-spectrum similarity model. The current CASMI2022 benchmark is a structure-candidate ranking task. The pretrained environment is verified, and a CFM-ID-generated complete-query hybrid subset is available, but no complete full-CASMI per-candidate spectrum library is present.\n\n"
+        "MS2DeepScore is a spectrum-to-spectrum similarity model. The current CASMI2022 benchmark is a structure-candidate ranking task. The pretrained environment is verified, and CFM-ID-generated hybrid scoring is tracked separately, but no complete full-CASMI per-candidate spectrum library independent of CFM-ID is present.\n\n"
+        f"Full-supported CFM-ID + MS2DeepScore hybrid status: `{full_hybrid_status or 'not_available'}`.\n\n"
         f"{audit['benchmark_decision']}\n\n"
         "## Hybrid Baseline Protocol\n\n"
         + "\n".join(f"- {step}" for step in audit["hybrid_baseline_protocol"])

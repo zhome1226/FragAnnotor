@@ -27,6 +27,13 @@ CASMI_DIR = ROOT / "data" / "proc" / "casmi_2022"
 MANIFEST_DIR = ROOT / "results" / "cfmid_precomputed_full_casmi_manifest_v1"
 CFMID_RUN_DIR = ROOT / "results" / "casmi2022_cfmid_native_precomputed_full_v1"
 MS2_AUDIT = ROOT / "results" / "native_ms2deepscore_casmi" / "native_ms2deepscore_audit.json"
+FULL_MS2_HYBRID_AUDIT = (
+    ROOT
+    / "results"
+    / "casmi2022_cfmid_ms2deepscore_full_supported_hybrid_v1"
+    / "audit_summary.json"
+)
+SOTA_RERUN_AUDIT = ROOT / "results" / "harmonized_sota_rerun_audit_v1" / "harmonized_sota_rerun_readiness.csv"
 OUTDIR = ROOT / "results" / "casmi_full_completion_audit_v1"
 
 
@@ -245,12 +252,21 @@ def ms2deepscore_readiness(
     audit = read_json(MS2_AUDIT)
     env = audit.get("external_ms2deepscore_environment", {})
     model_cache = audit.get("external_pretrained_model_cache", {})
+    full_hybrid = read_json(FULL_MS2_HYBRID_AUDIT)
     candidate_total = int(cfmid_summary.get("expected_unique_candidate_spectra", 0) or 0)
     candidate_done = int(cfmid_summary.get("completed_candidate_spectra", 0) or 0)
     supported_queries = int(cfmid_summary.get("n_supported_queries", 0) or 0)
     completed_queries = int(cfmid_summary.get("n_completed_queries", 0) or 0)
     full_cfmid_library_ready = candidate_total > 0 and candidate_done >= candidate_total
     full_query_cache_ready = supported_queries > 0 and completed_queries >= supported_queries
+    full_hybrid_status = str(full_hybrid.get("status", "not_started"))
+    full_hybrid_expected = int(full_hybrid.get("n_supported_queries", supported_queries) or 0)
+    full_hybrid_completed = int(full_hybrid.get("n_rank_valid_queries", 0) or 0)
+    full_hybrid_scoring_complete = (
+        full_hybrid_status == "completed_full_supported_hybrid"
+        and full_hybrid_expected > 0
+        and full_hybrid_completed >= full_hybrid_expected
+    )
     rows = [
         {
             "gate": "MS2DeepScore package and pretrained model",
@@ -282,24 +298,48 @@ def ms2deepscore_readiness(
                 "otherwise label the benchmark as CFM-ID + MS2DeepScore hybrid."
             ),
         },
+        {
+            "gate": "full-supported CFM-ID + MS2DeepScore hybrid scoring",
+            "ready": bool(full_hybrid_scoring_complete),
+            "evidence": (
+                f"status={full_hybrid_status}; "
+                f"rank_valid_queries={full_hybrid_completed}/{full_hybrid_expected}"
+            ),
+            "required_next_step": (
+                "none for full-supported hybrid scoring"
+                if full_hybrid_scoring_complete
+                else "run/merge remaining CFM-ID + MS2DeepScore full-supported hybrid shards"
+            ),
+        },
     ]
     readiness = {
         "full_casmi_native_ms2deepscore_ready": False,
-        "full_casmi_cfmid_ms2deepscore_hybrid_ready": bool(
+        "full_casmi_cfmid_ms2deepscore_hybrid_inputs_ready": bool(
             env.get("status") == "verified"
             and model_cache.get("all_required_files_present")
             and full_cfmid_library_ready
             and full_query_cache_ready
         ),
+        "full_casmi_cfmid_ms2deepscore_hybrid_ready": bool(full_hybrid_scoring_complete),
+        "full_casmi_cfmid_ms2deepscore_hybrid_status": full_hybrid_status,
+        "full_casmi_cfmid_ms2deepscore_hybrid_rank_valid_queries": full_hybrid_completed,
+        "full_casmi_cfmid_ms2deepscore_hybrid_expected_queries": full_hybrid_expected,
         "completed_candidate_spectra": candidate_done,
         "expected_candidate_spectra": candidate_total,
-        "remaining_candidate_spectrum_shards": int((~shard_df["status"].eq("completed")).sum()) if not shard_df.empty else 0,
-        "remaining_supported_query_rankings": int((~query_df["completed"]).sum()) if not query_df.empty else 0,
+        "remaining_candidate_spectrum_shards": 0
+        if full_cfmid_library_ready
+        else int((~shard_df["status"].eq("completed")).sum()) if not shard_df.empty else 0,
+        "remaining_supported_query_rankings": 0
+        if full_query_cache_ready
+        else int((~query_df["completed"]).sum()) if not query_df.empty else 0,
     }
     return pd.DataFrame(rows), readiness
 
 
 def harmonized_sota_rerun_manifest() -> pd.DataFrame:
+    audit_df = read_csv(SOTA_RERUN_AUDIT)
+    if not audit_df.empty:
+        return audit_df
     external_root = Path("/home/zhome/ec_structure/external_ms_models")
     models = [
         {
@@ -312,7 +352,7 @@ def harmonized_sota_rerun_manifest() -> pd.DataFrame:
         {
             "model": "MassFormer",
             "local_resource": external_root / "vendor" / "massformer",
-            "env": external_root / "envs" / "massformer",
+            "env": external_root / "envs" / "massformer_sys",
             "current_status": "resource_detected_not_harmonized",
             "required_wrapper": "CASMI candidate-set inference wrapper for all 229 queries and all candidate structures",
         },
@@ -398,7 +438,9 @@ def write_runbook(
         "",
         f"Full native MS2DeepScore ready: `{ms2_ready['full_casmi_native_ms2deepscore_ready']}`.",
         f"Full CFM-ID + MS2DeepScore hybrid ready: `{ms2_ready['full_casmi_cfmid_ms2deepscore_hybrid_ready']}`.",
-        "The hybrid can run only after the full CFM-ID candidate spectrum library and all supported-query coverage are complete.",
+        f"Full CFM-ID + MS2DeepScore hybrid inputs ready: `{ms2_ready['full_casmi_cfmid_ms2deepscore_hybrid_inputs_ready']}`.",
+        f"Full CFM-ID + MS2DeepScore hybrid scoring progress: `{ms2_ready['full_casmi_cfmid_ms2deepscore_hybrid_rank_valid_queries']}/{ms2_ready['full_casmi_cfmid_ms2deepscore_hybrid_expected_queries']}`.",
+        "The hybrid is complete only after the merged full-supported hybrid audit reports `completed_full_supported_hybrid`.",
         "",
         "## Harmonized ICEBERG/MassFormer/NEIMS",
         "",
@@ -418,6 +460,17 @@ def main() -> None:
     unsupported_df = unsupported_adduct_strategy()
     ms2_gate_df, ms2_ready = ms2deepscore_readiness(cfmid_summary, shard_df, query_df)
     sota_df = harmonized_sota_rerun_manifest()
+    sota_complete = (
+        bool(sota_df["harmonized_rerun_complete"].astype(bool).all())
+        if "harmonized_rerun_complete" in sota_df.columns and not sota_df.empty
+        else False
+    )
+    if "current_status" in sota_df.columns and "model" in sota_df.columns and not sota_df.empty:
+        sota_evidence = "; ".join(
+            f"{row.model}: {row.current_status}" for row in sota_df[["model", "current_status"]].itertuples(index=False)
+        )
+    else:
+        sota_evidence = "local resources detected for ICEBERG/MassFormer; no harmonized FragAnnotor candidate-set rerun outputs exist"
 
     remaining_shards = shard_df[~shard_df["status"].eq("completed")].copy() if not shard_df.empty else pd.DataFrame()
     remaining_queries = query_df[~query_df["completed"]].copy() if not query_df.empty else pd.DataFrame()
@@ -425,12 +478,12 @@ def main() -> None:
     candidate_done = int(cfmid_summary.get("completed_candidate_spectra", 0) or 0)
     supported_queries = int(cfmid_summary.get("n_supported_queries", 0) or 0)
     completed_queries = int(cfmid_summary.get("n_completed_queries", 0) or 0)
-    cfmid_candidate_complete = (
-        candidate_total > 0 and candidate_done >= candidate_total and len(remaining_shards) == 0
-    )
-    cfmid_supported_queries_complete = (
-        supported_queries > 0 and completed_queries >= supported_queries and len(remaining_queries) == 0
-    )
+    cfmid_candidate_complete = candidate_total > 0 and candidate_done >= candidate_total
+    cfmid_supported_queries_complete = supported_queries > 0 and completed_queries >= supported_queries
+    if cfmid_candidate_complete:
+        remaining_shards = remaining_shards.iloc[0:0].copy()
+    if cfmid_supported_queries_complete:
+        remaining_queries = remaining_queries.iloc[0:0].copy()
     cfmid_full_supported_complete = cfmid_candidate_complete and cfmid_supported_queries_complete
     full_status_rows = [
         {
@@ -460,22 +513,35 @@ def main() -> None:
         },
         {
             "requirement": "MS2DeepScore full CASMI candidate spectrum library",
-            "status": "cfmid_hybrid_library_ready_native_library_missing"
-            if ms2_ready["full_casmi_cfmid_ms2deepscore_hybrid_ready"]
-            else "blocked_until_candidate_library_complete",
+            "status": (
+                "cfmid_hybrid_scoring_complete_native_library_missing"
+                if ms2_ready["full_casmi_cfmid_ms2deepscore_hybrid_ready"]
+                else (
+                    "cfmid_hybrid_scoring_in_progress_native_library_missing"
+                    if ms2_ready["full_casmi_cfmid_ms2deepscore_hybrid_inputs_ready"]
+                    else "blocked_until_candidate_library_complete"
+                )
+            ),
             "current_evidence": (
-                f"MS2DeepScore env verified, but hybrid library coverage is "
-                f"{ms2_ready['completed_candidate_spectra']}/{ms2_ready['expected_candidate_spectra']}"
+                f"MS2DeepScore env verified; hybrid input library coverage is "
+                f"{ms2_ready['completed_candidate_spectra']}/{ms2_ready['expected_candidate_spectra']}; "
+                f"hybrid scoring progress is "
+                f"{ms2_ready['full_casmi_cfmid_ms2deepscore_hybrid_rank_valid_queries']}/"
+                f"{ms2_ready['full_casmi_cfmid_ms2deepscore_hybrid_expected_queries']}"
             ),
             "completion_gate": "complete independent native library, or complete CFM-ID library and label as hybrid",
-            "next_action": "complete CFM-ID spectra for hybrid MS2DeepScore; provide independent spectra for native MS2DeepScore",
+            "next_action": (
+                "provide independent spectra for native MS2DeepScore"
+                if ms2_ready["full_casmi_cfmid_ms2deepscore_hybrid_ready"]
+                else "run/merge remaining full-supported CFM-ID + MS2DeepScore hybrid shards; provide independent spectra for native MS2DeepScore"
+            ),
         },
         {
             "requirement": "ICEBERG/MassFormer/NEIMS harmonized candidate-set reruns",
-            "status": "blocked_until_wrappers_run",
-            "current_evidence": "local resources detected for ICEBERG/MassFormer; no harmonized FragAnnotor candidate-set rerun outputs exist",
+            "status": "completed" if sota_complete else "blocked_until_harmonized_rerun_outputs_exist",
+            "current_evidence": sota_evidence,
             "completion_gate": "candidate-level and query-level outputs on the same CASMI candidate set for all three models",
-            "next_action": "build/run harmonized inference wrappers using data/proc/casmi_2022 inputs",
+            "next_action": "none" if sota_complete else "run resumable ICEBERG/MassFormer candidate-set shards and add a validated NEIMS wrapper/checkpoint",
         },
     ]
     full_status_df = pd.DataFrame(full_status_rows)
@@ -497,8 +563,12 @@ def main() -> None:
         "cfmid_candidate_spectra_complete": bool(cfmid_candidate_complete),
         "mna_strategy_defined": True,
         "ms2deepscore_full_native_ready": ms2_ready["full_casmi_native_ms2deepscore_ready"],
+        "ms2deepscore_full_hybrid_inputs_ready": ms2_ready["full_casmi_cfmid_ms2deepscore_hybrid_inputs_ready"],
         "ms2deepscore_full_hybrid_ready": ms2_ready["full_casmi_cfmid_ms2deepscore_hybrid_ready"],
-        "harmonized_sota_reruns_complete": False,
+        "ms2deepscore_full_hybrid_status": ms2_ready["full_casmi_cfmid_ms2deepscore_hybrid_status"],
+        "ms2deepscore_full_hybrid_rank_valid_queries": ms2_ready["full_casmi_cfmid_ms2deepscore_hybrid_rank_valid_queries"],
+        "ms2deepscore_full_hybrid_expected_queries": ms2_ready["full_casmi_cfmid_ms2deepscore_hybrid_expected_queries"],
+        "harmonized_sota_reruns_complete": sota_complete,
         "cfmid_completed_queries": cfmid_summary.get("n_completed_queries", 0),
         "cfmid_supported_queries": cfmid_summary.get("n_supported_queries", 0),
         "cfmid_completed_candidate_spectra": cfmid_summary.get("completed_candidate_spectra", 0),
