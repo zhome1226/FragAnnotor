@@ -3,23 +3,29 @@
   "candidate_pool_policy": "full_query_candidate_set",
   "claim_guardrail": "This is a harmonized direct rerun only when candidate_limit == -1 and status == completed_harmonized_candidate_rerun.",
   "dataset": "CASMI2022",
-  "formula_accuracy": 0.625,
-  "mean_reciprocal_rank": 0.00486205740139165,
-  "mean_top1_tanimoto": 0.12401229782763779,
+  "formula_accuracy": 0.631578947368421,
+  "mean_reciprocal_rank": 0.00416142174336058,
+  "mean_top1_tanimoto": 0.11524582414858452,
   "model": "massformer",
   "n_expected_queries": 170,
-  "n_queries_completed": 16,
-  "n_rank_valid_queries": 16,
+  "n_queries_completed": 38,
+  "n_rank_valid_queries": 38,
   "query_results": "casmi2022_massformer_harmonized_query_results.csv",
   "score_name": "binned_cosine_1Da",
   "shard_query_files": [
     "results/harmonized_sota_candidate_reruns_v1/massformer/shard_001_010/casmi2022_massformer_harmonized_query_results.csv",
     "results/harmonized_sota_candidate_reruns_v1/massformer/shard_011_020/casmi2022_massformer_harmonized_query_results.csv",
+    "results/harmonized_sota_candidate_reruns_v1/massformer/shard_021_030/casmi2022_massformer_harmonized_query_results.csv",
+    "results/harmonized_sota_candidate_reruns_v1/massformer/shard_031_040/casmi2022_massformer_harmonized_query_results.csv",
+    "results/harmonized_sota_candidate_reruns_v1/massformer/shard_041_045/casmi2022_massformer_harmonized_query_results.csv",
     "results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_query_results.csv"
   ],
   "shard_top_prediction_files": [
     "results/harmonized_sota_candidate_reruns_v1/massformer/shard_001_010/casmi2022_massformer_harmonized_top_predictions.csv",
     "results/harmonized_sota_candidate_reruns_v1/massformer/shard_011_020/casmi2022_massformer_harmonized_top_predictions.csv",
+    "results/harmonized_sota_candidate_reruns_v1/massformer/shard_021_030/casmi2022_massformer_harmonized_top_predictions.csv",
+    "results/harmonized_sota_candidate_reruns_v1/massformer/shard_031_040/casmi2022_massformer_harmonized_top_predictions.csv",
+    "results/harmonized_sota_candidate_reruns_v1/massformer/shard_041_045/casmi2022_massformer_harmonized_top_predictions.csv",
     "results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_top_predictions.csv"
   ],
   "stage": "harmonized_sota_candidate_reruns_v1",
@@ -29,6 +35,6 @@
   "top5_accuracy": 0.0,
   "top_predictions": "casmi2022_massformer_harmonized_top_predictions.csv",
   "top_predictions_per_query_stored": 100,
-  "total_candidate_rows_scored": 91164,
-  "total_failed_predictions": 27
+  "total_candidate_rows_scored": 228647,
+  "total_failed_predictions": 34
 }

@@ -1,25 +1,25 @@
-# CASMI2022 iceberg Harmonized Candidate-Set Rerun
+# CASMI2022 massformer Harmonized Candidate-Set Rerun
 
 This is a harmonized direct rerun only when candidate_limit == -1 and status == completed_harmonized_candidate_rerun.
 
 ## Summary
 
 - `dataset`: `CASMI2022`
-- `model`: `iceberg`
+- `model`: `massformer`
 - `status`: `partial_harmonized_candidate_rerun`
 - `n_expected_queries`: `170`
-- `n_queries_completed`: `17`
-- `n_rank_valid_queries`: `17`
+- `n_queries_completed`: `9`
+- `n_rank_valid_queries`: `9`
 - `candidate_limit`: `-1`
 - `candidate_pool_policy`: `full_query_candidate_set`
 - `score_name`: `binned_cosine_1Da`
 - `top1_accuracy`: `0.0`
-- `top5_accuracy`: `0.29411764705882354`
-- `top10_accuracy`: `0.29411764705882354`
-- `mean_reciprocal_rank`: `0.0840673978025669`
-- `mean_top1_tanimoto`: `0.22267738342511004`
-- `formula_accuracy`: `0.8235294117647058`
-- `total_candidate_rows_scored`: `94240`
-- `total_failed_predictions`: `13`
+- `top5_accuracy`: `0.0`
+- `top10_accuracy`: `0.0`
+- `mean_reciprocal_rank`: `0.003737552403757938`
+- `mean_top1_tanimoto`: `0.1098641019498271`
+- `formula_accuracy`: `0.5555555555555556`
+- `total_candidate_rows_scored`: `59648`
+- `total_failed_predictions`: `1`
 - `top_predictions_per_query_stored`: `100`
 - `claim_guardrail`: `This is a harmonized direct rerun only when candidate_limit == -1 and status == completed_harmonized_candidate_rerun.`

@@ -8,18 +8,18 @@ This is a harmonized direct rerun only when candidate_limit == -1 and status == 
 - `model`: `iceberg`
 - `status`: `partial_harmonized_candidate_rerun`
 - `n_expected_queries`: `170`
-- `n_queries_completed`: `17`
-- `n_rank_valid_queries`: `17`
+- `n_queries_completed`: `5`
+- `n_rank_valid_queries`: `5`
 - `candidate_limit`: `-1`
 - `candidate_pool_policy`: `full_query_candidate_set`
 - `score_name`: `binned_cosine_1Da`
 - `top1_accuracy`: `0.0`
-- `top5_accuracy`: `0.29411764705882354`
-- `top10_accuracy`: `0.29411764705882354`
-- `mean_reciprocal_rank`: `0.0840673978025669`
-- `mean_top1_tanimoto`: `0.22267738342511004`
-- `formula_accuracy`: `0.8235294117647058`
-- `total_candidate_rows_scored`: `94240`
-- `total_failed_predictions`: `13`
+- `top5_accuracy`: `0.4`
+- `top10_accuracy`: `0.4`
+- `mean_reciprocal_rank`: `0.1033710707623751`
+- `mean_top1_tanimoto`: `0.15121837656014872`
+- `formula_accuracy`: `1.0`
+- `total_candidate_rows_scored`: `32386`
+- `total_failed_predictions`: `0`
 - `top_predictions_per_query_stored`: `100`
 - `claim_guardrail`: `This is a harmonized direct rerun only when candidate_limit == -1 and status == completed_harmonized_candidate_rerun.`
