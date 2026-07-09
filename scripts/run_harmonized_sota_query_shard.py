@@ -335,7 +335,7 @@ def massformer_predict_chunk(
         str(args.massformer_python),
         "scripts/run_inference.py",
         "-d",
-        "-1",
+        str(args.massformer_device_id),
         "-c",
         str(args.massformer_config.relative_to(MASSFORMER_DIR) if args.massformer_config.is_relative_to(MASSFORMER_DIR) else args.massformer_config),
         "-s",
@@ -597,6 +597,7 @@ def main() -> None:
     parser.add_argument("--iceberg-inten-checkpoint", type=Path, default=ICEBERG_INTEN_CKPT)
     parser.add_argument("--massformer-python", type=Path, default=MASSFORMER_PYTHON)
     parser.add_argument("--massformer-config", type=Path, default=MASSFORMER_CONFIG)
+    parser.add_argument("--massformer-device-id", type=int, default=-1, help="MassFormer device id: -1 for CPU, 0 for cuda:0.")
     args = parser.parse_args()
 
     if not args.outdir.is_absolute():
