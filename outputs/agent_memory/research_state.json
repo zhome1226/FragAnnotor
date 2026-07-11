@@ -28,15 +28,15 @@
       "latest_shard": "shard_056_060",
       "latest_status": "partial_prediction_failures"
     },
-    "last_updated_utc": "2026-07-11T13:50:23.856812+00:00",
-    "latest_commit_before_update": "e14361658",
+    "last_updated_utc": "2026-07-11T13:57:57.535017+00:00",
+    "latest_commit_before_update": "2537a479f",
     "massformer": {
-      "completed_or_partial_queries": 130,
+      "completed_or_partial_queries": 131,
       "expected_queries": 170,
       "failed_predictions": 1392,
-      "latest_query_id": "180",
+      "latest_query_id": "181",
       "latest_shard": "shard_126_135",
-      "latest_status": "partial_prediction_failures"
+      "latest_status": "completed"
     },
     "neims": {
       "status": "unavailable_audited_no_validated_checkpoint_wrapper"
