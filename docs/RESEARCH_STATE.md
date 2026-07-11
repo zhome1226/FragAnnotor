@@ -43,7 +43,7 @@ Continue MassFormer and ICEBERG remote shards until the matched 170-query Sectio
 - Stage 2 / Section 3.1 FragAnnotator-only package is complete.
 - Stage 3.2 matched input manifest is frozen with available matched outputs for FragAnnotator, SIRIUS formula-only, native CFM-ID, and CFM-ID-generated candidate spectra + MS2DeepScore similarity hybrid.
 - Harmonized MassFormer and ICEBERG remain partial/running remotely; partial outputs are not manuscript-ready main-table evidence.
-- NEIMS remains unavailable unless a validated checkpoint and wrapper are confirmed.
+- NEIMS was audited and remains unavailable: NEIMS config templates exist in the remote `ms-pred` vendor trees, but no traceable pretrained NEIMS checkpoint or validated candidate-level inference wrapper was found. It must be excluded from the Section 3.2 main table unless a checkpoint/wrapper is later supplied and audited.
 
 ## Latest Harmonized SOTA Progress
 
@@ -53,11 +53,19 @@ Continue MassFormer and ICEBERG remote shards until the matched 170-query Sectio
 
 ### Harmonized SOTA candidate rerun progress
 
-Last snapshot UTC: 2026-07-11T08:52:46.198495+00:00
+Last snapshot UTC: 2026-07-11T08:57:12.787497+00:00
 
 | Model | Valid supported queries | Query rows | Failed candidate predictions | Status |
 |---|---:|---:|---:|---|
-| MassFormer | 109/170 | 109 | 715 | running resumable shards |
+| MassFormer | 111/170 | 111 | 723 | running resumable shards |
 | ICEBERG | 50/170 | 50 | 67 | running resumable shards |
 
 Partial SOTA reruns remain excluded from manuscript main comparison tables until each model reaches the frozen 170-query set or has a documented unrecoverable failure audit.
+
+
+## NEIMS Availability Audit
+
+- Status: unavailable for Section 3.2 main comparison.
+- Audit file: `results/manuscript_3_2_harmonized_comparison/NEIMS_UNAVAILABLE_AUDIT.md`
+- Reason: NEIMS-related config templates exist, but no validated pretrained checkpoint or compatible harmonized inference wrapper was found locally or on the remote server.
+- Guardrail: do not fabricate NEIMS results and do not substitute a metadata/fallback/surrogate model as NEIMS.
