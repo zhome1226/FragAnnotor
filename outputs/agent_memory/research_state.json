@@ -37,13 +37,13 @@
       "latest_shard": "shard_056_060",
       "latest_status": "completed"
     },
-    "last_updated_utc": "2026-07-11T17:29:53.628684+00:00",
-    "latest_commit_before_update": "39363cc49",
+    "last_updated_utc": "2026-07-11T17:47:18.759829+00:00",
+    "latest_commit_before_update": "5e2cb15bc",
     "massformer": {
-      "completed_or_partial_queries": 160,
+      "completed_or_partial_queries": 163,
       "expected_queries": 170,
       "failed_predictions": 1465,
-      "latest_query_id": "219",
+      "latest_query_id": "222",
       "latest_shard": "shard_156_165",
       "latest_status": "completed"
     },
