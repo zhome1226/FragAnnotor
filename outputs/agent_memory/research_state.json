@@ -54,6 +54,25 @@
       "timestamp_utc": "2026-07-11T08:56:48.165513+00:00"
     }
   },
+  "manuscript_completion_v1": {
+    "harmonized_sota_rerun_progress": {
+      "iceberg": {
+        "completed_queries": 50,
+        "expected_queries": 170,
+        "failed_prediction_count": 67,
+        "last_query_id": "74",
+        "last_status": "completed"
+      },
+      "massformer": {
+        "completed_queries": 113,
+        "expected_queries": 170,
+        "failed_prediction_count": 725,
+        "last_query_id": "156",
+        "last_status": "completed"
+      }
+    },
+    "last_updated": "2026-07-11T17:11:22+08:00"
+  },
   "massformer_completed_queries": 112,
   "neims_audit_path": "results/manuscript_3_2_harmonized_comparison/NEIMS_UNAVAILABLE_AUDIT.md",
   "neims_ready": false,

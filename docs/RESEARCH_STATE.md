@@ -69,3 +69,10 @@ Partial SOTA reruns remain excluded from manuscript main comparison tables until
 - Audit file: `results/manuscript_3_2_harmonized_comparison/NEIMS_UNAVAILABLE_AUDIT.md`
 - Reason: NEIMS-related config templates exist, but no validated pretrained checkpoint or compatible harmonized inference wrapper was found locally or on the remote server.
 - Guardrail: do not fabricate NEIMS results and do not substitute a metadata/fallback/surrogate model as NEIMS.
+
+## 2026-07-11 Harmonized SOTA Rerun Progress Snapshot
+
+- MassFormer harmonized rerun: 113/170 supported CASMI queries completed; current remote controller is continuing with resumable shard_106_115.
+- ICEBERG harmonized rerun: 50/170 supported CASMI queries completed; remote shard_051_055 and shard_056_060 controllers are still running.
+- Long-running orphaned `bash -c /usr/lib/openssh/sftp-server` processes were terminated on the remote server to release CPU/memory; active FragAnnotor controllers were not stopped.
+- Section 3.2 remains not manuscript-ready until ICEBERG and MassFormer reach the frozen 170-query matched set or produce auditable unrecoverable failures.
