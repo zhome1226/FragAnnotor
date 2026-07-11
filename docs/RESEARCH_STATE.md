@@ -81,11 +81,11 @@ Partial SOTA reruns remain excluded from manuscript main comparison tables until
 
 ## FragAnnotor Manuscript Completion Status
 
-Last updated: 2026-07-11T17:13:07.463892+00:00
+Last updated: 2026-07-11T17:29:53.628684+00:00
 
 Current stage: Section 3.2 harmonized SOTA reruns in progress. The final FragAnnotator definition is frozen as fixed evidence fusion; NEIMS is audited unavailable unless a validated checkpoint/wrapper is later found.
 
-- MassFormer: 157/170 supported queries completed or auditable partial-prediction failures; failed candidate predictions: 1459; latest synced query: 215 (partial_prediction_failures, shard_156_165). Active remote shard: shard_156_165.
+- MassFormer: 160/170 supported queries completed or auditable partial-prediction failures; failed candidate predictions: 1465; latest synced query: 219 (completed, shard_156_165). Active remote shard: shard_156_165.
 - ICEBERG: 57/170 supported queries completed or auditable partial-prediction failures; failed candidate predictions: 69; latest synced query: 83 (completed, shard_056_060). Active remote shards: shard_051_055 and shard_056_060.
 - Manuscript guardrail: partial ICEBERG/MassFormer metrics must not enter the final main comparison table; CFM-ID + MS2DeepScore must be labeled as CFM-ID-generated candidate spectra + MS2DeepScore similarity hybrid.
 
