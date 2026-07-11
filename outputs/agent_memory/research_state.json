@@ -64,14 +64,14 @@
         "last_status": "completed"
       },
       "massformer": {
-        "completed_queries": 113,
+        "completed_queries": 114,
         "expected_queries": 170,
         "failed_prediction_count": 725,
-        "last_query_id": "156",
+        "last_query_id": "157",
         "last_status": "completed"
       }
     },
-    "last_updated": "2026-07-11T17:11:22+08:00"
+    "last_updated": "2026-07-11T17:18:09+08:00"
   },
   "massformer_completed_queries": 112,
   "neims_audit_path": "results/manuscript_3_2_harmonized_comparison/NEIMS_UNAVAILABLE_AUDIT.md",
