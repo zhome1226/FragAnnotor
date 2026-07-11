@@ -18,6 +18,31 @@
     "top1_accuracy": 0.6506550218340611,
     "top5_accuracy": 0.6593886462882096
   },
+  "fragannotator_manuscript_completion": {
+    "guardrail": "Do not use partial ICEBERG or MassFormer metrics in the main manuscript comparison table.",
+    "iceberg": {
+      "completed_or_partial_queries": 54,
+      "expected_queries": 170,
+      "failed_predictions": 69,
+      "latest_query_id": "82",
+      "latest_shard": "shard_056_060",
+      "latest_status": "partial_prediction_failures"
+    },
+    "last_updated_utc": "2026-07-11T13:50:23.856812+00:00",
+    "latest_commit_before_update": "e14361658",
+    "massformer": {
+      "completed_or_partial_queries": 130,
+      "expected_queries": 170,
+      "failed_predictions": 1392,
+      "latest_query_id": "180",
+      "latest_shard": "shard_126_135",
+      "latest_status": "partial_prediction_failures"
+    },
+    "neims": {
+      "status": "unavailable_audited_no_validated_checkpoint_wrapper"
+    },
+    "stage": "3.2_harmonized_sota_reruns_in_progress"
+  },
   "harmonized_sota_progress": {
     "iceberg": {
       "failed_prediction_count": 67,
