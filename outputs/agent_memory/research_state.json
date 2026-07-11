@@ -19,6 +19,15 @@
     "top5_accuracy": 0.6593886462882096
   },
   "fragannotator_manuscript_completion": {
+    "active_remote_shards": {
+      "iceberg": [
+        "shard_051_055",
+        "shard_056_060"
+      ],
+      "massformer": [
+        "shard_136_145"
+      ]
+    },
     "guardrail": "Do not use partial ICEBERG or MassFormer metrics in the main manuscript comparison table.",
     "iceberg": {
       "completed_or_partial_queries": 54,
@@ -28,13 +37,13 @@
       "latest_shard": "shard_056_060",
       "latest_status": "partial_prediction_failures"
     },
-    "last_updated_utc": "2026-07-11T14:25:44.733965+00:00",
-    "latest_commit_before_update": "203aa7250",
+    "last_updated_utc": "2026-07-11T14:42:35.548156+00:00",
+    "latest_commit_before_update": "eaf54b7a1",
     "massformer": {
-      "completed_or_partial_queries": 134,
+      "completed_or_partial_queries": 135,
       "expected_queries": 170,
-      "failed_predictions": 1408,
-      "latest_query_id": "187",
+      "failed_predictions": 1424,
+      "latest_query_id": "188",
       "latest_shard": "shard_126_135",
       "latest_status": "partial_prediction_failures"
     },
