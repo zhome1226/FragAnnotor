@@ -35,6 +35,21 @@
   "hybrid_completed_queries": 170,
   "iceberg_completed_queries": 50,
   "latest_commit": "65f3d562ccc7b699a2f050df7f93b85bbf330b83",
+  "manuscript_completion": {
+    "harmonized_sota_candidate_reruns_v1": {
+      "iceberg": {
+        "failed_prediction_count": 67,
+        "query_rows": 50,
+        "valid_unique_queries": 50
+      },
+      "massformer": {
+        "failed_prediction_count": 715,
+        "query_rows": 109,
+        "valid_unique_queries": 109
+      }
+    },
+    "last_progress_snapshot_utc": "2026-07-11T08:52:46.198495+00:00"
+  },
   "massformer_completed_queries": 109,
   "neims_ready": false,
   "section_3_1_metrics": {

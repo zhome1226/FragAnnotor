@@ -48,3 +48,16 @@ Continue MassFormer and ICEBERG remote shards until the matched 170-query Sectio
 ## Latest Harmonized SOTA Progress
 
 - Harmonized SOTA progress snapshot `2026-07-11T08:48:11.039563+00:00`: MassFormer `109/170`, ICEBERG `50/170`. Partial outputs are not manuscript-ready main-table evidence.
+
+<!-- manuscript_completion_harmonized_sota_progress -->
+
+### Harmonized SOTA candidate rerun progress
+
+Last snapshot UTC: 2026-07-11T08:52:46.198495+00:00
+
+| Model | Valid supported queries | Query rows | Failed candidate predictions | Status |
+|---|---:|---:|---:|---|
+| MassFormer | 109/170 | 109 | 715 | running resumable shards |
+| ICEBERG | 50/170 | 50 | 67 | running resumable shards |
+
+Partial SOTA reruns remain excluded from manuscript main comparison tables until each model reaches the frozen 170-query set or has a documented unrecoverable failure audit.

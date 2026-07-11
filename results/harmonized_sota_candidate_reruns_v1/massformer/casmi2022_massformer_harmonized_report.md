@@ -8,18 +8,18 @@ This is a harmonized direct rerun only when candidate_limit == -1 and status == 
 - `model`: `massformer`
 - `status`: `partial_harmonized_candidate_rerun`
 - `n_expected_queries`: `170`
-- `n_queries_completed`: `38`
-- `n_rank_valid_queries`: `38`
+- `n_queries_completed`: `80`
+- `n_rank_valid_queries`: `80`
 - `candidate_limit`: `-1`
 - `candidate_pool_policy`: `full_query_candidate_set`
 - `score_name`: `binned_cosine_1Da`
 - `top1_accuracy`: `0.0`
-- `top5_accuracy`: `0.0`
-- `top10_accuracy`: `0.0`
-- `mean_reciprocal_rank`: `0.00416142174336058`
-- `mean_top1_tanimoto`: `0.11524582414858452`
-- `formula_accuracy`: `0.631578947368421`
-- `total_candidate_rows_scored`: `228647`
-- `total_failed_predictions`: `34`
+- `top5_accuracy`: `0.0125`
+- `top10_accuracy`: `0.0125`
+- `mean_reciprocal_rank`: `0.00999138386379086`
+- `mean_top1_tanimoto`: `0.13028941039492947`
+- `formula_accuracy`: `0.6875`
+- `total_candidate_rows_scored`: `501202`
+- `total_failed_predictions`: `79`
 - `top_predictions_per_query_stored`: `100`
 - `claim_guardrail`: `This is a harmonized direct rerun only when candidate_limit == -1 and status == completed_harmonized_candidate_rerun.`
