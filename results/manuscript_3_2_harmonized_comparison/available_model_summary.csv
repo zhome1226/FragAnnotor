@@ -1,0 +1,5 @@
+model,result_status,n_queries,completed_queries,top1_accuracy,top5_accuracy,top10_accuracy,mean_reciprocal_rank,median_true_rank,mean_top1_tanimoto,formula_accuracy
+FragAnnotator,completed,170,170,0.6294117647058823,0.6352941176470588,0.6411764705882353,0.6337702779235963,1.0,,
+SIRIUS formula-only,completed,170,170,0.6941176470588235,0.7,0.7058823529411765,0.6971985690659949,1.0,,
+CFM-ID,completed,170,170,0.052941176470588235,0.13529411764705881,0.17647058823529413,0.09439189623426979,169.0,,
+CFM-ID-generated spectra + MS2DeepScore similarity hybrid,completed,170,170,0.0,0.029411764705882353,0.041176470588235294,0.019401418765397995,456.0,,

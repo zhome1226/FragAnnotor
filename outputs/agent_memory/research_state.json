@@ -1,7 +1,7 @@
 {
   "branch": "main",
   "cfmid_completed_queries": 170,
-  "current_priority": "Stage 3.2: freeze matched 170-query manifest and regenerate matched FragAnnotator/SIRIUS outputs before continuing SOTA comparison.",
+  "current_priority": "Continue MassFormer and ICEBERG remote shards until 170/170 or completed failure audit; then finalize Section 3.2.",
   "dirty_status": "M results/harmonized_sota_candidate_reruns_v1/iceberg/audit_summary.json\n M results/harmonized_sota_candidate_reruns_v1/iceberg/casmi2022_iceberg_harmonized_query_results.csv\n M results/harmonized_sota_candidate_reruns_v1/iceberg/casmi2022_iceberg_harmonized_report.md\n M results/harmonized_sota_candidate_reruns_v1/iceberg/casmi2022_iceberg_harmonized_summary.csv\n M results/harmonized_sota_candidate_reruns_v1/iceberg/casmi2022_iceberg_harmonized_top_predictions.csv\n M results/harmonized_sota_candidate_reruns_v1/massformer/audit_summary.json\n M results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_query_results.csv\n M results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_report.md\n M results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_summary.csv\n M results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_top_predictions.csv\n?? docs/RESEARCH_STATE.md\n?? outputs/\n?? results/harmonized_sota_candidate_reruns_smoke_v1/\n?? results/harmonized_sota_candidate_reruns_v1/iceberg/shard_021_025/\n?? results/harmonized_sota_candidate_reruns_v1/iceberg/shard_026_030/\n?? results/harmonized_sota_candidate_reruns_v1/iceberg/shard_031_035/\n?? results/harmonized_sota_candidate_reruns_v1/iceberg/shard_036_040/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/_raw/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_046_055/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_056_065/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_066_075/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_076_085/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_086_095/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_096_105/\n?? scripts/_remote_cfmid_check.sh\n?? scripts/_remote_start_cfmid.sh\n?? scripts/_remote_start_ms2deep_full_hybrid.sh\n?? scripts/_remote_status_cfmid.sh\n?? scripts/_remote_verify_ms2_env.py\n?? scripts/audit_manuscript_completion_status.py",
   "final_config_path": "configs/fragannotator_manuscript_final.yaml",
   "final_config_sha256": "edf42951a62f169488ad53c4d8189cebef6ceaf8735ad6c6368081e9f3eeb63d",
@@ -46,6 +46,73 @@
     "results/manuscript_3_1_casmi_overall/figures/figure_3_1_similarity_difficulty.png"
   ],
   "section_3_1_status": "manuscript_ready_package_completed",
-  "stage": "manuscript_3_1_casmi_overall_completed",
-  "timestamp_utc": "2026-07-11T08:07:24.242267+00:00"
+  "section_3_2_available_model_summary": [
+    {
+      "completed_queries": "170",
+      "formula_accuracy": "",
+      "mean_reciprocal_rank": "0.6337702779235963",
+      "mean_top1_tanimoto": "",
+      "median_true_rank": "1.0",
+      "model": "FragAnnotator",
+      "n_queries": "170",
+      "result_status": "completed",
+      "top10_accuracy": "0.6411764705882353",
+      "top1_accuracy": "0.6294117647058823",
+      "top5_accuracy": "0.6352941176470588"
+    },
+    {
+      "completed_queries": "170",
+      "formula_accuracy": "",
+      "mean_reciprocal_rank": "0.6971985690659949",
+      "mean_top1_tanimoto": "",
+      "median_true_rank": "1.0",
+      "model": "SIRIUS formula-only",
+      "n_queries": "170",
+      "result_status": "completed",
+      "top10_accuracy": "0.7058823529411765",
+      "top1_accuracy": "0.6941176470588235",
+      "top5_accuracy": "0.7"
+    },
+    {
+      "completed_queries": "170",
+      "formula_accuracy": "",
+      "mean_reciprocal_rank": "0.09439189623426979",
+      "mean_top1_tanimoto": "",
+      "median_true_rank": "169.0",
+      "model": "CFM-ID",
+      "n_queries": "170",
+      "result_status": "completed",
+      "top10_accuracy": "0.17647058823529413",
+      "top1_accuracy": "0.052941176470588235",
+      "top5_accuracy": "0.13529411764705881"
+    },
+    {
+      "completed_queries": "170",
+      "formula_accuracy": "",
+      "mean_reciprocal_rank": "0.019401418765397995",
+      "mean_top1_tanimoto": "",
+      "median_true_rank": "456.0",
+      "model": "CFM-ID-generated spectra + MS2DeepScore similarity hybrid",
+      "n_queries": "170",
+      "result_status": "completed",
+      "top10_accuracy": "0.041176470588235294",
+      "top1_accuracy": "0.0",
+      "top5_accuracy": "0.029411764705882353"
+    }
+  ],
+  "section_3_2_matched_manifest_status": "matched_manifest_frozen_partial_models_available",
+  "section_3_2_matched_queries": 170,
+  "section_3_2_outputs": [
+    "results/manuscript_3_2_harmonized_comparison/matched_query_manifest.csv",
+    "results/manuscript_3_2_harmonized_comparison/candidate_set_audit.csv",
+    "results/manuscript_3_2_harmonized_comparison/fragannotator_matched_query_results.csv",
+    "results/manuscript_3_2_harmonized_comparison/sirius_formula_only_matched_query_results.csv",
+    "results/manuscript_3_2_harmonized_comparison/cfmid_native_matched_query_results.csv",
+    "results/manuscript_3_2_harmonized_comparison/cfmid_ms2deepscore_hybrid_matched_query_results.csv",
+    "results/manuscript_3_2_harmonized_comparison/available_model_summary.csv",
+    "results/manuscript_3_2_harmonized_comparison/matched_input_report.md",
+    "results/manuscript_3_2_harmonized_comparison/matched_input_audit.json"
+  ],
+  "stage": "manuscript_3_2_matched_inputs_frozen",
+  "timestamp_utc": "2026-07-11T08:42:44.065070+00:00"
 }

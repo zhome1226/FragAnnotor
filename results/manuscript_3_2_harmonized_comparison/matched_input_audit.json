@@ -1,0 +1,19 @@
+{
+  "claim_guardrail": "Do not use as final Section 3.2 main table until ICEBERG/MassFormer finish or are explicitly excluded by completed failure audits; NEIMS requires checkpoint/wrapper audit.",
+  "config_sha256": "edf42951a62f169488ad53c4d8189cebef6ceaf8735ad6c6368081e9f3eeb63d",
+  "matched_queries": 170,
+  "models_pending_completion": [
+    "ICEBERG",
+    "MassFormer",
+    "NEIMS readiness audit"
+  ],
+  "models_with_matched_outputs_now": [
+    "FragAnnotator",
+    "SIRIUS formula-only",
+    "CFM-ID",
+    "CFM-ID-generated spectra + MS2DeepScore similarity hybrid"
+  ],
+  "stage": "manuscript_3_2_matched_inputs",
+  "status": "matched_manifest_frozen_partial_models_available",
+  "timestamp_utc": "2026-07-11T08:42:18.528857+00:00"
+}

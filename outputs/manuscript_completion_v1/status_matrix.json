@@ -90,6 +90,21 @@
     "task": "CFM-ID spectra plus MS2DeepScore hybrid"
   },
   {
+    "blocker": "ICEBERG and MassFormer still partial; NEIMS readiness audit pending",
+    "can_be_used_in_main_text": "no_partial_main_table",
+    "claim_guardrail": "Use this as matched-input freeze only; final 3.2 main table waits for ICEBERG/MassFormer completion or explicit completed failure audit.",
+    "completed_queries": "170",
+    "dataset": "CASMI2022 matched [M+H]+",
+    "expected_queries": "170",
+    "latest_commit": "65f3d562ccc7b699a2f050df7f93b85bbf330b83",
+    "manuscript_section": "3.2 setup",
+    "model_or_variant": "matched manifest + available models",
+    "output_paths": "results/manuscript_3_2_harmonized_comparison/matched_query_manifest.csv;results/manuscript_3_2_harmonized_comparison/candidate_set_audit.csv;results/manuscript_3_2_harmonized_comparison/fragannotator_matched_query_results.csv;results/manuscript_3_2_harmonized_comparison/sirius_formula_only_matched_query_results.csv;results/manuscript_3_2_harmonized_comparison/cfmid_native_matched_query_results.csv;results/manuscript_3_2_harmonized_comparison/cfmid_ms2deepscore_hybrid_matched_query_results.csv;results/manuscript_3_2_harmonized_comparison/available_model_summary.csv;results/manuscript_3_2_harmonized_comparison/matched_input_report.md;results/manuscript_3_2_harmonized_comparison/matched_input_audit.json",
+    "required_next_action": "Continue ICEBERG and MassFormer shards; then add completed model outputs to final harmonized Section 3.2 summary.",
+    "result_status": "matched_manifest_frozen_partial_models_available",
+    "task": "Freeze matched 170-query manifest and matched available outputs"
+  },
+  {
     "blocker": "710 candidate prediction failures recorded so far",
     "can_be_used_in_main_text": "no_partial_main_table",
     "claim_guardrail": "Partial MassFormer metrics cannot enter the main comparison table.",
