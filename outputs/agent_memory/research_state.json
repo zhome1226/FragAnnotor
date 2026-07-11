@@ -25,25 +25,25 @@
         "shard_056_060"
       ],
       "massformer": [
-        "shard_136_145"
+        "shard_146_155"
       ]
     },
     "guardrail": "Do not use partial ICEBERG or MassFormer metrics in the main manuscript comparison table.",
     "iceberg": {
-      "completed_or_partial_queries": 54,
+      "completed_or_partial_queries": 55,
       "expected_queries": 170,
       "failed_predictions": 69,
-      "latest_query_id": "82",
+      "latest_query_id": "83",
       "latest_shard": "shard_056_060",
-      "latest_status": "partial_prediction_failures"
+      "latest_status": "completed"
     },
-    "last_updated_utc": "2026-07-11T15:15:41.671345+00:00",
-    "latest_commit_before_update": "d4e608ef6",
+    "last_updated_utc": "2026-07-11T15:32:40.857487+00:00",
+    "latest_commit_before_update": "5f9901434",
     "massformer": {
-      "completed_or_partial_queries": 143,
+      "completed_or_partial_queries": 145,
       "expected_queries": 170,
       "failed_predictions": 1424,
-      "latest_query_id": "196",
+      "latest_query_id": "200",
       "latest_shard": "shard_136_145",
       "latest_status": "completed"
     },
