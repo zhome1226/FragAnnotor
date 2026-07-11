@@ -1,0 +1,18 @@
+{
+  "config_sha256": "edf42951a62f169488ad53c4d8189cebef6ceaf8735ad6c6368081e9f3eeb63d",
+  "definition_bundle_sha256": "7208d4740b5d8b8a0dded1b2d044f809b583685d7e03c33185ed56cfd8b2b0eb",
+  "n_queries": 229,
+  "outputs": [
+    "results/manuscript_3_1_casmi_overall/summary.csv",
+    "results/manuscript_3_1_casmi_overall/query_results.csv",
+    "results/manuscript_3_1_casmi_overall/bootstrap_ci.csv",
+    "results/manuscript_3_1_casmi_overall/stratified_results.csv",
+    "results/manuscript_3_1_casmi_overall/report.md",
+    "results/manuscript_3_1_casmi_overall/figures/figure_3_1_overall_topk_mrr.png",
+    "results/manuscript_3_1_casmi_overall/figures/figure_3_1_true_rank_distribution.png",
+    "results/manuscript_3_1_casmi_overall/figures/figure_3_1_candidate_set_size.png",
+    "results/manuscript_3_1_casmi_overall/figures/figure_3_1_similarity_difficulty.png"
+  ],
+  "stage": "manuscript_3_1_casmi_overall",
+  "status": "completed"
+}

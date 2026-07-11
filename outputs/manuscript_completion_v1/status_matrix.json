@@ -31,17 +31,17 @@
   },
   {
     "blocker": "",
-    "can_be_used_in_main_text": "not_yet_manuscript_ready",
-    "claim_guardrail": "Do not include SIRIUS/CFM-ID baselines in 3.1.",
+    "can_be_used_in_main_text": "yes",
+    "claim_guardrail": "Section 3.1 reports FragAnnotator only; external baselines belong only in Section 3.2 matched comparison.",
     "completed_queries": "229",
     "dataset": "CASMI2022",
     "expected_queries": "229",
     "latest_commit": "65f3d562ccc7b699a2f050df7f93b85bbf330b83",
     "manuscript_section": "3.1",
     "model_or_variant": "fixed component-score evidence fusion",
-    "output_paths": "results/casmi2022_fragannotor_formal_components/casmi2022_fragannotor_formal_query_results.csv",
-    "required_next_action": "Regenerate manuscript 3.1 package with CIs/strata from frozen config.",
-    "result_status": "completed_query_results_available",
+    "output_paths": "results/manuscript_3_1_casmi_overall/summary.csv;results/manuscript_3_1_casmi_overall/query_results.csv;results/manuscript_3_1_casmi_overall/bootstrap_ci.csv;results/manuscript_3_1_casmi_overall/stratified_results.csv;results/manuscript_3_1_casmi_overall/report.md;results/manuscript_3_1_casmi_overall/figures/figure_3_1_overall_topk_mrr.png;results/manuscript_3_1_casmi_overall/figures/figure_3_1_true_rank_distribution.png;results/manuscript_3_1_casmi_overall/figures/figure_3_1_candidate_set_size.png;results/manuscript_3_1_casmi_overall/figures/figure_3_1_similarity_difficulty.png",
+    "required_next_action": "Proceed to Stage 3.2 matched 170-query manifest and matched FragAnnotator/SIRIUS recalculation.",
+    "result_status": "manuscript_ready_package_completed",
     "task": "CASMI2022 FragAnnotor-only performance"
   },
   {

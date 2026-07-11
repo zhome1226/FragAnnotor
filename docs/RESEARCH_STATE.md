@@ -1,11 +1,11 @@
 # FragAnnotor Research State
 
-Last updated: `2026-07-11T08:03:00.552631+00:00`
+Last updated: `2026-07-11T08:07:24.242267+00:00`
 Current audited commit: `65f3d562ccc7b699a2f050df7f93b85bbf330b83`
 
 ## Current Priority
 
-Stage 2: generate the Section 3.1 CASMI2022 FragAnnotator-only manuscript package from the frozen fixed evidence-fusion definition.
+Stage 3.2: freeze the matched 170-query comparison manifest and regenerate matched FragAnnotator/SIRIUS outputs before finalizing external model comparisons.
 
 ## Frozen Manuscript Method
 
@@ -17,11 +17,24 @@ Stage 2: generate the Section 3.1 CASMI2022 FragAnnotator-only manuscript packag
 - Main method: fixed evidence-fusion candidate-ranking framework.
 - Not main method: existing trained neural checkpoint; retain only as audit or negative-control evidence unless strict matched evidence proves superiority.
 
+## Section 3.1 CASMI2022 FragAnnotator-Only Package
+
+- Status: manuscript-ready package completed.
+- Output directory: `results/manuscript_3_1_casmi_overall/`
+- Queries: `229`
+- Top-1: `0.650655`
+- Top-5: `0.659389`
+- Top-10: `0.672489`
+- MRR: `0.658549`
+- Median true rank: `1.0`
+- Mean Top-1 Tanimoto: `0.694028`
+- Molecular formula accuracy: `0.799127`
+
 ## Current Evidence State
 
 - Stage 0 status audit generated under `outputs/manuscript_completion_v1/`.
 - Stage 1 final FragAnnotator definition is frozen.
-- Fixed evidence-fusion CASMI results available for `229` queries.
+- Stage 2 / Section 3.1 FragAnnotator-only package is complete.
 - Harmonized MassFormer last locally synced valid query rows: `102`; ICEBERG: `40`. Remote background runs must be rechecked before any 3.2 claim.
 - Partial harmonized SOTA outputs are not manuscript-ready main-table evidence.
 - NEIMS remains unavailable unless a validated checkpoint and wrapper are confirmed.
