@@ -57,10 +57,10 @@
   "manuscript_completion_v1": {
     "harmonized_sota_rerun_progress": {
       "iceberg": {
-        "completed_queries": 50,
+        "completed_queries": 51,
         "expected_queries": 170,
         "failed_prediction_count": 67,
-        "last_query_id": "74",
+        "last_query_id": "75",
         "last_status": "completed"
       },
       "massformer": {
@@ -71,7 +71,7 @@
         "last_status": "partial_prediction_failures"
       }
     },
-    "last_updated": "2026-07-11T17:48:20+08:00"
+    "last_updated": "2026-07-11T18:10:26+08:00"
   },
   "massformer_completed_queries": 112,
   "neims_audit_path": "results/manuscript_3_2_harmonized_comparison/NEIMS_UNAVAILABLE_AUDIT.md",
