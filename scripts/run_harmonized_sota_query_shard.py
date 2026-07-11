@@ -201,6 +201,34 @@ def parse_massformer_peaks(value: Any, max_peaks: int) -> list[list[float]]:
     return sorted(peaks[:max_peaks], key=lambda item: item[0])
 
 
+def massformer_prepare_molecule(smiles: str) -> tuple[str | None, str]:
+    """Return a MassFormer-safe canonical SMILES string, or a rejection reason."""
+    try:
+        from rdkit import Chem
+        from rdkit.Chem import inchi as rd_inchi
+    except Exception:
+        return normalize(smiles), ""
+    try:
+        smiles_text = normalize(smiles)
+        if smiles_text.startswith("InChI="):
+            mol = rd_inchi.MolFromInchi(smiles_text)
+        else:
+            mol = Chem.MolFromSmiles(smiles_text)
+        if mol is None:
+            return None, "RDKit returned no molecule before MassFormer inference"
+        if mol.GetNumAtoms() <= 0:
+            return None, "RDKit molecule has no atoms before MassFormer inference"
+        for atom in mol.GetAtoms():
+            if atom.GetAtomicNum() <= 0:
+                return None, "MassFormer graph featurization does not support dummy atoms"
+        canonical = Chem.MolToSmiles(mol)
+        if not canonical or Chem.MolFromSmiles(canonical) is None:
+            return None, "RDKit canonical SMILES cannot be reparsed before MassFormer inference"
+        return canonical, ""
+    except Exception as exc:
+        return None, f"RDKit failed to canonicalize molecule before MassFormer inference: {exc!r}"
+
+
 def run_command(cmd: list[str], cwd: Path, env: dict[str, str], timeout: int, log_path: Path) -> subprocess.CompletedProcess[str]:
     completed = subprocess.run(cmd, cwd=cwd, env=env, capture_output=True, text=True, timeout=timeout, check=False)
     log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -219,6 +247,15 @@ def run_command(cmd: list[str], cwd: Path, env: dict[str, str], timeout: int, lo
         encoding="utf-8",
     )
     return completed
+
+
+def massformer_command_failure_category(completed: subprocess.CompletedProcess[str] | None) -> str:
+    if completed is None:
+        return "exception"
+    stderr = completed.stderr or ""
+    if "AssertionError" in stderr and "smiles2graph" in stderr:
+        return "graph_featurization_assertion"
+    return "other"
 
 
 def iceberg_predict_chunk(
@@ -318,14 +355,24 @@ def massformer_predict_chunk(
 ) -> list[CandidatePrediction]:
     if not candidates:
         return []
+    valid_candidates: list[tuple[int, str, str]] = []
+    invalid_predictions: list[CandidatePrediction] = []
+    for candidate_id, smiles in candidates:
+        canonical_smiles, reason = massformer_prepare_molecule(smiles)
+        if canonical_smiles:
+            valid_candidates.append((candidate_id, smiles, canonical_smiles))
+        else:
+            invalid_predictions.append(CandidatePrediction(candidate_id, smiles, [], "unsupported_molecule", reason))
+    if not valid_candidates:
+        return invalid_predictions
     input_csv = work_dir / "smiles.csv"
     output_csv = work_dir / "predictions.csv"
     input_csv.parent.mkdir(parents=True, exist_ok=True)
     with input_csv.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=["mol_id", "smiles"])
         writer.writeheader()
-        for candidate_id, smiles in candidates:
-            writer.writerow({"mol_id": candidate_id, "smiles": smiles})
+        for candidate_id, _, canonical_smiles in valid_candidates:
+            writer.writerow({"mol_id": candidate_id, "smiles": canonical_smiles})
     env = os.environ.copy()
     env["DGLBACKEND"] = "pytorch"
     env["TORCH_HOME"] = str(MASSFORMER_DIR / "checkpoints" / "torch_cache")
@@ -354,19 +401,36 @@ def massformer_predict_chunk(
         completed = None
         (work_dir / "massformer_exception.txt").write_text(repr(exc), encoding="utf-8")
     if completed is None or completed.returncode != 0:
-        if args.retry_failed_singletons and len(candidates) > 1 and depth < args.max_retry_depth:
-            mid = len(candidates) // 2
-            left = massformer_predict_chunk(candidates[:mid], query_row, args, work_dir / "retry_left", depth + 1)
-            right = massformer_predict_chunk(candidates[mid:], query_row, args, work_dir / "retry_right", depth + 1)
-            return left + right
+        failure_category = massformer_command_failure_category(completed)
+        if failure_category == "graph_featurization_assertion" and not args.fail_graph_assertion_batches:
+            if len(valid_candidates) > args.graph_assertion_fail_batch_size and depth < args.max_retry_depth:
+                mid = len(valid_candidates) // 2
+                retry_candidates = [(candidate_id, smiles) for candidate_id, smiles, _ in valid_candidates]
+                left = massformer_predict_chunk(retry_candidates[:mid], query_row, args, work_dir / "retry_left", depth + 1)
+                right = massformer_predict_chunk(retry_candidates[mid:], query_row, args, work_dir / "retry_right", depth + 1)
+                return invalid_predictions + left + right
+            reason = (
+                "MassFormer graph featurization failed for this small molecule batch; "
+                "batch was recorded as failed to avoid unbounded recursive retries"
+            )
+            return invalid_predictions + [
+                CandidatePrediction(candidate_id, smiles, [], "prediction_failed", reason)
+                for candidate_id, smiles, _ in valid_candidates
+            ]
+        if args.retry_failed_singletons and len(valid_candidates) > 1 and depth < args.max_retry_depth:
+            mid = len(valid_candidates) // 2
+            retry_candidates = [(candidate_id, smiles) for candidate_id, smiles, _ in valid_candidates]
+            left = massformer_predict_chunk(retry_candidates[:mid], query_row, args, work_dir / "retry_left", depth + 1)
+            right = massformer_predict_chunk(retry_candidates[mid:], query_row, args, work_dir / "retry_right", depth + 1)
+            return invalid_predictions + left + right
         reason = "MassFormer command failed" if completed is not None else "MassFormer command raised an exception"
-        return [CandidatePrediction(candidate_id, smiles, [], "prediction_failed", reason) for candidate_id, smiles in candidates]
+        return invalid_predictions + [CandidatePrediction(candidate_id, smiles, [], "prediction_failed", reason) for candidate_id, smiles, _ in valid_candidates]
     if not output_csv.exists():
-        return [CandidatePrediction(candidate_id, smiles, [], "missing_prediction_file", "MassFormer did not emit predictions.csv") for candidate_id, smiles in candidates]
+        return invalid_predictions + [CandidatePrediction(candidate_id, smiles, [], "missing_prediction_file", "MassFormer did not emit predictions.csv") for candidate_id, smiles, _ in valid_candidates]
     try:
         pred_df = pd.read_csv(output_csv)
     except Exception as exc:
-        return [CandidatePrediction(candidate_id, smiles, [], "prediction_parse_failed", repr(exc)) for candidate_id, smiles in candidates]
+        return invalid_predictions + [CandidatePrediction(candidate_id, smiles, [], "prediction_parse_failed", repr(exc)) for candidate_id, smiles, _ in valid_candidates]
     peaks_by_id: dict[int, list[list[float]]] = {}
     for _, row in pred_df.iterrows():
         try:
@@ -374,8 +438,8 @@ def massformer_predict_chunk(
         except (TypeError, ValueError):
             continue
         peaks_by_id[mol_id] = parse_massformer_peaks(row.get("peaks", ""), args.max_predicted_peaks)
-    out = []
-    for candidate_id, smiles in candidates:
+    out = list(invalid_predictions)
+    for candidate_id, smiles, _ in valid_candidates:
         peaks = peaks_by_id.get(candidate_id, [])
         status = "predicted_spectrum" if peaks else "empty_prediction"
         out.append(CandidatePrediction(candidate_id, smiles, peaks, status, "" if peaks else "MassFormer emitted no positive-intensity peaks"))
@@ -545,6 +609,27 @@ def load_existing(path: Path) -> pd.DataFrame:
         return pd.DataFrame()
 
 
+def write_sorted_csv(rows: list[dict[str, Any]], path: Path, sort_columns: list[str]) -> None:
+    df = pd.DataFrame(rows)
+    if df.empty:
+        df.to_csv(path, index=False)
+        return
+    sort_helpers: list[str] = []
+    for column in sort_columns:
+        if column not in df.columns:
+            continue
+        helper = f"__sort_{column}"
+        if column in {"query_id", "spectrum_id"}:
+            numeric = pd.to_numeric(df[column], errors="coerce")
+            df[helper] = numeric.where(numeric.notna(), df[column].astype(str))
+        else:
+            df[helper] = df[column]
+        sort_helpers.append(helper)
+    if sort_helpers:
+        df = df.sort_values(sort_helpers, kind="mergesort").drop(columns=sort_helpers)
+    df.to_csv(path, index=False)
+
+
 def parse_all_smiles(path: Path) -> dict[int, str]:
     mapping: dict[int, str] = {}
     with path.open(encoding="utf-8") as handle:
@@ -586,8 +671,9 @@ def main() -> None:
     parser.add_argument("--bin-width", type=float, default=1.0)
     parser.add_argument("--intensity-power", type=float, default=0.5)
     parser.add_argument("--command-timeout-seconds", type=int, default=1800)
-    parser.add_argument("--retry-failed-singletons", action="store_true", default=True)
-    parser.add_argument("--max-retry-depth", type=int, default=8)
+    parser.add_argument("--retry-failed-singletons", dest="retry_failed_singletons", action="store_true", default=True)
+    parser.add_argument("--no-retry-failed-singletons", dest="retry_failed_singletons", action="store_false")
+    parser.add_argument("--max-retry-depth", type=int, default=12)
     parser.add_argument("--keep-raw", action="store_true")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--supported-mh-only", action="store_true", help="Restrict to [M+H]+ queries.")
@@ -598,6 +684,17 @@ def main() -> None:
     parser.add_argument("--massformer-python", type=Path, default=MASSFORMER_PYTHON)
     parser.add_argument("--massformer-config", type=Path, default=MASSFORMER_CONFIG)
     parser.add_argument("--massformer-device-id", type=int, default=-1, help="MassFormer device id: -1 for CPU, 0 for cuda:0.")
+    parser.add_argument(
+        "--fail-graph-assertion-batches",
+        action="store_true",
+        help="Debug mode: keep recursively splitting MassFormer graph assertion failures instead of marking the batch failed.",
+    )
+    parser.add_argument(
+        "--graph-assertion-fail-batch-size",
+        type=int,
+        default=16,
+        help="Minimum MassFormer graph-assertion retry batch size before recording the batch as failed.",
+    )
     args = parser.parse_args()
 
     if not args.outdir.is_absolute():
@@ -629,7 +726,8 @@ def main() -> None:
     existing = load_existing(query_path)
     completed_query_ids: set[str] = set()
     if args.resume and not existing.empty:
-        completed_query_ids = set(existing[existing["status"].astype(str).eq("completed")]["query_id"].astype(str))
+        reusable_statuses = {"completed", "partial_prediction_failures"}
+        completed_query_ids = set(existing[existing["status"].astype(str).isin(reusable_statuses)]["query_id"].astype(str))
     query_rows = [] if existing.empty else existing.to_dict(orient="records")
     top_rows = [] if not args.resume else load_existing(top_path).to_dict(orient="records")
     temp_parent = model_outdir / "_raw" if args.keep_raw else Path(tempfile.mkdtemp(prefix=f"{args.model}_harmonized_"))
@@ -655,8 +753,8 @@ def main() -> None:
             top_rows = [existing_row for existing_row in top_rows if str(existing_row.get("query_id")) != query_id]
             query_rows.append(query_result)
             top_rows.extend(query_top_rows)
-            pd.DataFrame(query_rows).sort_values("query_id").to_csv(query_path, index=False)
-            pd.DataFrame(top_rows).sort_values(["query_id", "rank"]).to_csv(top_path, index=False)
+            write_sorted_csv(query_rows, query_path, ["query_id"])
+            write_sorted_csv(top_rows, top_path, ["query_id", "rank"])
             print(json.dumps(json_safe(query_result), sort_keys=True), flush=True)
     finally:
         if not args.keep_raw:
