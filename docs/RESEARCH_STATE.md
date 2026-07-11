@@ -53,11 +53,11 @@ Continue MassFormer and ICEBERG remote shards until the matched 170-query Sectio
 
 ### Harmonized SOTA candidate rerun progress
 
-Last snapshot UTC: 2026-07-11T08:57:12.787497+00:00
+Last snapshot UTC: 2026-07-11T09:04:33.485508+00:00
 
 | Model | Valid supported queries | Query rows | Failed candidate predictions | Status |
 |---|---:|---:|---:|---|
-| MassFormer | 111/170 | 111 | 723 | running resumable shards |
+| MassFormer | 112/170 | 112 | 725 | running resumable shards |
 | ICEBERG | 50/170 | 50 | 67 | running resumable shards |
 
 Partial SOTA reruns remain excluded from manuscript main comparison tables until each model reaches the frozen 170-query set or has a documented unrecoverable failure audit.
