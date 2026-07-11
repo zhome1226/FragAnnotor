@@ -105,10 +105,10 @@
     "task": "Freeze matched 170-query manifest and matched available outputs"
   },
   {
-    "blocker": "710 candidate prediction failures recorded so far",
+    "blocker": "715 candidate prediction failures recorded so far",
     "can_be_used_in_main_text": "no_partial_main_table",
     "claim_guardrail": "Partial MassFormer metrics cannot enter the main comparison table.",
-    "completed_queries": "102",
+    "completed_queries": "109",
     "dataset": "CASMI2022 matched [M+H]+",
     "expected_queries": "170",
     "latest_commit": "65f3d562ccc7b699a2f050df7f93b85bbf330b83",
@@ -120,10 +120,10 @@
     "task": "MassFormer harmonized rerun"
   },
   {
-    "blocker": "59 candidate prediction failures recorded so far",
+    "blocker": "67 candidate prediction failures recorded so far",
     "can_be_used_in_main_text": "no_partial_main_table",
     "claim_guardrail": "Partial ICEBERG metrics cannot enter the main comparison table.",
-    "completed_queries": "40",
+    "completed_queries": "50",
     "dataset": "CASMI2022 matched [M+H]+",
     "expected_queries": "170",
     "latest_commit": "65f3d562ccc7b699a2f050df7f93b85bbf330b83",

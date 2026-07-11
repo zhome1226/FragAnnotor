@@ -44,3 +44,7 @@ Continue MassFormer and ICEBERG remote shards until the matched 170-query Sectio
 - Stage 3.2 matched input manifest is frozen with available matched outputs for FragAnnotator, SIRIUS formula-only, native CFM-ID, and CFM-ID-generated candidate spectra + MS2DeepScore similarity hybrid.
 - Harmonized MassFormer and ICEBERG remain partial/running remotely; partial outputs are not manuscript-ready main-table evidence.
 - NEIMS remains unavailable unless a validated checkpoint and wrapper are confirmed.
+
+## Latest Harmonized SOTA Progress
+
+- Harmonized SOTA progress snapshot `2026-07-11T08:48:11.039563+00:00`: MassFormer `109/170`, ICEBERG `50/170`. Partial outputs are not manuscript-ready main-table evidence.
