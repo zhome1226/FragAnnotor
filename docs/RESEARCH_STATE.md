@@ -72,7 +72,7 @@ Partial SOTA reruns remain excluded from manuscript main comparison tables until
 
 ## 2026-07-11 Harmonized SOTA Rerun Progress Snapshot
 
-- MassFormer harmonized rerun: 114/170 supported CASMI queries completed; current remote controller is continuing with resumable shard_106_115.
+- MassFormer harmonized rerun: 115/170 supported CASMI queries completed; shard_106_115 finished and the next resumable shard_116_125 was started remotely.
 - ICEBERG harmonized rerun: 50/170 supported CASMI queries completed; remote shard_051_055 and shard_056_060 controllers are still running.
 - Long-running orphaned `bash -c /usr/lib/openssh/sftp-server` processes were terminated on the remote server to release CPU/memory; active FragAnnotor controllers were not stopped.
 - Section 3.2 remains not manuscript-ready until ICEBERG and MassFormer reach the frozen 170-query matched set or produce auditable unrecoverable failures.
