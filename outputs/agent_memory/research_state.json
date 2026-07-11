@@ -64,14 +64,14 @@
         "last_status": "partial_prediction_failures"
       },
       "massformer": {
-        "completed_queries": 128,
+        "completed_queries": 129,
         "expected_queries": 170,
-        "failed_prediction_count": 1375,
-        "last_query_id": "178",
-        "last_status": "completed"
+        "failed_prediction_count": 1376,
+        "last_query_id": "179",
+        "last_status": "partial_prediction_failures"
       }
     },
-    "last_updated": "2026-07-11T21:25:13+08:00"
+    "last_updated": "2026-07-11T21:36:51+08:00"
   },
   "massformer_completed_queries": 112,
   "neims_audit_path": "results/manuscript_3_2_harmonized_comparison/NEIMS_UNAVAILABLE_AUDIT.md",
