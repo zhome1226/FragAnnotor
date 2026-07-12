@@ -93,6 +93,32 @@
       "query_rows": 170
     }
   },
+  "harmonized_sota": {
+    "iceberg": {
+      "claim_guardrail": "Do not use ICEBERG in the final main comparison table until full matched-query completion or an auditable unrecoverable failure list is available.",
+      "completed_queries": 61,
+      "expected_queries": 170,
+      "failed_candidate_predictions": 71,
+      "last_synced_utc": "2026-07-12T01:50:46.221852+00:00",
+      "latest_commit_at_sync": "2bd7a406b",
+      "source_shards": {
+        "shard_001_005": 5,
+        "shard_006_010": 5,
+        "shard_011_015": 5,
+        "shard_016_020": 5,
+        "shard_021_025": 5,
+        "shard_026_030": 5,
+        "shard_031_035": 5,
+        "shard_036_040": 5,
+        "shard_041_045": 5,
+        "shard_046_050": 5,
+        "shard_051_055": 5,
+        "shard_056_060": 5,
+        "shard_106_110": 1
+      },
+      "status": "running"
+    }
+  },
   "harmonized_sota_progress": {
     "iceberg": {
       "completed_or_partial_queries": 60,
