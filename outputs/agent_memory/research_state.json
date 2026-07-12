@@ -1,7 +1,7 @@
 {
   "branch": "main",
   "cfmid_completed_queries": 170,
-  "current_priority": "Continue remote MassFormer and ICEBERG shards until 170/170 or completed failure audit; then finalize Section 3.2.",
+  "current_priority": "Continue ICEBERG remote shards to 170/170; MassFormer now has all 170 matched query rows and needs final failure-audit labeling before Section 3.2 table assembly.",
   "dirty_status": "M results/harmonized_sota_candidate_reruns_v1/iceberg/audit_summary.json\n M results/harmonized_sota_candidate_reruns_v1/iceberg/casmi2022_iceberg_harmonized_query_results.csv\n M results/harmonized_sota_candidate_reruns_v1/iceberg/casmi2022_iceberg_harmonized_report.md\n M results/harmonized_sota_candidate_reruns_v1/iceberg/casmi2022_iceberg_harmonized_summary.csv\n M results/harmonized_sota_candidate_reruns_v1/iceberg/casmi2022_iceberg_harmonized_top_predictions.csv\n M results/harmonized_sota_candidate_reruns_v1/massformer/audit_summary.json\n M results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_query_results.csv\n M results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_report.md\n M results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_summary.csv\n M results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_top_predictions.csv\n?? docs/RESEARCH_STATE.md\n?? outputs/\n?? results/harmonized_sota_candidate_reruns_smoke_v1/\n?? results/harmonized_sota_candidate_reruns_v1/iceberg/shard_021_025/\n?? results/harmonized_sota_candidate_reruns_v1/iceberg/shard_026_030/\n?? results/harmonized_sota_candidate_reruns_v1/iceberg/shard_031_035/\n?? results/harmonized_sota_candidate_reruns_v1/iceberg/shard_036_040/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/_raw/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_046_055/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_056_065/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_066_075/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_076_085/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_086_095/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_096_105/\n?? scripts/_remote_cfmid_check.sh\n?? scripts/_remote_start_cfmid.sh\n?? scripts/_remote_start_ms2deep_full_hybrid.sh\n?? scripts/_remote_status_cfmid.sh\n?? scripts/_remote_verify_ms2_env.py\n?? scripts/audit_manuscript_completion_status.py",
   "final_config_path": "configs/fragannotator_manuscript_final.yaml",
   "final_config_sha256": "edf42951a62f169488ad53c4d8189cebef6ceaf8735ad6c6368081e9f3eeb63d",
@@ -52,21 +52,60 @@
     },
     "stage": "3.2_harmonized_sota_reruns_in_progress"
   },
+  "fragannotor_manuscript_completion": {
+    "active_remote_shards": {
+      "iceberg": [
+        "shard_061_065",
+        "shard_066_070"
+      ],
+      "massformer": []
+    },
+    "iceberg": {
+      "active_shards": [
+        "shard_061_065",
+        "shard_066_070"
+      ],
+      "completed_or_partial_queries": 60,
+      "expected_queries": 170,
+      "failed_predictions": 71,
+      "latest_query_id": "87",
+      "latest_shard": "shard_056_060",
+      "latest_status": "running_resumable_shards",
+      "query_rows": 60
+    },
+    "last_updated_utc": "2026-07-12T01:05:32.731801+00:00",
+    "latest_commit_before_update": "0222d0489",
+    "massformer": {
+      "completed_or_partial_queries": 170,
+      "expected_queries": 170,
+      "failed_predictions": 1481,
+      "guardrail": "Use only with explicit candidate prediction failure audit; do not label as clean full native completion.",
+      "latest_query_id": "228",
+      "latest_shard": "shard_000_000 plus shard_001_010..shard_166_170",
+      "latest_status": "all_matched_query_rows_complete_with_candidate_prediction_failures",
+      "merged_summary_status": "partial_harmonized_candidate_rerun",
+      "query_rows": 170
+    }
+  },
   "harmonized_sota_progress": {
     "iceberg": {
-      "failed_prediction_count": 67,
-      "rows": 50,
-      "valid_unique_queries": 50
+      "completed_or_partial_queries": 60,
+      "expected_queries": 170,
+      "failed_prediction_count": 71,
+      "status": "running_resumable_shards"
     },
     "massformer": {
-      "failed_prediction_count": 725,
-      "rows": 112,
-      "valid_unique_queries": 112
+      "completed_or_partial_queries": 170,
+      "expected_queries": 170,
+      "failed_prediction_count": 1481,
+      "status": "all_query_rows_complete_with_candidate_prediction_failures"
     }
   },
   "hybrid_completed_queries": 170,
-  "iceberg_completed_queries": 50,
+  "iceberg_completed_queries": 60,
+  "last_updated_utc": "2026-07-12T01:05:32.731801+00:00",
   "latest_commit": "2025a80ea469210d08a5777107fcd73f7509041f",
+  "latest_commit_before_update": "0222d0489",
   "manuscript_completion": {
     "harmonized_sota_candidate_reruns_v1": {
       "iceberg": {
@@ -107,7 +146,7 @@
     },
     "last_updated": "2026-07-11T21:36:51+08:00"
   },
-  "massformer_completed_queries": 112,
+  "massformer_completed_queries": 170,
   "neims_audit_path": "results/manuscript_3_2_harmonized_comparison/NEIMS_UNAVAILABLE_AUDIT.md",
   "neims_ready": false,
   "neims_status": "unavailable_no_validated_checkpoint_or_wrapper",

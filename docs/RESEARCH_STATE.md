@@ -1,6 +1,6 @@
 # FragAnnotor Research State
 
-Last updated: `2026-07-11T08:42:44.065070+00:00`
+Last updated: `2026-07-12T01:05:32.731801+00:00`
 Current audited commit: `65f3d562ccc7b699a2f050df7f93b85bbf330b83`
 
 ## Current Priority
@@ -53,15 +53,14 @@ Continue MassFormer and ICEBERG remote shards until the matched 170-query Sectio
 
 ### Harmonized SOTA candidate rerun progress
 
-Last snapshot UTC: 2026-07-11T09:04:33.485508+00:00
+Last snapshot UTC: 2026-07-12T01:05:32.731801+00:00
 
 | Model | Valid supported queries | Query rows | Failed candidate predictions | Status |
 |---|---:|---:|---:|---|
-| MassFormer | 112/170 | 112 | 725 | running resumable shards |
-| ICEBERG | 50/170 | 50 | 67 | running resumable shards |
+| MassFormer | 170/170 | 170 | 1481 | all matched query rows complete; candidate-level prediction failures retained and audited |
+| ICEBERG | 60/170 | 60 | 71 | running resumable shards `shard_061_065` and `shard_066_070` remotely |
 
-Partial SOTA reruns remain excluded from manuscript main comparison tables until each model reaches the frozen 170-query set or has a documented unrecoverable failure audit.
-
+MassFormer now has all 170 frozen matched CASMI [M+H]+ query rows available in `results/harmonized_sota_candidate_reruns_v1/massformer/`, but its merged summary remains guarded because 1,481 candidate spectra failed prediction across otherwise rank-valid query rows. ICEBERG remains partial and cannot enter the Section 3.2 main comparison table until it reaches the frozen 170-query set or has a completed unrecoverable-failure audit.
 
 ## NEIMS Availability Audit
 
