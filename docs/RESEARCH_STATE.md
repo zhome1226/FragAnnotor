@@ -53,12 +53,12 @@ Continue MassFormer and ICEBERG remote shards until the matched 170-query Sectio
 
 ### Harmonized SOTA candidate rerun progress
 
-Last snapshot UTC: 2026-07-12T01:05:32.731801+00:00
+Last snapshot UTC: 2026-07-12T02:38:53+00:00
 
 | Model | Valid supported queries | Query rows | Failed candidate predictions | Status |
 |---|---:|---:|---:|---|
 | MassFormer | 170/170 | 170 | 1481 | all matched query rows complete; candidate-level prediction failures retained and audited |
-| ICEBERG | 60/170 | 60 | 71 | running resumable shards `shard_061_065` and `shard_066_070` remotely |
+| ICEBERG | 65/170 | 65 | 80 | running 21 resumable ICEBERG controllers remotely |
 
 MassFormer now has all 170 frozen matched CASMI [M+H]+ query rows available in `results/harmonized_sota_candidate_reruns_v1/massformer/`, but its merged summary remains guarded because 1,481 candidate spectra failed prediction across otherwise rank-valid query rows. ICEBERG remains partial and cannot enter the Section 3.2 main comparison table until it reaches the frozen 170-query set or has a completed unrecoverable-failure audit.
 
@@ -95,3 +95,4 @@ Current stage: Section 3.2 harmonized SOTA reruns in progress. The final FragAnn
 - ICEBERG: 58/170 supported queries completed or auditable partial-prediction failures; failed candidate predictions: 69; latest synced query: 84 (completed, shard_056_060). Active remote shards: shard_051_055 and shard_056_060.
 - Manuscript guardrail: partial ICEBERG/MassFormer metrics must not enter the final main comparison table; CFM-ID + MS2DeepScore must be labeled as CFM-ID-generated candidate spectra + MS2DeepScore similarity hybrid.
 - 2026-07-12T01:50:46.221852+00:00: ICEBERG harmonized rerun advanced to 61/170 query rows on the matched CASMI set; failed candidate predictions currently 71. Newest synced shard counts: {'shard_001_005': 5, 'shard_006_010': 5, 'shard_011_015': 5, 'shard_016_020': 5, 'shard_021_025': 5, 'shard_026_030': 5, 'shard_031_035': 5, 'shard_036_040': 5, 'shard_041_045': 5, 'shard_046_050': 5, 'shard_051_055': 5, 'shard_056_060': 5, 'shard_106_110': 1}. Section 3.2 remains not manuscript-ready until ICEBERG reaches 170/170 or has an auditable unrecoverable failure list.
+- 2026-07-12T02:38:53+00:00: ICEBERG harmonized rerun advanced to 65/170 query rows on the matched CASMI set; failed candidate predictions currently 80. Newly synced one-query shard outputs: `shard_066_070`, `shard_101_105`, `shard_111_115`, and `shard_156_160`. Remote ICEBERG controllers and vendor predictors remain running in CPU resumable mode; GPU remains unused because the current vendor ICEBERG script asserts out when `--gpu` is enabled.

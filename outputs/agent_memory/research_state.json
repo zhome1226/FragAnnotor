@@ -1,7 +1,7 @@
 {
   "branch": "main",
   "cfmid_completed_queries": 170,
-  "current_priority": "Continue ICEBERG remote shards to 170/170; MassFormer now has all 170 matched query rows and needs final failure-audit labeling before Section 3.2 table assembly.",
+  "current_priority": "Continue ICEBERG remote shards to 170/170; MassFormer has all 170 matched query rows and needs final failure-audit labeling before Section 3.2 table assembly.",
   "dirty_status": "M results/harmonized_sota_candidate_reruns_v1/iceberg/audit_summary.json\n M results/harmonized_sota_candidate_reruns_v1/iceberg/casmi2022_iceberg_harmonized_query_results.csv\n M results/harmonized_sota_candidate_reruns_v1/iceberg/casmi2022_iceberg_harmonized_report.md\n M results/harmonized_sota_candidate_reruns_v1/iceberg/casmi2022_iceberg_harmonized_summary.csv\n M results/harmonized_sota_candidate_reruns_v1/iceberg/casmi2022_iceberg_harmonized_top_predictions.csv\n M results/harmonized_sota_candidate_reruns_v1/massformer/audit_summary.json\n M results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_query_results.csv\n M results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_report.md\n M results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_summary.csv\n M results/harmonized_sota_candidate_reruns_v1/massformer/casmi2022_massformer_harmonized_top_predictions.csv\n?? docs/RESEARCH_STATE.md\n?? outputs/\n?? results/harmonized_sota_candidate_reruns_smoke_v1/\n?? results/harmonized_sota_candidate_reruns_v1/iceberg/shard_021_025/\n?? results/harmonized_sota_candidate_reruns_v1/iceberg/shard_026_030/\n?? results/harmonized_sota_candidate_reruns_v1/iceberg/shard_031_035/\n?? results/harmonized_sota_candidate_reruns_v1/iceberg/shard_036_040/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/_raw/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_046_055/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_056_065/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_066_075/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_076_085/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_086_095/\n?? results/harmonized_sota_candidate_reruns_v1/massformer/shard_096_105/\n?? scripts/_remote_cfmid_check.sh\n?? scripts/_remote_start_cfmid.sh\n?? scripts/_remote_start_ms2deep_full_hybrid.sh\n?? scripts/_remote_status_cfmid.sh\n?? scripts/_remote_verify_ms2_env.py\n?? scripts/audit_manuscript_completion_status.py",
   "final_config_path": "configs/fragannotator_manuscript_final.yaml",
   "final_config_sha256": "edf42951a62f169488ad53c4d8189cebef6ceaf8735ad6c6368081e9f3eeb63d",
@@ -96,11 +96,11 @@
   "harmonized_sota": {
     "iceberg": {
       "claim_guardrail": "Do not use ICEBERG in the final main comparison table until full matched-query completion or an auditable unrecoverable failure list is available.",
-      "completed_queries": 61,
+      "completed_queries": 65,
       "expected_queries": 170,
-      "failed_candidate_predictions": 71,
-      "last_synced_utc": "2026-07-12T01:50:46.221852+00:00",
-      "latest_commit_at_sync": "2bd7a406b",
+      "failed_candidate_predictions": 80,
+      "last_synced_utc": "2026-07-12T02:38:53+00:00",
+      "latest_commit_at_sync": "7feee0455",
       "source_shards": {
         "shard_001_005": 5,
         "shard_006_010": 5,
@@ -114,17 +114,21 @@
         "shard_046_050": 5,
         "shard_051_055": 5,
         "shard_056_060": 5,
-        "shard_106_110": 1
+        "shard_066_070": 1,
+        "shard_101_105": 1,
+        "shard_106_110": 1,
+        "shard_111_115": 1,
+        "shard_156_160": 1
       },
       "status": "running"
     }
   },
   "harmonized_sota_progress": {
     "iceberg": {
-      "completed_or_partial_queries": 60,
+      "completed_or_partial_queries": 65,
       "expected_queries": 170,
-      "failed_prediction_count": 71,
-      "status": "running_resumable_shards"
+      "failed_prediction_count": 80,
+      "status": "running_resumable_cpu_shards"
     },
     "massformer": {
       "completed_or_partial_queries": 170,
@@ -134,16 +138,16 @@
     }
   },
   "hybrid_completed_queries": 170,
-  "iceberg_completed_queries": 60,
-  "last_updated_utc": "2026-07-12T01:15:02.098800+00:00",
+  "iceberg_completed_queries": 65,
+  "last_updated_utc": "2026-07-12T02:38:53+00:00",
   "latest_commit": "2025a80ea469210d08a5777107fcd73f7509041f",
   "latest_commit_before_update": "46b0f705d",
   "manuscript_completion": {
     "harmonized_sota_candidate_reruns_v1": {
       "iceberg": {
-        "failed_prediction_count": 67,
-        "query_rows": 50,
-        "valid_unique_queries": 50
+        "failed_prediction_count": 80,
+        "query_rows": 65,
+        "valid_unique_queries": 65
       },
       "massformer": {
         "failed_prediction_count": 725,
