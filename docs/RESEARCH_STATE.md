@@ -1,6 +1,6 @@
 # FragAnnotor Research State
 
-Last updated: `2026-07-12T01:05:32.731801+00:00`
+Last updated: `2026-07-12T01:15:02.098800+00:00`
 Current audited commit: `65f3d562ccc7b699a2f050df7f93b85bbf330b83`
 
 ## Current Priority
@@ -61,6 +61,13 @@ Last snapshot UTC: 2026-07-12T01:05:32.731801+00:00
 | ICEBERG | 60/170 | 60 | 71 | running resumable shards `shard_061_065` and `shard_066_070` remotely |
 
 MassFormer now has all 170 frozen matched CASMI [M+H]+ query rows available in `results/harmonized_sota_candidate_reruns_v1/massformer/`, but its merged summary remains guarded because 1,481 candidate spectra failed prediction across otherwise rank-valid query rows. ICEBERG remains partial and cannot enter the Section 3.2 main comparison table until it reaches the frozen 170-query set or has a completed unrecoverable-failure audit.
+
+## ICEBERG GPU Acceleration Audit
+
+- Status: GPU mode is not usable with the currently installed `ms-pred-iceberg-2024` vendor script.
+- Evidence: running `predict_smis.py --gpu` reaches `assert not kwargs["gpu"]` in the vendor code and exits with `AssertionError`.
+- Action taken: stopped the failed GPU-resume attempt and restarted `shard_061_065` and `shard_066_070` in CPU resumable mode.
+- Guardrail: do not restart ICEBERG with `--gpu` unless the vendor inference code is patched and validated with a smoke test that emits prediction JSON.
 
 ## NEIMS Availability Audit
 
