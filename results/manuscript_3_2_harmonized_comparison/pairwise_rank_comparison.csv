@@ -1,0 +1,6 @@
+baseline_model_id,baseline_model,n_queries,fragannotator_better_query_count,fragannotator_worse_query_count,tie_count,mean_rank_difference_fragannotator_minus_baseline,median_rank_difference_fragannotator_minus_baseline,mean_mrr_difference_fragannotator_minus_baseline,mean_top10_difference_fragannotator_minus_baseline,interpretation
+sirius_formula_only,SIRIUS formula-only,170,7,18,145,5.982352941176471,0.0,-0.06342829114239855,-0.06470588235294118,negative rank difference means FragAnnotator ranked the true candidate better
+cfmid_native,CFM-ID,170,119,47,4,-0.8176470588235294,-83.5,0.5393783816893266,0.4647058823529412,negative rank difference means FragAnnotator ranked the true candidate better
+cfmid_ms2deepscore_hybrid,CFM-ID-generated spectra + MS2DeepScore similarity hybrid,170,128,41,1,-328.16470588235296,-221.0,0.6143688591581983,0.6,negative rank difference means FragAnnotator ranked the true candidate better
+iceberg,ICEBERG,170,119,50,1,139.75882352941176,-34.5,0.5688220738929156,0.4588235294117647,negative rank difference means FragAnnotator ranked the true candidate better
+massformer,MassFormer,170,141,29,0,-865.7117647058824,-528.5,0.6204106506667079,0.6294117647058823,negative rank difference means FragAnnotator ranked the true candidate better

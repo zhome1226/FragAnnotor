@@ -1,0 +1,11 @@
+comparison,baseline_model_id,metric,observed_difference,bootstrap_iterations,ci_95_low,ci_95_high,seed
+FragAnnotator minus SIRIUS formula-only,sirius_formula_only,MRR,-0.06342829114239855,5000,-0.10291025955778733,-0.025664151179826615,20260716
+FragAnnotator minus SIRIUS formula-only,sirius_formula_only,Top-10 accuracy,-0.06470588235294118,5000,-0.10588235294117647,-0.029411764705882353,20260716
+FragAnnotator minus CFM-ID,cfmid_native,MRR,0.5393783816893266,5000,0.4554231140493851,0.6234682603018794,20260716
+FragAnnotator minus CFM-ID,cfmid_native,Top-10 accuracy,0.4647058823529412,5000,0.3764705882352941,0.5588235294117647,20260716
+FragAnnotator minus CFM-ID-generated spectra + MS2DeepScore similarity hybrid,cfmid_ms2deepscore_hybrid,MRR,0.6143688591581983,5000,0.5392319068577198,0.6881808498457339,20260716
+FragAnnotator minus CFM-ID-generated spectra + MS2DeepScore similarity hybrid,cfmid_ms2deepscore_hybrid,Top-10 accuracy,0.6,5000,0.5235294117647059,0.6764705882352942,20260716
+FragAnnotator minus ICEBERG,iceberg,MRR,0.5688220738929156,5000,0.4925896214409278,0.6417489023284731,20260716
+FragAnnotator minus ICEBERG,iceberg,Top-10 accuracy,0.4588235294117647,5000,0.36470588235294116,0.5529411764705883,20260716
+FragAnnotator minus MassFormer,massformer,MRR,0.6204106506667079,5000,0.5457240661275938,0.694889457458121,20260716
+FragAnnotator minus MassFormer,massformer,Top-10 accuracy,0.6294117647058823,5000,0.5529411764705883,0.7058823529411765,20260716
